@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { pluginsApi, type PluginInventory, type PluginPlan } from '../../api/plugins';
-import { changedRuns, failureText, piPackageTest, reviewChanges, syncTodo, updatesFound, updatesLeft, usePluginsFlow } from './pluginsFlow';
+import { changedRuns, failureText, piPackageTest, reviewChanges, syncTodo, updatesFound, updatedTargets, updatesLeft, updatesPending, usePluginsFlow, versionMoves } from './pluginsFlow';
 
 vi.mock('../../api/plugins', async (importOriginal) => ({ ...await importOriginal<typeof import('../../api/plugins')>(), pluginsApi: { preview: vi.fn(), apply: vi.fn() } }));
 
@@ -85,20 +85,132 @@ describe('plugins flow', () => {
     expect([now().failure, now().outcomes]).toEqual(['', []]);
   });
 
-  it('remembers what a check found and takes an Agent off once its update is applied', async () => {
+  it('remembers what a check found, opens no review, and takes an Agent off once its batch update is applied', async () => {
     const found = { name: 'driver', target: 'pi', binding: { id: 'npm:driver', version: '1.1.0', commit: 'abc' } };
     vi.mocked(pluginsApi.preview)
       .mockResolvedValueOnce(plan('r', { ...found, action: 'update-available' }))
       .mockResolvedValueOnce(plan('r2', { ...found, action: 'update' }));
     vi.mocked(pluginsApi.apply).mockResolvedValue({ result: { results: [{ name: 'driver', target: 'pi', status: 'installed' }] }, failure: '' });
-    const { now } = flow();
-    await act(() => now().preview({ action: 'check' }));
+    const { now, onPreviewed } = flow();
+    await act(() => now().check());
     expect(now().updates).toEqual({ driver: { pi: { version: '1.1.0', commit: 'abc' } } });
-    await act(() => now().preview({ action: 'update', name: 'driver', targets: ['pi'] }));
-    expect(now().updates.driver.pi).toBeDefined();
-    await act(() => now().apply());
+    expect(now().review).toBeNull();
+    expect(onPreviewed).not.toHaveBeenCalled();
+    await act(() => now().updateMany([{ name: 'driver', targets: ['pi'] }]));
     expect(pluginsApi.apply).toHaveBeenCalledWith({ action: 'update', name: 'driver', targets: ['pi'] }, 'r2');
     expect(now().updates).toEqual({ driver: {} });
+    expect(now().batch).toEqual([{ name: 'driver', targets: ['pi'], status: 'done' }]);
+  });
+
+  it('lists what is still to update only where the Agent can be updated from here, and drops an Agent an update took off', () => {
+    const inventory = { packages: { tail: { bindings: { pi: { id: 'npm:tail' }, omp: { id: 'tail' } } }, guard: { bindings: { omp: { id: 'guard' } } }, driver: { bindings: {} } }, hosts: [], targetDefinitions: [{ target: 'pi', label: 'Pi', project: false, operations: ['check', 'update'] }, { target: 'omp', label: 'OMP', project: false, operations: ['check'] }] };
+    const updates = { tail: { pi: { version: '2.1.0' }, omp: { version: '2.1.0' } }, guard: { omp: { version: '1.0.0' } }, driver: {} };
+    expect(updatesPending(updates, inventory)).toEqual([{ name: 'tail', targets: ['pi'] }]);
+  });
+
+  it('puts a retried plugin back to waiting where it is, and keeps going after a plugin fails in a batch', async () => {
+    vi.mocked(pluginsApi.preview).mockResolvedValue(plan('u', { action: 'update' }));
+    vi.mocked(pluginsApi.apply)
+      .mockResolvedValueOnce({ result: { results: [{ name: 'demo', target: 'codex', status: 'failed', message: 'timeout' }] }, failure: 'demo: timeout' })
+      .mockResolvedValueOnce(ok);
+    const { now, refresh } = flow();
+    await act(() => now().updateMany([{ name: 'demo', targets: ['codex'] }, { name: 'other', targets: ['codex'] }]));
+    expect(pluginsApi.apply).toHaveBeenCalledTimes(2);
+    expect(now().batch).toEqual([{ name: 'demo', targets: ['codex'], status: 'failed', note: 'timeout', failed: ['codex'] }, { name: 'other', targets: ['codex'], status: 'done', note: undefined }]);
+    expect(refresh).toHaveBeenCalledTimes(1);
+    vi.mocked(pluginsApi.apply).mockResolvedValueOnce(ok);
+    await act(() => now().updateMany([{ name: 'demo', targets: ['codex'] }]));
+    expect(now().batch).toEqual([{ name: 'demo', targets: ['codex'], status: 'done', note: undefined, failed: undefined }, { name: 'other', targets: ['codex'], status: 'done', note: undefined }]);
+  });
+
+  it('counts the Agents that updated in a plugin where another was skipped', () => {
+    expect(updatedTargets({ name: 'tail', targets: ['pi', 'codex'], status: 'skipped', failed: ['codex'] })).toEqual(['pi']);
+  });
+
+  it('shares one version move only when every Agent makes the same one', () => {
+    const inventory = { targetDefinitions: [], hosts: [], packages: { tail: { bindings: { pi: { id: 'a', version: '1.0.0' }, codex: { id: 'b', version: '1.0.0' }, claude: { id: 'c', version: '0.9.0' } } } } };
+    expect(versionMoves(inventory, 'tail', [{ target: 'pi', version: '1.1.0' }, { target: 'codex', version: '1.1.0' }]).shared).toBe(true);
+    expect(versionMoves(inventory, 'tail', [{ target: 'pi', version: '1.1.0' }, { target: 'claude', version: '1.1.0' }]).moves.map((m) => m.from)).toEqual(['1.0.0', '0.9.0']);
+    expect(versionMoves(inventory, 'tail', [{ target: 'pi', version: '1.1.0' }, { target: 'claude', version: '1.1.0' }]).shared).toBe(false);
+  });
+
+  it('tells whether a check came back, so a check the user asked for can open its result', async () => {
+    const { now } = flow();
+    await act(async () => expect(await now().check()).toBe(true));
+    vi.mocked(pluginsApi.preview).mockRejectedValueOnce(new Error('offline'));
+    await act(async () => expect(await now().check()).toBe(false));
+  });
+
+  it('drops a pending update for an Agent unticked since the check', () => {
+    const inventory = { hosts: [], targetDefinitions: [{ target: 'pi', label: 'Pi', project: false, operations: ['update'] }, { target: 'codex', label: 'Codex', project: false, operations: ['update'] }], packages: { tail: { bindings: { pi: { id: 'npm:tail' }, codex: { id: 'tail@m', sync: false } } } } };
+    expect(updatesPending({ tail: { pi: { version: '2' }, codex: { version: '2' } } }, inventory)).toEqual([{ name: 'tail', targets: ['pi'] }]);
+  });
+
+  it('drops a pending update whose plugin or Agent binding is gone', () => {
+    const inventory = { packages: { kept: { bindings: { pi: { id: 'npm:kept' } } } }, hosts: [], targetDefinitions: [{ target: 'pi', label: 'Pi', project: false, operations: ['update'] }, { target: 'codex', label: 'Codex', project: false, operations: ['update'] }] };
+    const updates = { kept: { pi: { version: '2' }, codex: { version: '2' } }, removed: { pi: { version: '2' } } };
+    expect(updatesPending(updates, inventory)).toEqual([{ name: 'kept', targets: ['pi'] }]);
+  });
+
+  it('keeps a plugin whose update came back skipped on the list, as not updated', async () => {
+    const found = { name: 'driver', target: 'pi', binding: { id: 'npm:driver', version: '1.1.0' } };
+    vi.mocked(pluginsApi.preview).mockResolvedValueOnce(plan('r', { ...found, action: 'update-available' })).mockResolvedValueOnce(plan('u', { ...found, action: 'update' }));
+    vi.mocked(pluginsApi.apply).mockResolvedValue({ result: { results: [{ name: 'driver', target: 'pi', status: 'skipped', message: 'marketplace gone' }] }, failure: '' });
+    const { now } = flow();
+    await act(() => now().check());
+    await act(() => now().updateMany([{ name: 'driver', targets: ['pi'] }]));
+    expect(now().updates.driver.pi).toBeDefined();
+    expect(now().batch?.[0]).toMatchObject({ status: 'skipped', note: 'marketplace gone' });
+  });
+
+  it('applies nothing when the source moved past the version the check showed', async () => {
+    vi.mocked(pluginsApi.preview)
+      .mockResolvedValueOnce(plan('r', { name: 'driver', target: 'pi', action: 'update-available', binding: { id: 'npm:driver', version: '1.1.0' } }))
+      .mockResolvedValueOnce(plan('u', { name: 'driver', target: 'pi', action: 'update', binding: { id: 'npm:driver', version: '1.2.0' } }));
+    const { now } = flow();
+    await act(() => now().check());
+    await act(() => now().updateMany([{ name: 'driver', targets: ['pi'] }]));
+    expect(pluginsApi.apply).not.toHaveBeenCalled();
+    expect(now().batch?.[0]).toMatchObject({ status: 'skipped', stale: true });
+  });
+
+  it('drops a moved source from the updates and shows why when the check after it fails', async () => {
+    vi.mocked(pluginsApi.preview)
+      .mockResolvedValueOnce(plan('r', { name: 'driver', target: 'pi', action: 'update-available', binding: { id: 'npm:driver', version: '1.1.0' } }))
+      .mockResolvedValueOnce(plan('u', { name: 'driver', target: 'pi', action: 'update', binding: { id: 'npm:driver', version: '1.2.0' } }))
+      .mockRejectedValueOnce(new Error('offline'));
+    const { now } = flow();
+    await act(() => now().check());
+    await act(() => now().updateMany([{ name: 'driver', targets: ['pi'] }]));
+    expect([now().updates.driver, now().failure]).toEqual([undefined, 'offline']);
+  });
+
+  it('applies nothing when a local source changed after the check with the same version', async () => {
+    vi.mocked(pluginsApi.preview)
+      .mockResolvedValueOnce(plan('r', { name: 'driver', target: 'claude', action: 'update-available', binding: { id: 'driver@m', version: '1.0.0', digest: 'seen' } }))
+      .mockResolvedValueOnce(plan('u', { name: 'driver', target: 'claude', action: 'update', binding: { id: 'driver@m', version: '1.0.0', digest: 'edited-since' } }));
+    const { now } = flow();
+    await act(() => now().check());
+    await act(() => now().updateMany([{ name: 'driver', targets: ['claude'] }]));
+    expect(pluginsApi.apply).not.toHaveBeenCalled();
+  });
+
+  it('keeps the failed Agents when a retry of them fails again, so the next retry still sends only those', async () => {
+    vi.mocked(pluginsApi.preview).mockResolvedValue(plan('u', { action: 'update' }, { action: 'update', target: 'pi' }));
+    const codexFails = { result: { results: [{ name: 'demo', target: 'codex', status: 'failed', message: 'timeout' }] }, failure: 'demo: timeout' };
+    vi.mocked(pluginsApi.apply).mockResolvedValueOnce({ result: { results: [...codexFails.result.results, { name: 'demo', target: 'pi', status: 'installed' }] }, failure: 'demo: timeout' }).mockResolvedValueOnce(codexFails);
+    const { now } = flow();
+    await act(() => now().updateMany([{ name: 'demo', targets: ['codex', 'pi'] }]));
+    await act(() => now().updateMany([{ name: 'demo', targets: ['codex'] }]));
+    expect(now().batch?.[0]).toMatchObject({ status: 'failed', targets: ['codex', 'pi'], failed: ['codex'] });
+  });
+
+  it('names the Agents that failed when the others updated, so a retry sends only those', async () => {
+    vi.mocked(pluginsApi.preview).mockResolvedValue(plan('u', { action: 'update' }, { action: 'update', target: 'pi' }));
+    vi.mocked(pluginsApi.apply).mockResolvedValue({ result: { results: [{ name: 'demo', target: 'codex', status: 'failed', message: 'timeout' }, { name: 'demo', target: 'pi', status: 'installed' }] }, failure: 'demo: timeout' });
+    const { now } = flow();
+    await act(() => now().updateMany([{ name: 'demo', targets: ['codex', 'pi'] }]));
+    expect(now().batch?.[0]).toMatchObject({ status: 'failed', failed: ['codex'] });
   });
 
   it('previews and applies a tick in one step, with that preview\'s revision and no review', async () => {
@@ -145,6 +257,9 @@ describe('plugins flow rules', () => {
   it('takes off an Agent that updated or was already there, and keeps one that failed', () => {
     const left = updatesLeft(pending, plan('r', { action: 'noop' }, { target: 'claude', action: 'update' }), { result: { results: [{ name: 'demo', target: 'codex', status: 'unchanged' }, { name: 'demo', target: 'claude', status: 'failed' }] }, failure: 'x' });
     expect(left).toEqual({ demo: { claude: { version: '1.1.0' } } });
+  });
+  it('keeps an Agent whose update was skipped', () => {
+    expect(updatesLeft(pending, updating, { result: { results: [{ name: 'demo', target: 'codex', status: 'skipped' }] }, failure: '' })).toEqual(pending);
   });
   it('keeps every Agent when the apply stopped before any ran', () => {
     expect(updatesLeft(pending, updating, { result: null, failure: 'preview is stale' })).toEqual(pending);
