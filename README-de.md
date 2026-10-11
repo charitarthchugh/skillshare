@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **Neueste Version**: v0.25.0 — `skillshare mcp serve` stellt deine Skills über MCP (die Skills-Extension SEP-2640) für Agents bereit, die nur einen MCP-Endpoint erreichen, mit den Tools `list_skills` und `read_skill` für Clients ohne diese Extension; **Add server** im Dashboard bekommt dafür einen Tab **Skillshare**. `skillshare link` und `unlink` fügen einen Ordner, der woanders liegt, etwa deinen eigenen Checkout oder ein externes Laufwerk, als Followed Source Link hinzu oder entfernen ihn, auch auf der Skills-Seite. Das Target Oh My Pi (`omp`) unterstützt jetzt MCP, Code-Hooks, Plugins und die Auswahl von Extensions. [Alle Releases →](https://github.com/runkids/skillshare/releases)
+> **Neueste Version**: v0.25.5 — `skillshare move` verschiebt installierte Skills oder ganze Ordner in einen anderen Ordner und behält ihre Installationsdaten, sodass `update`, `uninstall` und `audit` sie weiter kennen; `sync` übernimmt außerdem einen Skill, den du mit einem einfachen `mv` verschoben hast. Das Dashboard verschiebt Skills und Ordner ebenfalls, und sein Install-Dialog lässt dich einen vorhandenen Ordner wählen. Die Plugins-Seite prüft beim Öffnen auf Updates und aktualisiert alles, was veraltet ist, in einem Dialog, pro Agent und mit Retry. Befehle, die `config.yaml` schreiben, behalten jetzt deren Kommentare. [Alle Releases →](https://github.com/runkids/skillshare/releases)
 
 ## Warum skillshare
 

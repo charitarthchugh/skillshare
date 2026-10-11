@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新版本**：v0.25.0 — `skillshare mcp serve` 通过 MCP（SEP-2640 Skills extension）把你的 skills 提供给只能连接 MCP endpoint 的 agent，不支持该 extension 的 client 可以改用 `list_skills` 和 `read_skill` 两个 tool，Dashboard 的 **Add server** 也新增 **Skillshare** 标签页；`skillshare link` 与 `unlink` 可以把放在别处的文件夹（例如自己的 checkout 或外接硬盘）加入或移除为 followed source link，Skills 页面也能操作；Oh My Pi（`omp`）Target 新增 MCP、代码 hooks、plugins 与 extension 选择。完整的新功能与修复见 [Releases](https://github.com/runkids/skillshare/releases) 和[更新日志](https://skillshare.runkids.cc/changelog)。
+> **最新版本**：v0.25.5 — `skillshare move` 可以把已安装的 skills 或整个文件夹移动到另一个文件夹，并保留安装记录，因此 `update`、`uninstall` 和 `audit` 仍然认得它们；用普通 `mv` 移动的 skill，`sync` 也会接管。Dashboard 同样可以移动 skills 和文件夹，安装对话框还能选择已有的文件夹。Plugins 页面打开时会检查更新，并在一个对话框中按 Agent 一次更新所有落后的项目，支持重试。写入 `config.yaml` 的命令现在会保留其中的注释。完整的新功能与修复见 [Releases](https://github.com/runkids/skillshare/releases) 和[更新日志](https://skillshare.runkids.cc/changelog)。
 
 ## 为什么用 skillshare
 

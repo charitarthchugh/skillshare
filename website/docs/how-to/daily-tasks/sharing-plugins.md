@@ -114,21 +114,32 @@ components are not also copied into standalone Skillshare sources.
 
 ## Updates and recovery {#updates-and-recovery}
 
-Use **Check updates**, then review an update for a supported target. Claude can
-update through its native CLI. Codex adds the plugin again from the reviewed
-snapshot, unless it is disabled in Codex, which adding would turn back on; an
-imported Codex plugin is updated by upgrading its marketplace.
-Cursor and Antigravity replace managed local copies after checking for local edits.
-Pi and OpenCode update the reviewed snapshot. Copilot can refresh a reviewed
-source while preserving known enabled state. Antigravity CLI and Grok updates
-stay in the native tool; see the command reference for imported-package limits.
-A target an update cannot reach is skipped with the reason, and the plugin's
-other Agents still update.
+The Plugins page checks for updates when it opens, and **Check updates** checks
+again on demand. A row whose source has a newer version shows `old → new`, and
+the header button reads **Update N**. It opens one dialog that lists every plugin
+with an update, ticked by default, with the Agents it is installed on; untick a
+plugin or an Agent to leave it out. **Update N plugins** runs the picks one at a
+time and shows each row as waiting, updating, updated, failed or skipped.
+**Stop after this one** finishes the running plugin and leaves the rest. A failed
+row names the Agents that updated and the ones that failed, with the error, and
+**Retry** sends only the failed Agents. The results update the page, so there is
+no need to check again. A source that changed since the check installs nothing;
+check again to review the new version.
 
-An npm package in Pi has no source to compare, so **Check updates** compares its
-installed version with the latest version on npm. When a check finds a newer version,
-the row shows `old → new` with an **Update** button, and the check's own result has one
-for each plugin it found; both open the update preview for that plugin first.
+Claude can update through its native CLI. Codex adds the plugin again from the
+reviewed snapshot, unless it is disabled in Codex, which adding would turn back
+on; an imported Codex plugin is updated by upgrading its marketplace. Cursor and
+Antigravity replace managed local copies after checking for local edits. Pi and
+OpenCode update the reviewed snapshot. Copilot can refresh a reviewed source
+while preserving known enabled state. Antigravity CLI and Grok updates stay in
+the native tool, and the dialog lists such installs apart under **Update inside
+the Agent**; see the command reference for imported-package limits. A source that
+no longer provides a compatible plugin is listed under **Cannot update**. A target
+an update cannot reach is skipped with the reason, and the plugin's other Agents
+still update.
+
+An npm package in Pi has no source to compare, so the check compares its
+installed version with the latest version on npm.
 
 If one target fails, the result keeps the successful outcomes. Resolve the native
 client's authentication or configuration issue, then sync that target again:

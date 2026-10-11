@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **최신 버전**: v0.25.0 — `skillshare mcp serve`는 MCP(SEP-2640 Skills extension)로 skills를 제공하여 MCP endpoint에만 연결할 수 있는 agent도 사용할 수 있게 합니다. 이 extension을 지원하지 않는 client를 위해 `list_skills`와 `read_skill` 두 tool이 있으며, 대시보드의 **Add server**에 **Skillshare** 탭이 추가되었습니다. `skillshare link`와 `unlink`는 자신의 checkout이나 외장 드라이브처럼 다른 곳에 있는 폴더를 followed source link로 추가하거나 제거하며, Skills 페이지에서도 할 수 있습니다. Oh My Pi(`omp`) target은 이제 MCP, 코드 hooks, plugins, extension 선택을 지원합니다. 전체 새 기능과 수정 사항은 [Releases](https://github.com/runkids/skillshare/releases)와 [변경 내역](https://skillshare.runkids.cc/changelog)에서 확인하세요.
+> **최신 버전**: v0.25.5 — `skillshare move`는 설치된 skills 또는 폴더 전체를 다른 폴더로 옮기면서 설치 기록을 유지하므로 `update`, `uninstall`, `audit`가 계속 인식합니다. 또한 `mv`로 옮기기만 한 skill도 `sync`가 가져옵니다. 대시보드에서도 skills와 폴더를 옮길 수 있고, 설치 대화상자에서 기존 폴더를 선택할 수 있습니다. Plugins 페이지는 열릴 때 업데이트를 확인하고, 뒤처진 항목을 하나의 대화상자에서 Agent별로 한 번에 업데이트하며 재시도도 지원합니다. `config.yaml`을 쓰는 명령은 이제 주석을 유지합니다. 전체 새 기능과 수정 사항은 [Releases](https://github.com/runkids/skillshare/releases)와 [변경 내역](https://skillshare.runkids.cc/changelog)에서 확인하세요.
 
 ## skillshare를 쓰는 이유
 

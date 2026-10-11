@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **Latest**: v0.25.0 — `skillshare mcp serve` serves your skills over MCP (the SEP-2640 Skills extension) to agents that can only reach an MCP endpoint, with `list_skills` and `read_skill` tools for clients without the extension, and the dashboard's **Add server** gets a **Skillshare** tab for it; `skillshare link` and `unlink` add or remove a folder kept elsewhere, such as your own checkout or an external drive, as a followed source link, also from the Skills page; and the Oh My Pi (`omp`) target gains MCP, code hooks, plugins and extension selection. [All releases →](https://github.com/runkids/skillshare/releases)
+> **Latest**: v0.25.5 — `skillshare move` moves installed skills, or whole folders, into another folder and keeps their install records, so `update`, `uninstall` and `audit` still know them, and `sync` adopts a skill you moved with a plain `mv`; the dashboard moves skills and folders too, and its install dialog lets you pick an existing folder. The Plugins page checks for updates when it opens and updates everything that is behind in one dialog, per Agent, with retry. Commands that write `config.yaml` now keep its comments. [All releases →](https://github.com/runkids/skillshare/releases)
 
 ## Why skillshare
 
