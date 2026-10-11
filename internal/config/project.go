@@ -462,7 +462,7 @@ func LoadProject(projectRoot string) (*ProjectConfig, error) {
 		}
 	}
 	if migrated {
-		if mdata, merr := marshalConfig(&cfg, projectSchemaComment); merr == nil {
+		if mdata, merr := marshalConfig(&cfg, projectSchemaComment, data); merr == nil {
 			// Write a symlinked config's target so the link survives. A link out of
 			// the project is left alone; the next save reports it.
 			if dest, err := utils.ConfigWritePath(path, true); err == nil {
@@ -503,7 +503,7 @@ func (c *ProjectConfig) SaveIn(projectDir string) error {
 		return fmt.Errorf("failed to create project config directory: %w", err)
 	}
 
-	data, err := marshalConfig(c, projectSchemaComment)
+	data, err := marshalConfigFile(path, c, projectSchemaComment)
 	if err != nil {
 		return fmt.Errorf("failed to marshal project config: %w", err)
 	}

@@ -2,7 +2,10 @@ package config
 
 import (
 	"bytes"
+	"errors"
+	"os"
 	"sort"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -20,13 +23,16 @@ var configSections = []string{
 // marshalConfig encodes v the way the dashboard's Beautify lays out a config:
 // the schema header first, top-level sections in configSections order (unknown
 // keys last, in their encoded order), and a blank line between sections.
-func marshalConfig(v any, header []byte) ([]byte, error) {
+// existing is the file being replaced, or nil; its comments are kept on every
+// key that is still present.
+func marshalConfig(v any, header []byte, existing []byte) ([]byte, error) {
 	var doc yaml.Node
 	if err := doc.Encode(v); err != nil {
 		return nil, err
 	}
 	if doc.Kind == yaml.MappingNode {
 		sortSections(&doc)
+		keepComments(&doc, existing)
 	}
 	data, err := utils.MarshalYAML(&doc)
 	if err != nil {
@@ -62,6 +68,131 @@ func sortSections(m *yaml.Node) {
 	if !aliasesFollowAnchors(m, map[string]bool{}) {
 		m.Content = original
 	}
+}
+
+// marshalConfigFile encodes v to replace the file at path, keeping that file's
+// comments. A file that cannot be read for any reason other than being absent
+// is an error: writing over it would silently drop its comments.
+func marshalConfigFile(path string, v any, header []byte) ([]byte, error) {
+	existing, err := os.ReadFile(path)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, err
+	}
+	return marshalConfig(v, header, existing)
+}
+
+// keepComments copies the comments of existing onto the same keys of m. A key
+// that was removed loses its comments; a key that was added has none. Comments
+// m already carries (raw sections such as hooks) win, and the schema directive
+// is dropped, since marshalConfig writes its own header.
+func keepComments(m *yaml.Node, existing []byte) {
+	var old yaml.Node
+	if yaml.Unmarshal(existing, &old) != nil || len(old.Content) == 0 || old.Content[0].Kind != yaml.MappingNode {
+		return
+	}
+	top := old.Content[0]
+	top.HeadComment = withoutSchemaDirective(joinComments(old.HeadComment, top.HeadComment))
+	for i := 0; i < len(top.Content); i += 2 {
+		top.Content[i].HeadComment = withoutSchemaDirective(top.Content[i].HeadComment)
+	}
+	top.FootComment = joinComments(top.FootComment, old.FootComment)
+	copyComments(top, m)
+}
+
+func copyComments(old, cur *yaml.Node) {
+	// A target that changed between `- claude` and `- name: claude` keeps its
+	// line comment on the name, the only place a block mapping can show one.
+	if old.Kind != cur.Kind {
+		if o, c := nameScalar(old), nameScalar(cur); o != nil && c != nil && c.LineComment == "" {
+			c.LineComment = o.LineComment
+		}
+	}
+	if cur.HeadComment == "" {
+		cur.HeadComment = old.HeadComment
+	}
+	if cur.LineComment == "" {
+		cur.LineComment = old.LineComment
+	}
+	if cur.FootComment == "" {
+		cur.FootComment = old.FootComment
+	}
+	switch {
+	case old.Kind == yaml.MappingNode && cur.Kind == yaml.MappingNode:
+		for i := 0; i+1 < len(old.Content); i += 2 {
+			for j := 0; j+1 < len(cur.Content); j += 2 {
+				if cur.Content[j].Value == old.Content[i].Value {
+					copyComments(old.Content[i], cur.Content[j])
+					copyComments(old.Content[i+1], cur.Content[j+1])
+					break
+				}
+			}
+		}
+	case old.Kind == yaml.SequenceNode && cur.Kind == yaml.SequenceNode:
+		used := make([]bool, len(cur.Content))
+		for _, item := range old.Content {
+			for j, c := range cur.Content {
+				if !used[j] && itemIdentity(item) != "" && itemIdentity(item) == itemIdentity(c) {
+					used[j] = true
+					copyComments(item, c)
+					break
+				}
+			}
+		}
+	}
+}
+
+// itemIdentity names a sequence item: its value for a scalar, and for a
+// mapping its `name` value (so `- claude` and `- name: claude` are the same
+// target) or, failing that, its first scalar key and value. Items without one
+// ("" for a nested list) never match.
+func itemIdentity(n *yaml.Node) string {
+	switch n.Kind {
+	case yaml.ScalarNode:
+		return n.Value
+	case yaml.MappingNode:
+		for i := 0; i+1 < len(n.Content); i += 2 {
+			if n.Content[i].Value == "name" && n.Content[i+1].Kind == yaml.ScalarNode {
+				return n.Content[i+1].Value
+			}
+		}
+		for i := 0; i+1 < len(n.Content); i += 2 {
+			if n.Content[i+1].Kind == yaml.ScalarNode {
+				return n.Content[i].Value + "=" + n.Content[i+1].Value
+			}
+		}
+	}
+	return ""
+}
+
+// nameScalar is the node a sequence item's identity comes from: the scalar
+// itself, or a mapping's `name` value.
+func nameScalar(n *yaml.Node) *yaml.Node {
+	if n.Kind == yaml.ScalarNode {
+		return n
+	}
+	for i := 0; n.Kind == yaml.MappingNode && i+1 < len(n.Content); i += 2 {
+		if n.Content[i].Value == "name" && n.Content[i+1].Kind == yaml.ScalarNode {
+			return n.Content[i+1]
+		}
+	}
+	return nil
+}
+
+func joinComments(a, b string) string {
+	if a == "" || b == "" {
+		return a + b
+	}
+	return a + "\n" + b
+}
+
+func withoutSchemaDirective(comment string) string {
+	var kept []string
+	for _, line := range strings.Split(comment, "\n") {
+		if !strings.HasPrefix(line, "# yaml-language-server:") {
+			kept = append(kept, line)
+		}
+	}
+	return strings.TrimSpace(strings.Join(kept, "\n"))
 }
 
 func aliasesFollowAnchors(n *yaml.Node, anchors map[string]bool) bool {
