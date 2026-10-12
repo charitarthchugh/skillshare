@@ -9,6 +9,17 @@ All notable changes to skillshare are documented here. For the full commit histo
 
 ---
 
+## [0.25.8] - 2026-10-12
+
+### Bug Fixes
+
+#### Plugins
+
+- **Oh My Pi plugins install from Git sources on macOS** — adding a plugin from a GitHub or other HTTPS Git source to Oh My Pi on macOS was always refused with `The reviewed OMP runtime destination must be verified empty. Nothing was installed or replaced.` Skillshare clones the source into the system temp folder, which on macOS sits under `/var`, a link to `/private/var`, and the OMP install check refused any linked folder on the path, including that temp clone. A local plugin folder under a linked parent folder was refused the same way. Sources are now read through their real path; links inside a plugin source are handled as before. Refs: #544.
+  ```bash
+  skillshare plugin add https://github.com/ayghri/i-have-adhd --target omp -g
+  ```
+
 ## [0.25.7] - 2026-10-12
 
 ### Bug Fixes
