@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新バージョン**：v0.25.5 — `skillshare move` は、インストール済みの skills やフォルダーごと別のフォルダーへ移動し、インストール記録を保持するので、`update`、`uninstall`、`audit` はそのまま認識できます。また、`mv` で移動しただけの skill も `sync` が取り込みます。ダッシュボードでも skills とフォルダーを移動でき、インストールダイアログでは既存のフォルダーを選べます。Plugins ページは開いたときに更新を確認し、遅れているものを 1 つのダイアログで Agent ごとにまとめて更新でき、再試行にも対応しています。`config.yaml` を書き込むコマンドは、コメントを保持するようになりました。新機能と修正の一覧は [Releases](https://github.com/runkids/skillshare/releases) と[変更履歴](https://skillshare.runkids.cc/changelog)をご覧ください。
+> **最新バージョン**：v0.25.6 — Plugins ページは多数のプラグインを一度に更新します。各プラグインの確認と適用は 1 回だけで、同じソースのプラグインはダウンロードを共有し、ダイアログには Agent ごとに旧 → 新バージョンが表示されます。共有メモリーにもアクセスしやすくなりました。ダッシュボードに最近更新されたノートが並び、**Memory tools** ではセッションをまたいでメモリーを試すプロンプトや、会話を振り返って残す価値のある教訓を探すプロンプトを使えます。Skillshare 自身が Agent を実行することはありません。プロジェクトでグローバル MCP サーバーをオフにする設定が OpenCode 2 でも効くようになり、プラグインも OpenCode 2 に同期されます。新機能と修正の一覧は [Releases](https://github.com/runkids/skillshare/releases) と[変更履歴](https://skillshare.runkids.cc/changelog)をご覧ください。
 
 ## skillshare を使う理由
 

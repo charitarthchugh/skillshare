@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **Neueste Version**: v0.25.5 — `skillshare move` verschiebt installierte Skills oder ganze Ordner in einen anderen Ordner und behält ihre Installationsdaten, sodass `update`, `uninstall` und `audit` sie weiter kennen; `sync` übernimmt außerdem einen Skill, den du mit einem einfachen `mv` verschoben hast. Das Dashboard verschiebt Skills und Ordner ebenfalls, und sein Install-Dialog lässt dich einen vorhandenen Ordner wählen. Die Plugins-Seite prüft beim Öffnen auf Updates und aktualisiert alles, was veraltet ist, in einem Dialog, pro Agent und mit Retry. Befehle, die `config.yaml` schreiben, behalten jetzt deren Kommentare. [Alle Releases →](https://github.com/runkids/skillshare/releases)
+> **Neueste Version**: v0.25.6 — Die Plugins-Seite aktualisiert viele Plugins in einem Durchgang: Jedes Plugin wird einmal geprüft und angewendet, Plugins aus derselben Quelle teilen sich einen Download, und der Dialog zeigt pro Agent alte → neue Versionen. Gemeinsamer Speicher ist leichter erreichbar: Das Dashboard listet kürzlich aktualisierte Notizen, und **Memory tools** bietet Prompts, um Speicher sitzungsübergreifend auszuprobieren oder ein Gespräch auf behaltenswerte Erkenntnisse zu prüfen; Skillshare startet dabei nie selbst einen Agent. Einen globalen MCP-Server in einem Projekt auszuschalten funktioniert jetzt in OpenCode 2, und Plugins werden mit OpenCode 2 synchronisiert. [Alle Releases →](https://github.com/runkids/skillshare/releases)
 
 ## Warum skillshare
 

@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **Latest**: v0.25.5 — `skillshare move` moves installed skills, or whole folders, into another folder and keeps their install records, so `update`, `uninstall` and `audit` still know them, and `sync` adopts a skill you moved with a plain `mv`; the dashboard moves skills and folders too, and its install dialog lets you pick an existing folder. The Plugins page checks for updates when it opens and updates everything that is behind in one dialog, per Agent, with retry. Commands that write `config.yaml` now keep its comments. [All releases →](https://github.com/runkids/skillshare/releases)
+> **Latest**: v0.25.6 — The Plugins page updates many plugins in one pass: each plugin is checked and applied once, plugins from the same source share one download, and the dialog shows old → new versions per Agent. Shared memory is easier to reach: the dashboard lists recently updated notes, and **Memory tools** gives you prompts to try memory across sessions or to review a conversation for lessons worth keeping; Skillshare never runs an agent itself. Turning off a global MCP server in one project now works in OpenCode 2, and plugins sync to OpenCode 2. [All releases →](https://github.com/runkids/skillshare/releases)
 
 ## Why skillshare
 
@@ -381,6 +381,7 @@ Thanks to everyone who helped shape skillshare.
 <a href="https://github.com/mbury"><img src="https://github.com/mbury.png" width="50" style="border-radius:50%" alt="mbury"></a>
 <a href="https://github.com/483218131"><img src="https://github.com/483218131.png" width="50" style="border-radius:50%" alt="483218131"></a>
 <a href="https://github.com/neilforest7"><img src="https://github.com/neilforest7.png" width="50" style="border-radius:50%" alt="neilforest7"></a>
+<a href="https://github.com/johnkattenhorn"><img src="https://github.com/johnkattenhorn.png" width="50" style="border-radius:50%" alt="johnkattenhorn"></a>
 
 ---
 

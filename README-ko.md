@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **최신 버전**: v0.25.5 — `skillshare move`는 설치된 skills 또는 폴더 전체를 다른 폴더로 옮기면서 설치 기록을 유지하므로 `update`, `uninstall`, `audit`가 계속 인식합니다. 또한 `mv`로 옮기기만 한 skill도 `sync`가 가져옵니다. 대시보드에서도 skills와 폴더를 옮길 수 있고, 설치 대화상자에서 기존 폴더를 선택할 수 있습니다. Plugins 페이지는 열릴 때 업데이트를 확인하고, 뒤처진 항목을 하나의 대화상자에서 Agent별로 한 번에 업데이트하며 재시도도 지원합니다. `config.yaml`을 쓰는 명령은 이제 주석을 유지합니다. 전체 새 기능과 수정 사항은 [Releases](https://github.com/runkids/skillshare/releases)와 [변경 내역](https://skillshare.runkids.cc/changelog)에서 확인하세요.
+> **최신 버전**: v0.25.6 — Plugins 페이지는 여러 플러그인을 한 번에 업데이트합니다. 각 플러그인은 한 번만 확인하고 적용하며, 같은 소스의 플러그인은 다운로드를 공유하고, 대화상자에는 Agent별로 이전 → 새 버전이 표시됩니다. 공유 메모리에 더 쉽게 접근할 수 있습니다. 대시보드에 최근 업데이트된 노트가 표시되고, **Memory tools**에서 세션을 넘나들며 메모리를 시험하거나 대화를 돌아보며 남길 만한 교훈을 찾는 프롬프트를 쓸 수 있습니다. Skillshare가 직접 Agent를 실행하지는 않습니다. 프로젝트에서 전역 MCP 서버를 끄는 설정이 이제 OpenCode 2에서도 동작하고, 플러그인도 OpenCode 2에 동기화됩니다. 새 기능과 수정 사항 전체는 [Releases](https://github.com/runkids/skillshare/releases)와 [변경 기록](https://skillshare.runkids.cc/changelog)을 확인하세요.
 
 ## skillshare를 쓰는 이유
 

@@ -16,6 +16,8 @@ skillshare ui -g
 
 ## 1. 建立記憶
 
+在 **Extras → Memory** 建立 memory 後，**Dashboard → Memory** 區塊會顯示最多四則最近更新、可讀取的筆記。點擊筆記會直接在 **Extras → Memory** 開啟。更新時間來自筆記檔案的修改時間，包含在 Skillshare 之外的編輯，並不代表 Agent 的活動。未動過的起始筆記會和最近更新分開顯示。Memory 分頁也會顯示筆記數量與最近更新時間，每則編輯過的筆記也會顯示自己的更新時間。沒有設定 memory extra 時，dashboard 會隱藏這個區塊。即使缺少起始檔案，既有筆記仍會顯示。**Create memory** 會補回缺少的起始筆記，不會取代既有筆記。Dashboard 從中繼資料計算檔案數量，只讀取起始筆記和最多四則最近候選筆記。在 Memory 瀏覽器中，**Expand/Collapse** 的狀態會在這個瀏覽器裡跨筆記與重新載入頁面保留；收合時預覽最高 360 px。
+
 開啟 **Extras → Memory**，點擊 **Create memory**。
 
 ![英文 Memory 分頁的初始狀態](/img/memory-empty-demo.png)

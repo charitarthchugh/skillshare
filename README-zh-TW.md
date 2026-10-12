@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新版本**：v0.25.5 — `skillshare move` 可以把已安裝的 skills 或整個資料夾移到另一個資料夾，並保留安裝紀錄，因此 `update`、`uninstall` 和 `audit` 仍然認得它們；用一般 `mv` 搬移的 skill，`sync` 也會接手。Dashboard 同樣可以搬移 skills 和資料夾，安裝對話框還能選擇既有的資料夾。Plugins 頁面開啟時會檢查更新，並在一個對話框中依 Agent 一次更新所有落後的項目，支援重試。寫入 `config.yaml` 的指令現在會保留其中的註解。完整的新功能與修正見 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
+> **最新版本**：v0.25.6 — Plugins 頁面可以一次更新多個外掛：每個外掛只檢查和套用一次，來自同一來源的外掛共用一次下載，對話框會依 Agent 顯示舊 → 新版本。共享記憶更容易找到：Dashboard 會列出最近更新的筆記，**Memory tools** 提供跨工作階段試用記憶、以及回顧對話找出值得保留的經驗的提示詞；Skillshare 本身不會執行 Agent。在專案中關閉全域 MCP 伺服器現在對 OpenCode 2 也有效，外掛也能同步到 OpenCode 2。完整的新功能與修正見 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
 
 ## 為什麼用 skillshare
 
