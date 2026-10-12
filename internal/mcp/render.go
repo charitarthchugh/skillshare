@@ -2,14 +2,25 @@ package mcp
 
 import (
 	"fmt"
+	"net/url"
 	"sort"
+	"strings"
 )
 
-// renderDisabled writes only the switch. That works where the Agent merges its project
-// file over its global one field by field, so the global command or url survives. Agents
+// renderDisabled writes the switch, alone where the Agent merges its project file over its
+// global one field by field, so the global command or url survives. Agents
 // that replace the whole entry, or reject one without a transport, would break instead.
 func renderDisabled(target string, s Server) (map[string]any, error) {
 	switch {
+	case target == "opencode" && s.global != nil:
+		// OpenCode 2 replaces the global server and drops an entry without type and command or url.
+		// A disabled server never starts, so the committed file gets only the executable's name or
+		// the url's origin: args, env, headers, a home path and a key in the url's path stay out.
+		if command := s.global.Command; command != "" {
+			return map[string]any{"type": "local", "command": []string{command[strings.LastIndexAny(command, `/\`)+1:]}, "enabled": false}, nil
+		}
+		u, _ := url.Parse(s.global.URL) // validated by Server.validate
+		return map[string]any{"type": "remote", "url": u.Scheme + "://" + u.Host, "enabled": false}, nil
 	case openCodeFormat(target):
 		return map[string]any{"enabled": false}, nil
 	case target == "omp":
@@ -182,6 +193,10 @@ func (s *Service) RenderNative(name string, server Server) []Rendered {
 	// An unreadable config has no accounts.
 	if source, err := LoadSource(s.ConfigPath); err == nil {
 		s = s.withAccounts(source.Accounts)
+		// A switch under mcp.projects follows the global server of the same name, as in sync.
+		if shared, ok := source.Servers[name]; ok && server.Disabled && s.ProjectRoot != "" && s.configProjectRoot() == "" {
+			server.global = &shared
+		}
 	}
 	out := make([]Rendered, 0, len(server.Targets))
 	for _, target := range server.Targets {

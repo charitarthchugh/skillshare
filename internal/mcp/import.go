@@ -145,6 +145,23 @@ func importNative(target string, data []byte, singleName string, adapter, piProj
 	if err != nil {
 		return nil, err
 	}
+	// OpenCode 2 nests its servers under mcp.servers, next to defaults in mcp.timeout; one server
+	// named servers has other fields.
+	nested, section := native.Entries["servers"]
+	section = section && target == "opencode"
+	for _, value := range nested {
+		section = section && isObject(value)
+	}
+	if section {
+		delete(native.Entries, "servers")
+		delete(native.Entries, "timeout")
+		for name, entry := range nested {
+			if _, both := native.Entries[name]; both {
+				return nil, fmt.Errorf("MCP server %s is in both mcp and mcp.servers; keep one", name)
+			}
+			native.Entries[name] = entry.(map[string]any)
+		}
+	}
 	if len(native.Entries) == 0 && singleName != "" && !isTOMLTarget(target) && target != "goose" {
 		v := native.json.Clone()
 		v.Standardize()
