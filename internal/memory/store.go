@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 	"unicode/utf8"
 
 	"skillshare/internal/config"
@@ -26,11 +27,18 @@ var ErrConflict = errors.New("note changed on disk; reload it before saving")
 var writeMu sync.Mutex
 
 type Note struct {
-	Path    string `json:"path"`
-	Title   string `json:"title"`
-	Content string `json:"content,omitempty"`
-	Version string `json:"version"`
-	Invalid string `json:"invalid,omitempty"`
+	Path       string `json:"path"`
+	Title      string `json:"title"`
+	Content    string `json:"content,omitempty"`
+	Version    string `json:"version"`
+	Invalid    string `json:"invalid,omitempty"`
+	ModifiedAt string `json:"modified_at,omitempty"`
+	Starter    bool   `json:"starter,omitempty"`
+}
+
+var starterNotes = []struct{ path, content string }{
+	{"INDEX.md", "# Shared memory\n\nKeep durable notes in this folder. Link relevant notes here with standard Markdown links.\n\n## Notes\n\n- [Lessons learned](LEARNED.md)\n"},
+	{"LEARNED.md", "# Lessons learned\n\nRecord durable lessons and verified solutions here. Your memory guidance says when to update these notes. Verify changeable claims before reusing them.\n\n## Lesson title\n\n- Date:\n- Context:\n- Conclusion:\n- Evidence:\n"},
 }
 
 // Extra reuses the existing named source, including its per-extra override.
@@ -122,6 +130,13 @@ func Read(root, rel string) (Note, error) {
 	}
 	sum := sha256.Sum256(data)
 	note := Note{Path: rel, Content: string(data), Version: hex.EncodeToString(sum[:]), Title: strings.TrimSuffix(filepath.Base(rel), filepath.Ext(rel))}
+	note.ModifiedAt = info.ModTime().UTC().Format(time.RFC3339Nano)
+	for _, starter := range starterNotes {
+		if rel == starter.path && note.Content == starter.content {
+			note.Starter = true
+			break
+		}
+	}
 	frontmatter := strings.HasPrefix(note.Content, "---\n") || strings.HasPrefix(note.Content, "---\r\n")
 	for i, line := range strings.Split(note.Content, "\n") {
 		line = strings.TrimSpace(line)
@@ -139,17 +154,15 @@ func Read(root, rel string) (Note, error) {
 	return note, nil
 }
 
-func List(root, query string) ([]Note, error) {
-	notes := []Note{}
-	query = strings.ToLower(strings.TrimSpace(query))
+func walkNotes(root string, visit func(string, fs.DirEntry) error) error {
 	walkRoot, err := filepath.EvalSymlinks(root)
 	if os.IsNotExist(err) {
-		return notes, nil
+		return nil
 	}
 	if err != nil {
-		return notes, err
+		return err
 	}
-	err = filepath.WalkDir(walkRoot, func(path string, entry fs.DirEntry, err error) error {
+	return filepath.WalkDir(walkRoot, func(path string, entry fs.DirEntry, err error) error {
 		if os.IsNotExist(err) && path == walkRoot {
 			return nil
 		}
@@ -178,12 +191,20 @@ func List(root, query string) ([]Note, error) {
 		if err != nil {
 			return err
 		}
-		note, err := Read(root, filepath.ToSlash(rel))
+		return visit(filepath.ToSlash(rel), entry)
+	})
+}
+
+func List(root, query string) ([]Note, error) {
+	notes := []Note{}
+	query = strings.ToLower(strings.TrimSpace(query))
+	err := walkNotes(root, func(rel string, entry fs.DirEntry) error {
+		note, err := Read(root, rel)
 		if err != nil {
 			if os.IsNotExist(err) {
 				return nil
 			}
-			note = Note{Path: filepath.ToSlash(rel), Title: strings.TrimSuffix(entry.Name(), filepath.Ext(entry.Name())), Invalid: err.Error()}
+			note = Note{Path: rel, Title: strings.TrimSuffix(entry.Name(), filepath.Ext(entry.Name())), Invalid: err.Error()}
 		}
 		if query == "" || strings.Contains(strings.ToLower(note.Path+"\n"+note.Content), query) {
 			note.Content = ""
@@ -274,11 +295,7 @@ func Delete(root, rel, version string) error {
 }
 
 func Init(root string) error {
-	starters := []struct{ path, content string }{
-		{"INDEX.md", "# Shared memory\n\nKeep durable notes in this folder. Link relevant notes here with standard Markdown links.\n\n## Notes\n\n- [Lessons learned](LEARNED.md)\n"},
-		{"LEARNED.md", "# Lessons learned\n\nRecord durable lessons and verified solutions here. Your memory guidance says when to update these notes. Verify changeable claims before reusing them.\n\n## Lesson title\n\n- Date:\n- Context:\n- Conclusion:\n- Evidence:\n"},
-	}
-	for _, starter := range starters {
+	for _, starter := range starterNotes {
 		if _, err := Read(root, starter.path); err == nil {
 			continue
 		} else if !os.IsNotExist(err) {

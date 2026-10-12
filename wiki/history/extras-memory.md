@@ -200,3 +200,65 @@ the memory extra is deleted, with rejection decided under the restore write
 lock and external content preserved. It failed against the earlier unlocked
 validation. FileBackups API tests pass with the race detector; devcontainer
 `make check`, context-router and whitespace checks pass. No UI code changed.
+
+## 2026-10-12: Memory presence on the dashboard
+
+The dashboard shows configured Memory and up to four recently updated readable
+notes, linking directly to the existing note browser. Untouched built-in
+starters have a separate introductory state. Counts, file update times and
+configured-target counts appear without extra guidance shortcuts; configuration
+does not imply an agent has read a note. Updates use disk modification times,
+including external edits. All eleven UI locales include the new copy.
+
+The Memory tab keeps its full note count while searching, shows update times,
+and stacks the tree above the content when available space is narrow. Existing
+editing, recovery and reviewed agent-guidance flows remain in place.
+
+Metadata and initialization recovery tests, 29 scoped UI tests, devcontainer
+`make check`, scoped ESLint, UI and documentation-site builds, React Doctor,
+context-router and whitespace checks passed. Browser checks covered Clean and
+Playful in light and dark modes, narrow layout, and empty/starter states using
+synthetic Memory responses without changing actual notes. Requested design
+source files were removed after implementation. No commit, push or deployment
+was performed.
+
+### Review fix: existing notes with missing starters
+
+The dashboard now shows existing notes even when setup is incomplete because
+`INDEX.md` or `LEARNED.md` is missing. The initialization action remains available
+in the list footer. A browser check reproduced the hidden-note state before the
+fix and verified the note link and initialization action afterward with mocked
+responses. Initialization recovery coverage includes both empty and populated
+incomplete setups; existing starter-preservation tests also pass.
+Devcontainer `make check`, scoped UI tests and ESLint, UI and documentation-site
+builds, React Doctor, context-router and whitespace checks passed. The partial
+setup was inspected in Playful light at 1280 px and Clean dark at 700 px.
+
+The overview is mounted only for a configured folder memory extra. Unconfigured
+memory stays out of the dashboard; initial setup remains in Extras. Missing
+starter files after setup still allow opening existing notes and restoring
+starters from the overview.
+
+### PR follow-up: bounded overview and preview preference
+
+The dashboard now uses a separate recent-notes endpoint. It counts eligible
+Markdown entries from metadata, reads only two starters and up to four recent
+candidates, and retains the same hidden-folder and source-link exclusions as
+the full list. The API is shared by global and project scopes. Regression
+coverage checks total counts, candidate order, starter/incomplete states and
+the six-read bound, plus cache invalidation for the overview.
+
+Preview expansion is remembered in browser storage across notes and reloads.
+Collapsed previews allow 360 px instead of 230 px. Storage failure keeps the
+control usable for the current page.
+
+Configuration, extras and instruction changes invalidate the memory caches so
+counts and guidance follow the current source. The three corresponding cache
+regressions failed before the fix; a Go overlay that read all candidates also
+made the six-read regression fail while leaving its four output rows intact.
+Final devcontainer `make check`, 84 scoped UI tests, ESLint, UI and website builds,
+React Doctor, context-router and whitespace checks passed. Browser assertions
+confirmed expansion and collapse survive reloads, expansion follows note
+selection, collapsed height is 360 px, and the dashboard uses the recent endpoint
+without requesting the full notes list. React Doctor retains one maintainability
+warning about overview component complexity.

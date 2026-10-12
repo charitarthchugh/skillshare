@@ -6,7 +6,7 @@ import type { Components } from 'react-markdown';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../../api/client';
 import type { MemoryNote, MemoryIndex } from '../../api/memory';
-import { useT } from '../../i18n';
+import { formatDateTime, formatRelativeTime, useI18n, useT } from '../../i18n';
 import { fileTree } from '../../lib/fileTree';
 import { shortenHome } from '../../lib/paths';
 import { queryKeys, staleTimes } from '../../lib/queryKeys';
@@ -18,8 +18,8 @@ import { SkillContextMenu } from '../TargetMenu';
 import { useToast } from '../Toast';
 import { BoxHeader } from '../instructions/ViewTabs';
 
-// Same as a shared AGENTS.md file: longer notes open collapsed.
 const PREVIEW_LINES = 8;
+const EXPANDED_KEY = 'skillshare:memory-preview-expanded';
 
 /**
  * Laid out like a shared AGENTS.md file: the note tree (with the search box on
@@ -41,12 +41,19 @@ export default function MemoryBrowser({ notes, root, busy, onEdit, onMove, onDel
   footer?: ReactNode;
 }) {
   const t = useT();
+  const { locale } = useI18n();
   const [params, setParams] = useSearchParams();
   const picked = params.get('note') ?? '';
   const [view, setView] = useState<'preview' | 'source'>('preview');
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  // Keyed by path, so another note opens collapsed again.
-  const [expandedPath, setExpandedPath] = useState('');
+  const [expanded, setExpanded] = useState(() => {
+    try { return localStorage.getItem(EXPANDED_KEY) === '1'; } catch { return false; }
+  });
+  const toggleExpanded = () => {
+    const next = !expanded;
+    setExpanded(next);
+    try { localStorage.setItem(EXPANDED_KEY, next ? '1' : '0'); } catch { /* storage unavailable */ }
+  };
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -87,7 +94,6 @@ export default function MemoryBrowser({ notes, root, busy, onEdit, onMove, onDel
   const unavailable = busy || !!invalid || !file.data || file.isFetching;
   const content = invalid || file.error ? undefined : file.data?.content;
   const notePath = `${root}/${selected}`;
-  const expanded = expandedPath === selected;
   const long = (content ?? '').replace(/\n$/, '').split('\n').length > PREVIEW_LINES;
   const copyPath = async () => {
     try {
@@ -98,8 +104,8 @@ export default function MemoryBrowser({ notes, root, busy, onEdit, onMove, onDel
     }
   };
   return (
-    <div className="grid grid-cols-[220px_minmax(0,1fr)] items-start gap-6">
-      <div className="sticky top-6 flex max-h-[calc(100dvh-48px)] min-w-0 flex-col gap-2.5">
+    <div className="grid grid-cols-1 @min-[700px]:grid-cols-[220px_minmax(0,1fr)] items-start gap-6">
+      <div className="@min-[700px]:sticky top-6 flex max-h-[240px] @min-[700px]:max-h-[calc(100dvh-48px)] min-w-0 flex-col gap-2.5">
         {search}
         <nav className="ss-list min-h-0 !overflow-y-auto flex flex-col gap-0.5 p-1.5" aria-label={t('memory.title')}>
           {fileTree(paths).filter((row) => !Array.from(collapsed).some((path) => row.path.startsWith(`${path}/`))).map((row) => {
@@ -129,6 +135,7 @@ export default function MemoryBrowser({ notes, root, busy, onEdit, onMove, onDel
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <h2 className="truncate font-mono text-[20px] font-bold">{selected}</h2>
               <span className="truncate font-mono text-[12px] text-ink-3" title={notePath}>{shortenHome(notePath)}</span>
+              {!file.data?.starter && file.data?.modified_at && <time dateTime={file.data.modified_at} title={formatDateTime(file.data.modified_at, locale)} className="text-[12px] text-ink-3">{t('memory.updated', { time: formatRelativeTime(file.data.modified_at, locale) })}</time>}
             </div>
             <Button variant="secondary" size="sm" disabled={unavailable} onClick={() => file.data && onEdit(file.data)}>{t('instructions.edit')}</Button>
             <button type="button" className="ss-ib" aria-label={t('instructions.shared.more')} aria-haspopup="menu" aria-expanded={menu !== null}
@@ -146,13 +153,13 @@ export default function MemoryBrowser({ notes, root, busy, onEdit, onMove, onDel
               { value: 'source', label: t('instructions.target.view.source') },
             ]}>
               {long && (
-                <Button variant="ghost" size="sm" aria-expanded={expanded} onClick={() => setExpandedPath(expanded ? '' : selected)}>
+                <Button variant="ghost" size="sm" aria-expanded={expanded} onClick={toggleExpanded}>
                   {t(expanded ? 'instructions.preview.collapse' : 'instructions.preview.expand')}
                   {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </Button>
               )}
             </BoxHeader>
-            <div className={`px-6 py-5 ${long && !expanded ? 'max-h-[230px] overflow-y-auto' : ''}`}>
+            <div className={`px-6 py-5 ${long && !expanded ? 'max-h-[360px] overflow-y-auto' : ''}`}>
               {invalid ? <div className="ss-note warn"><span>{invalid}<br />{t('memory.invalidHint')}</span></div>
                 : file.error ? <div className="ss-note bad">{file.error.message}</div>
                 : !file.data ? <div className="grid min-h-[200px] place-items-center"><Spinner /></div>

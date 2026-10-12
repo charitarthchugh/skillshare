@@ -47,6 +47,9 @@ func TestMemoryAPI_ScopesAndConflict(t *testing.T) {
 			}
 			var note memory.Note
 			json.Unmarshal(rr.Body.Bytes(), &note)
+			if note.ModifiedAt == "" || note.Starter {
+				t.Fatalf("written note metadata: %+v", note)
+			}
 			os.WriteFile(filepath.Join(root, "build.md"), []byte("# External"), 0644)
 			encoded, _ := json.Marshal(map[string]string{"path": "build.md", "content": "# Lost", "version": note.Version})
 			rr = request("PUT", "/api/extras/memory/notes/content", string(encoded))
@@ -78,6 +81,40 @@ func TestMemoryAPI_ScopesAndConflict(t *testing.T) {
 			rr = request("GET", "/api/extras/memory/notes/content?path=build.md", "")
 			if rr.Code != http.StatusNotFound {
 				t.Fatalf("deleted note: %d %s", rr.Code, rr.Body)
+			}
+		})
+	}
+}
+
+func TestMemoryAPI_RecentScopes(t *testing.T) {
+	for _, project := range []bool{false, true} {
+		t.Run(fmt.Sprintf("project=%t", project), func(t *testing.T) {
+			var s *Server
+			if project {
+				s, _ = newTestProjectServerWithExtras(t, nil)
+			} else {
+				s, _ = newTestServerWithExtras(t, nil, "")
+			}
+			initial := decodeBody[memory.Overview](t, serveJSON(t, s, http.MethodGet, "/api/extras/memory/recent", ""))
+			if initial.Initialized || initial.Count != 0 {
+				t.Fatalf("initial: %+v", initial)
+			}
+			if rr := serveJSON(t, s, http.MethodPost, "/api/extras/memory/init", ""); rr.Code != http.StatusOK {
+				t.Fatalf("init: %d %s", rr.Code, rr.Body)
+			}
+			root, err := s.memoryRoot()
+			if err != nil {
+				t.Fatal(err)
+			}
+			for i := 0; i < 8; i++ {
+				if _, err := memory.Write(root, fmt.Sprintf("note-%d.md", i), "# Note\n", ""); err != nil {
+					t.Fatal(err)
+				}
+			}
+			rr := serveJSON(t, s, http.MethodGet, "/api/extras/memory/recent", "")
+			result := decodeBody[memory.Overview](t, rr)
+			if rr.Code != http.StatusOK || !result.Initialized || result.Count != 10 || len(result.Notes) != 4 {
+				t.Fatalf("recent: %d %+v", rr.Code, result)
 			}
 		})
 	}
