@@ -201,16 +201,16 @@ function Running({ batch, busy, inventory, label, onRetry, onStop, onClose }: {
               <div key={item.name} className={`ss-r ${{ failed: 'bg-bad-bg', running: 'updating', waiting: 'dim', done: 'flash', skipped: '' }[item.status]}`}>
                 <span className="ss-at">{item.targets.length === 1 ? <AgentIcon target={item.targets[0]} size={17} /> : <Package size={15} />}</span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="flex items-center gap-2">
-                    <span className="nm font-mono">{item.name}</span>
+                  <span className="nm truncate font-mono" title={item.name}>{item.name}</span>
+                  <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-[13px] text-ink-2">{item.targets.map(label).join(' · ')}</span>
                     {shared && <VersionChange {...moves[0]} />}
                   </span>
-                  {!shared && moves.map((m) => <span key={m.target} className="flex items-center gap-2 text-xs text-ink-3">{label(m.target)}<VersionChange {...m} /></span>)}
+                  {!shared && moves.map((m) => <span key={m.target} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-3">{label(m.target)}<VersionChange {...m} /></span>)}
                   {item.failed && updatedTargets(item).length > 0 && <span className="text-xs text-ink-3">{t(item.status === 'failed' ? 'plugins.updateDialog.partFailed' : 'plugins.updateDialog.partSkipped', { done: updatedTargets(item).map(label).join(' · '), failed: item.failed.map(label).join(' · ') })}</span>}
                   {item.note && <span className={item.status === 'failed' ? 'font-mono text-xs text-bad' : 'text-xs text-ink-3'}>{item.note}</span>}
                 </span>
-                {status(item)}
+                <span className="shrink-0 whitespace-nowrap">{status(item)}</span>
                 {(item.status === 'failed' || item.status === 'skipped') && !item.stale && !busy && <Button size="sm" variant="secondary" onClick={() => onRetry(item)}>{t('plugins.updateDialog.retry')}</Button>}
                 {item.status === 'running' && <span className="ss-rowbar" aria-hidden />}
               </div>
