@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **Dernière version** : v0.25.6 — La page Plugins met à jour de nombreux plugins en une seule passe : chaque plugin est vérifié et appliqué une seule fois, les plugins d'une même source partagent un téléchargement, et la boîte de dialogue affiche les versions ancienne → nouvelle par Agent. La mémoire partagée est plus facile d'accès : le dashboard liste les notes mises à jour récemment, et **Memory tools** propose des prompts pour essayer la mémoire d'une session à l'autre ou relire une conversation afin d'en retenir les leçons utiles ; Skillshare ne lance jamais d'agent lui-même. Désactiver un serveur MCP global dans un projet fonctionne désormais avec OpenCode 2, et les plugins se synchronisent avec OpenCode 2. [Toutes les versions →](https://github.com/runkids/skillshare/releases)
+> **Dernière version** : v0.25.10 — La page MCP ouvre le fichier de configuration MCP de chaque Agent, ou le dossier qui le contient, directement depuis le dashboard : vous pouvez modifier `opencode.json` ou `.cursor/mcp.json` avec n'importe quel programme sans définir `$EDITOR`. L'onglet MCP de chaque projet liste désormais les fichiers d'Agent de ce projet avec les mêmes boutons **Open folder**, **Open in editor** et **Copy path**. [Toutes les versions →](https://github.com/runkids/skillshare/releases)
 
 ## Pourquoi skillshare
 

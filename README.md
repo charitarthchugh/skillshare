@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **Latest**: v0.25.6 — The Plugins page updates many plugins in one pass: each plugin is checked and applied once, plugins from the same source share one download, and the dialog shows old → new versions per Agent. Shared memory is easier to reach: the dashboard lists recently updated notes, and **Memory tools** gives you prompts to try memory across sessions or to review a conversation for lessons worth keeping; Skillshare never runs an agent itself. Turning off a global MCP server in one project now works in OpenCode 2, and plugins sync to OpenCode 2. [All releases →](https://github.com/runkids/skillshare/releases)
+> **Latest**: v0.25.10 — The MCP page opens each Agent's MCP config file, or the folder that holds it, straight from the dashboard, so you can edit `opencode.json` or `.cursor/mcp.json` in any program without setting `$EDITOR`. Each project's MCP tab now lists that project's Agent files with the same **Open folder**, **Open in editor** and **Copy path** buttons. [All releases →](https://github.com/runkids/skillshare/releases)
 
 ## Why skillshare
 

@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新バージョン**：v0.25.6 — Plugins ページは多数のプラグインを一度に更新します。各プラグインの確認と適用は 1 回だけで、同じソースのプラグインはダウンロードを共有し、ダイアログには Agent ごとに旧 → 新バージョンが表示されます。共有メモリーにもアクセスしやすくなりました。ダッシュボードに最近更新されたノートが並び、**Memory tools** ではセッションをまたいでメモリーを試すプロンプトや、会話を振り返って残す価値のある教訓を探すプロンプトを使えます。Skillshare 自身が Agent を実行することはありません。プロジェクトでグローバル MCP サーバーをオフにする設定が OpenCode 2 でも効くようになり、プラグインも OpenCode 2 に同期されます。新機能と修正の一覧は [Releases](https://github.com/runkids/skillshare/releases) と[変更履歴](https://skillshare.runkids.cc/changelog)をご覧ください。
+> **最新バージョン**：v0.25.10 — MCP ページから各 Agent の MCP 設定ファイル、またはそれを含むフォルダーを直接開けるようになり、`$EDITOR` を設定しなくても `opencode.json` や `.cursor/mcp.json` を好きなプログラムで編集できます。各 project の MCP タブには、その project の Agent ファイルが同じ **Open folder**、**Open in editor**、**Copy path** ボタン付きで表示されます。新機能と修正の一覧は [Releases](https://github.com/runkids/skillshare/releases) と[変更履歴](https://skillshare.runkids.cc/changelog)をご覧ください。
 
 ## skillshare を使う理由
 

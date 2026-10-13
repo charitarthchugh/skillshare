@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新版本**：v0.25.6 — Plugins 頁面可以一次更新多個外掛：每個外掛只檢查和套用一次，來自同一來源的外掛共用一次下載，對話框會依 Agent 顯示舊 → 新版本。共享記憶更容易找到：Dashboard 會列出最近更新的筆記，**Memory tools** 提供跨工作階段試用記憶、以及回顧對話找出值得保留的經驗的提示詞；Skillshare 本身不會執行 Agent。在專案中關閉全域 MCP 伺服器現在對 OpenCode 2 也有效，外掛也能同步到 OpenCode 2。完整的新功能與修正見 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
+> **最新版本**：v0.25.10 — MCP 頁面可以直接開啟每個 Agent 的 MCP 設定檔或它所在的資料夾，不必設定 `$EDITOR` 就能用任何程式編輯 `opencode.json` 或 `.cursor/mcp.json`。每個 project 的 MCP 分頁現在會列出該 project 的 Agent 檔案，並附上同樣的 **Open folder**、**Open in editor** 和 **Copy path** 按鈕。完整的新功能與修正見 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
 
 ## 為什麼用 skillshare
 

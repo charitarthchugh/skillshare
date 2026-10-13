@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新版本**：v0.25.6 — Plugins 页面可以一次更新多个插件：每个插件只检查和应用一次，来自同一来源的插件共享一次下载，对话框会按 Agent 显示旧 → 新版本。共享记忆更容易找到：Dashboard 会列出最近更新的笔记，**Memory tools** 提供在多个会话间试用记忆、以及回顾对话找出值得保留的经验的提示词；Skillshare 本身不会运行 Agent。在项目中关闭全局 MCP 服务器现在对 OpenCode 2 也有效，插件也能同步到 OpenCode 2。完整的新功能与修复见 [Releases](https://github.com/runkids/skillshare/releases) 和[更新记录](https://skillshare.runkids.cc/changelog)。
+> **最新版本**：v0.25.10 — MCP 页面可以直接打开每个 Agent 的 MCP 配置文件或其所在的文件夹，不必设置 `$EDITOR` 就能用任意程序编辑 `opencode.json` 或 `.cursor/mcp.json`。每个 project 的 MCP 标签页现在会列出该 project 的 Agent 文件，并提供同样的 **Open folder**、**Open in editor** 和 **Copy path** 按钮。完整的新功能与修复见 [Releases](https://github.com/runkids/skillshare/releases) 和[更新记录](https://skillshare.runkids.cc/changelog)。
 
 ## 为什么用 skillshare
 
