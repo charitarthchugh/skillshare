@@ -215,6 +215,10 @@ JSON 条目会按照文件自身的缩进方式，逐字段单独一行写入。
 client 的 MCP 文件存在，或该 client 用于保存设置的文件夹存在时，就算作
 已检测到，因此即使是全新安装、还没有 MCP 文件，也仍会出现在列表中。在 project mode 下，
 当项目拥有自己的 MCP 文件，或该 client 在全局范围内被检测到时，就会列出该 client。
+每个检测到的 client 会显示其 MCP 文件名，**Copy path** 会复制完整路径。文件存在后，
+**Open in editor** 会用与 skill 的 **Open in editor** 相同的编辑器打开它。编辑器在运行
+dashboard 的机器上启动，所以只有当浏览器也在那台机器上打开（通过 `localhost` 或 SSH
+端口转发）时才会显示这个按钮，通过局域网地址或反向代理访问时不会显示。
 
 其他 client 细节：
 

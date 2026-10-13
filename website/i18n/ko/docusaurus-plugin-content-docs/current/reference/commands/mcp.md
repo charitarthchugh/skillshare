@@ -211,6 +211,11 @@ client는 project mode에서 선택할 수 없습니다. 오른쪽의 **Sync** �
 나열합니다. client의 MCP 파일이 존재하거나, 해당 client가 설정을 보관하는 폴더가
 존재하면 감지된 것으로 간주하므로, MCP 파일이 아직 없는 새 설치도 표시됩니다. project
 mode에서는 프로젝트에 MCP 파일이 있거나 client가 전역적으로 감지된 경우 나열됩니다.
+감지된 각 client에는 MCP 파일 이름이 표시되고, **Copy path**는 전체 경로를 복사합니다.
+파일이 존재하면 **Open in editor**가 skill의 **Open in editor**와 같은 편집기로 파일을 엽니다.
+편집기는 대시보드를 실행하는 머신에서 열리므로, 이 버튼은 브라우저도 그 머신에서
+(`localhost` 또는 SSH 포트 포워딩으로) 열었을 때만 나타나며, LAN 주소나 리버스 프록시를
+통해서는 나타나지 않습니다.
 
 추가 client 세부 정보:
 

@@ -182,6 +182,10 @@ Dashboard 只會提供目前 scope 與主機平台可用的目的地。每個 se
 當某個 client 的 MCP 檔案存在，或該 client 用來存放設定的資料夾存在時，就算做偵測到，
 所以剛安裝、還沒有 MCP 檔案的 client 也會顯示出來。在 project mode 中，
 當 project 有自己的 MCP 檔案，或該 client 在 global 層級被偵測到時，就會列出該 client。
+每個偵測到的 client 會顯示它的 MCP 檔名，**Copy path** 會複製完整路徑。檔案存在後，
+**Open in editor** 會用和 skill 的 **Open in editor** 相同的編輯器開啟它。編輯器在執行
+dashboard 的機器上啟動，所以只有瀏覽器也在那台機器上開啟（透過 `localhost` 或 SSH
+連接埠轉送）時才會顯示這個按鈕，透過區域網路位址或反向代理開啟時不會顯示。
 
 其他 client 細節：
 
