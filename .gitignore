@@ -27,7 +27,6 @@ __pycache__/
 .pnpm-store/
 ui/node_modules/
 ui/dist/
-internal/server/dist/
 video/node_modules/
 
 # Host verification environment (scripts/verify.sh)
@@ -42,15 +41,5 @@ video/node_modules/
 
 # Local planning and tool state
 /specs/
-!/proposals/
-docs/plans/
-docs/superpowers/
-openspec/
-.spectra/
-.spectra.yaml
-.superpowers/
-.feature-radar/
 .archify/
 .playwright-mcp
-showcase/
-MEMORY.md
