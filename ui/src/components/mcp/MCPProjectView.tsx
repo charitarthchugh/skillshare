@@ -4,13 +4,14 @@ import { mcpApi, mcpOffTargets, mcpTargets, type MCPMutation, type MCPServer } f
 import AgentIcon from '../AgentIcon';
 import Button from '../Button';
 import ConfirmDialog from '../ConfirmDialog';
-import { RailLayout } from '../StatusRail';
+import { RailLayout, RailRow, RailSection } from '../StatusRail';
 import { SkillContextMenu, type ContextMenuItem } from '../TargetMenu';
 import { useToast } from '../Toast';
 import { useT } from '../../i18n';
 import { shortenHome } from '../../lib/paths';
 import { ProjectTargets } from './MCPProjectSettings';
 import MCPCheckNote from './MCPCheckNote';
+import MCPFileActions from './MCPFileActions';
 import MCPImportDialog from './MCPImportDialog';
 import MCPRemoveDialog from './MCPRemoveDialog';
 import MCPServerDialog from './MCPServerDialog';
@@ -20,7 +21,7 @@ import MCPSyncBox, { MCPRailActions } from './MCPSyncBox';
 import MCPUnmanagedNote from './MCPUnmanagedNote';
 import { TargetPill } from './TargetPicker';
 import { problemsByServer, useMCPCheck } from './useMCPCheck';
-import { buildMatrix, describeEndpoint, describeError, projectOf, switchTargets, targetLabel, writes } from './mcpView';
+import { buildMatrix, describeEndpoint, describeError, projectFileTargets, projectOf, switchTargets, targetLabel, writes } from './mcpView';
 
 type MCPList = Awaited<ReturnType<typeof mcpApi.list>>;
 
@@ -125,6 +126,9 @@ export default function MCPProjectView({ data, root, offered, onChanged, onRemov
 
   const model = projectViewModel(data, root, offered);
   const { globals, defaults, targets, servers, shownGlobals, roots, changes, name, unmanaged, own, targetsOf, offTargets, switchable, ownRows, shown } = model;
+  const paths = data.projectPaths[root] ?? {};
+  const existing = data.projectExisting[root] ?? [];
+  const files = projectFileTargets(targets, own, existing, paths);
 
   const save = async (mutation: MCPMutation) => {
     setBusy(true);
@@ -174,9 +178,18 @@ export default function MCPProjectView({ data, root, offered, onChanged, onRemov
 
   return (
     <div>
-      <RailLayout pageScroll rail={data.plan
-        ? <MCPSyncBox changes={changes} roots={roots} plan={data.plan} check={ownRows.length > 0 ? check : undefined} />
-        : ownRows.length > 0 && <div className="ss-box"><MCPRailActions check={check} /></div>}>
+      <RailLayout pageScroll rail={<>
+        {data.plan
+          ? <MCPSyncBox changes={changes} roots={roots} plan={data.plan} check={ownRows.length > 0 ? check : undefined} />
+          : ownRows.length > 0 && <div className="ss-box"><MCPRailActions check={check} /></div>}
+        {files.length > 0 && (
+          <RailSection title={t('layout.nav.agents')} count={files.length}>
+            {files.map((target) => (
+              <RailRow key={target} target={target} label={targetLabel(target)} right={<MCPFileActions target={target} path={paths[target]} local={data.local} openable={data.local && existing.includes(target)} project={root} />} />
+            ))}
+          </RailSection>
+        )}
+      </>}>
         <ProjectSettings model={model} offered={offered} pickTargets={pickTargets} onPickTargets={() => setPickTargets(!pickTargets)} busy={busy} save={save} />
 
         {ownRows.length > 0 && <div className="mt-3 empty:hidden"><MCPCheckNote report={check.report} checkedAt={check.checkedAt} error={check.error} running={check.running} onRun={() => void check.run()} project={root} /></div>}
