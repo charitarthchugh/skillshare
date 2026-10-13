@@ -25,19 +25,19 @@ skillshare sync -p
 
 | Skill | 作用 |
 |-------|-------------|
-| `implement-feature` | 使用 TDD 工作流，根据 spec 文件或描述实现功能 |
-| `update-docs` | 更新网站文档以匹配最近的代码变更，并将每个 flag 与源码交叉验证 |
-| `codebase-audit` | 交叉验证 CLI flags、文档、测试与 targets，检查整个代码库的一致性 |
-| `cli-e2e-test` | 依据 runbooks，在 devcontainer 中运行隔离的 E2E 测试 |
-| `changelog` | 以约定式格式，根据最近的提交生成 CHANGELOG.md 条目 |
+| `skillshare-implement-feature` | 使用 TDD 工作流，根据 spec 文件或描述实现功能 |
+| `skillshare-update-docs` | 更新网站文档以匹配最近的代码变更，并将每个 flag 与源码交叉验证 |
+| `skillshare-code-review` | 以并行检查（正确性、仓库规则、规格、使用处、清理）审查变更，并逐条验证发现的问题 |
+| `skillshare-cli-e2e-test` | 依据 runbooks，在 devcontainer 中运行隔离的 E2E 测试 |
+| `skillshare-changelog` | 以约定式格式，根据最近的提交生成 CHANGELOG.md 条目 |
 
 ## 典型工作流
 
-1. **开始一个功能** — 让你的 agent 使用 `implement-feature` 搭配一份 spec
-2. **更新文档** — 代码变更后，调用 `update-docs` 来同步网站文档
-3. **审计一致性** — 运行 `codebase-audit` 以捕捉 flag 与文档不一致的地方
-4. **运行 E2E 测试** — 使用 `cli-e2e-test` 在沙盒中进行验证
-5. **撰写 changelog** — 发布前调用 `changelog`
+1. **开始一个功能** — 让你的 agent 使用 `skillshare-implement-feature` 搭配一份 spec
+2. **更新文档** — 代码变更后，调用 `skillshare-update-docs` 来同步网站文档
+3. **审查变更** — 提交或开 PR 前运行 `skillshare-code-review`
+4. **运行 E2E 测试** — 使用 `skillshare-cli-e2e-test` 在沙盒中进行验证
+5. **撰写 changelog** — 发布前调用 `skillshare-changelog`
 
 ## 接下来？
 
