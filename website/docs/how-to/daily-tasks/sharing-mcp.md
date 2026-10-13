@@ -31,6 +31,11 @@ You do not need to learn each client's JSON or YAML format. Skillshare converts
 the definition when you run `skillshare sync mcp`. The receiving client starts
 the command, so Node.js/npx must be available in that client's environment.
 
+The exact version after `@` is optional. Without one, or with `latest`, a tag or a
+range, `npx` may start a newer release each time, so `skillshare mcp check` warns
+about it; the server still syncs and starts. See
+[Check servers before an Agent starts them](/docs/reference/commands/mcp#check-servers-before-an-agent-starts-them).
+
 ## Start with the guided setup
 
 Run `skillshare mcp` to browse and manage connections from the terminal. Use `/`

@@ -29,6 +29,10 @@ mcp:
 Skillshare가 정의를 변환해줍니다. 수신하는 클라이언트가 해당 명령을 실행하므로, 그 클라이언트의
 환경에 Node.js/npx가 있어야 합니다.
 
+`@` 뒤의 정확한 버전은 생략할 수 있습니다. 생략하거나 `latest`, 태그, 범위를 쓰면 `npx`가 실행할 때마다 새 릴리스를 사용할 수 있으므로
+`skillshare mcp check`가 경고합니다. 서버는 그대로 동기화되고 실행됩니다.
+[Agent가 시작하기 전에 서버 검사하기](/docs/reference/commands/mcp#check-servers-before-an-agent-starts-them)를 참고하세요.
+
 ## 가이드에 따라 설정 시작하기
 
 터미널에서 연결을 탐색하고 관리하려면 `skillshare mcp`를 실행하세요. `/`로 필터,

@@ -29,6 +29,9 @@ mcp:
 Skillshare 會自動轉換該定義。實際啟動指令的是接收端的 client，因此該 client 的環境中
 必須要有 Node.js/npx 可用。
 
+`@` 後面的確切版本號可以省略。省略或寫成 `latest`、tag、範圍時，`npx` 每次啟動都可能使用更新的版本，所以 `skillshare mcp check`
+會發出警告；server 仍會照常同步和啟動。請參閱[在 Agent 啟動前檢查 server](/docs/reference/commands/mcp#check-servers-before-an-agent-starts-them)。
+
 ## 從引導式設定開始
 
 執行 `skillshare mcp` 可在終端機中瀏覽並管理連線。使用 `/` 篩選、

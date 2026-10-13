@@ -30,6 +30,10 @@ mcp:
 skillshare がその定義を変換します。コマンドを起動するのは受け取り側のクライアントなので、そのクライアントの
 環境に Node.js/npx が利用可能である必要があります。
 
+`@` の後の正確なバージョンは省略できます。省略した場合や `latest`、タグ、範囲を指定した場合は `npx` が起動のたびに新しいリリースを使う可能性があるため、
+`skillshare mcp check` が警告します。サーバーの同期と起動はそのまま行われます。
+[Agent が起動する前にサーバーをチェックする](/docs/reference/commands/mcp#check-servers-before-an-agent-starts-them)を参照してください。
+
 ## ガイド付きセットアップから始める
 
 ターミナルから接続を閲覧・管理するには `skillshare mcp` を実行します。`/` で絞り込み、
