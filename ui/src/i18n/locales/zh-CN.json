@@ -89,6 +89,8 @@
   "mcp.check.finding.notSynced": "尚未同步，点击“同步 MCP”后才会写入。",
   "mcp.check.finding.pinVersion": "运行 {subject} 时没有锁定版本。请锁定版本，以免更新在你不知情时改变它。",
   "mcp.check.finding.pinTag": "运行镜像 {subject} 时没有版本标签。请锁定标签或摘要。",
+  "mcp.check.finding.toolChanged": "{tools} 的说明或输入格式在固定后变了。请先检查，再对这个 server 运行 skillshare mcp check --live --accept-tools 接受。",
+  "mcp.check.finding.toolAdded": "固定后新增的工具：{tools}。请先检查，再对这个 server 运行 skillshare mcp check --live --accept-tools 接受。",
   "mcp.check.tag.error": "{count} error",
   "mcp.check.tag.warning": "{count} warning",
   "mcp.transport": "传输方式",

@@ -2,17 +2,20 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
 	"skillshare/internal/mcp"
+	"skillshare/internal/oplog"
 	"skillshare/internal/ui"
 )
 
-const mcpCheckUsage = "skillshare mcp check [name...] [--json] [--no-dns] [--live [--timeout <duration>]]"
+const mcpCheckUsage = "skillshare mcp check [name...] [--json] [--no-dns] [--live [--timeout <duration>] [--accept-tools]]"
 
-// runMCPCheck is read-only: it writes no file and no operation log entry. Only --live
-// starts servers or sends requests to them.
+// runMCPCheck writes no config file. Only --live starts servers or sends requests to them, and
+// only --live reads or writes the tool baseline in the state dir. Only --accept-tools, which
+// approves changed tool definitions, writes an operation log entry.
 func runMCPCheck(service *mcp.Service, args []string) error {
 	opts := mcp.CheckOptions{ClientVersion: version}
 	asJSON := false
@@ -26,6 +29,8 @@ func runMCPCheck(service *mcp.Service, args []string) error {
 			opts.SkipDNS = true
 		case arg == "--live":
 			opts.Live = true
+		case arg == "--accept-tools":
+			opts.AcceptTools = true
 		case arg == "--timeout":
 			if i+1 >= len(args) {
 				return fmt.Errorf("--timeout requires a duration such as 10s")
@@ -40,6 +45,9 @@ func runMCPCheck(service *mcp.Service, args []string) error {
 			opts.Names = append(opts.Names, arg)
 		}
 	}
+	if opts.AcceptTools && !opts.Live {
+		return fmt.Errorf("--accept-tools only applies with --live")
+	}
 	if timeout != "" {
 		if !opts.Live {
 			return fmt.Errorf("--timeout only applies with --live")
@@ -50,7 +58,11 @@ func runMCPCheck(service *mcp.Service, args []string) error {
 		}
 		opts.Timeout = d
 	}
+	start := time.Now()
 	report, err := service.Check(opts)
+	if opts.AcceptTools {
+		logMCPAcceptTools(service.ConfigPath, start, report, err)
+	}
 	if err != nil {
 		if asJSON {
 			return writeJSONError(err)
@@ -123,4 +135,37 @@ func mcpCheckHasWarning(server mcp.CheckServer) bool {
 		}
 	}
 	return false
+}
+
+// logMCPAcceptTools records which servers' tool baselines --accept-tools recorded, so a later
+// review can tell when a changed definition was approved. A first pin counts too. A server
+// with an error, or whose baseline could not be saved, is listed as failed, and so is the entry.
+func logMCPAcceptTools(path string, start time.Time, report *mcp.CheckReport, err error) {
+	entry := oplog.NewEntry("mcp check --accept-tools", statusFromErr(err), time.Since(start))
+	if report != nil {
+		var accepted, failed []string
+		for _, server := range report.Servers {
+			name := strings.TrimSpace(server.Name + " " + server.Project)
+			recorded, ok := false, true
+			for _, f := range server.Findings {
+				pin := f.Check == "tool-change"
+				recorded = recorded || pin && (strings.HasPrefix(f.Message, "accepted ") || strings.HasPrefix(f.Message, "pinned "))
+				ok = ok && f.Level != "error" && !(pin && strings.HasPrefix(f.Message, "could not save the tool baseline"))
+			}
+			switch {
+			case !ok:
+				failed = append(failed, name)
+			case recorded:
+				accepted = append(accepted, name)
+			}
+		}
+		entry.Args = map[string]any{"accepted": accepted}
+		if len(failed) > 0 {
+			entry.Args["failed"] = failed
+			entry.Status = "error"
+		}
+	}
+	if logErr := oplog.Write(path, oplog.OpsFile, entry); logErr != nil {
+		fmt.Fprintln(os.Stderr, "Warning: could not write MCP operation log")
+	}
 }

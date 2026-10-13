@@ -89,6 +89,8 @@
   "mcp.check.finding.notSynced": "Noch nicht synchronisiert. Wird geschrieben, sobald du „MCP synchronisieren“ drückst.",
   "mcp.check.finding.pinVersion": "Führt {subject} ohne feste Version aus. Lege eine Version fest, damit ein Update sie nicht unbemerkt ändert.",
   "mcp.check.finding.pinTag": "Führt das Image {subject} ohne Versions-Tag aus. Lege einen Tag oder Digest fest.",
+  "mcp.check.finding.toolChanged": "Beschreibung oder Eingabeschema von {tools} haben sich seit dem Festlegen geändert. Prüfe das und übernimm es dann mit skillshare mcp check --live --accept-tools für diesen Server.",
+  "mcp.check.finding.toolAdded": "Neu seit dem Festlegen: {tools}. Prüfe sie und übernimm sie dann mit skillshare mcp check --live --accept-tools für diesen Server.",
   "mcp.check.tag.error": "{count} error",
   "mcp.check.tag.warning": "{count} warning",
   "mcp.transport": "Transport",
