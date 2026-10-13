@@ -9,6 +9,15 @@ All notable changes to skillshare are documented here. For the full commit histo
 
 ---
 
+## [0.25.10] - 2026-10-13
+
+### New Features
+
+#### Dashboard
+
+- **Open an Agent's MCP config folder** — each detected Agent on the MCP page now has **Open folder** next to **Open in editor** and **Copy path**. It opens the folder that holds the config file in the file manager (Finder, File Explorer, or the default handler on Linux), so you can open `opencode.json` or `.cursor/mcp.json` in any program without setting `$EDITOR`. Before the Agent has written its file, it opens the closest folder that exists. Like **Open in editor**, it shows only when the dashboard is opened on the machine running it. Refs: #538.
+- **A project's MCP files on its MCP tab** — on the **Projects** page, each project's **MCP** tab now lists that project's Agent files: the project's Agents, the ones its own servers go to, and any other whose file is already there. Each row shows the file name and **Copy path**, plus **Open folder** and **Open in editor** on the dashboard's machine. Refs: #538.
+
 ## [0.25.9] - 2026-10-13
 
 ### New Features
