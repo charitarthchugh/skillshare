@@ -39,7 +39,7 @@ Run `git fetch origin` first so the base is current. Stop here if the ref does n
 
 ## Step 3: Run five passes in parallel
 
-Launch one subagent per pass in a single message, on Sonnet at medium effort. Give each the diff command, the context from Step 2, and its brief below. Each returns findings as `file:line`, a one-sentence claim, and a concrete scenario (input or state → wrong result). A finding without a scenario is not reported.
+Launch one subagent per pass in a single message, using your tool's default subagent model; do not name a model the tool may not have. If your tool has no subagents, run the passes yourself one after another. Give each the diff command, the context from Step 2, and its brief below. Each returns findings as `file:line`, a one-sentence claim, and a concrete scenario (input or state → wrong result). A finding without a scenario is not reported.
 
 1. **Correctness**: bugs the change introduces. Wrong results, crashes, data loss, broken error paths, races, and security gaps: path or symlink escapes, secrets in output, bypassed audits or trust prompts. Ignore style.
 2. **Rules**: breaches of `AGENTS.md` and the loaded topics. Cite the file and rule.
