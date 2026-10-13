@@ -19,11 +19,9 @@ Thumbs.db
 coverage.out
 docs/plans/
 docs/superpowers/
-.skillshare/*
-!.skillshare/skills/
-!.skillshare/config.yaml
-!.skillshare/registry.yaml
-!.skillshare/.gitignore
+# Sync rewrites these on every run; the links beside them are tracked
+.claude/skills/.skillshare-manifest.json
+.agents/skills/.skillshare-manifest.json
 /specs/
 !/proposals/
 .pnpm-store/
