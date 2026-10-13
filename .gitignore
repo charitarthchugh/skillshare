@@ -15,49 +15,42 @@ Thumbs.db
 *.swp
 *.swo
 
-# Test
-coverage.out
-docs/plans/
-docs/superpowers/
-# Sync rewrites these on every run; the links beside them are tracked
-.claude/skills/.skillshare-manifest.json
-.agents/skills/.skillshare-manifest.json
-/specs/
-!/proposals/
-.pnpm-store/
-.feature-radar/
-.cache/
-.playwright-mcp
-.superpowers/
-openspec/
-
-
-# Worktrees
-.worktrees/
-showcase/
-
-video/node_modules/
-
 # Secrets
 .env
 .devcontainer/.env
 
-# Web UI
+# Build and test output
+coverage.out
+tmp/
+__pycache__/
+.cache/
+.pnpm-store/
 ui/node_modules/
 ui/dist/
 internal/server/dist/
+video/node_modules/
 
 # Host verification environment (scripts/verify.sh)
 .verify-home/
 
-# Python bytecode from scripts run in the devcontainer
-__pycache__/
+# Worktrees
+.worktrees/
 
-# Air hot-reload
-tmp/
-MEMORY.md
-.spectra/
-openspec/.vector-search.db*
-.spectra.yaml
+# Agent skills: sync rewrites these manifests on every run; the links beside them are tracked
+.claude/skills/.skillshare-manifest.json
+.agents/skills/.skillshare-manifest.json
+
+# Local planning and tool state
 /specs/
+!/proposals/
+docs/plans/
+docs/superpowers/
+openspec/
+.spectra/
+.spectra.yaml
+.superpowers/
+.feature-radar/
 .archify/
+.playwright-mcp
+showcase/
+MEMORY.md
