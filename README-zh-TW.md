@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **最新版本**：v0.25.10 — MCP 頁面可以直接開啟每個 Agent 的 MCP 設定檔或它所在的資料夾，不必設定 `$EDITOR` 就能用任何程式編輯 `opencode.json` 或 `.cursor/mcp.json`。每個 project 的 MCP 分頁現在會列出該 project 的 Agent 檔案，並附上同樣的 **Open folder**、**Open in editor** 和 **Copy path** 按鈕。完整的新功能與修正見 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
+> **最新版本**：v0.25.11 — `mcp check` 會在本機 MCP server 啟動的套件或映像檔沒有鎖定確切版本時發出警告，`mcp check --live` 會在你審查過後 server 的工具說明有變動時發出警告。`skillshare list` 的詳細面板現在會列出 skill 或 agent 同步到的每個 Agent。 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
 
 ## 為什麼用 skillshare
 

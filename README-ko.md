@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **최신 버전**: v0.25.10 — MCP 페이지에서 각 Agent의 MCP 설정 파일이나 그 파일이 있는 폴더를 대시보드에서 바로 열 수 있어, `$EDITOR`를 설정하지 않아도 `opencode.json`이나 `.cursor/mcp.json`을 원하는 프로그램으로 편집할 수 있습니다. 각 project의 MCP 탭에는 이제 그 project의 Agent 파일이 같은 **Open folder**, **Open in editor**, **Copy path** 버튼과 함께 표시됩니다. 새 기능과 수정 사항 전체는 [Releases](https://github.com/runkids/skillshare/releases)와 [변경 기록](https://skillshare.runkids.cc/changelog)을 확인하세요.
+> **최신 버전**: v0.25.11 — `mcp check`는 로컬 MCP 서버가 정확한 버전 없이 패키지나 이미지를 실행하면 경고하고, `mcp check --live`는 검토한 뒤 서버의 도구 설명이 바뀌면 경고합니다. `skillshare list` 상세 패널에는 이제 skill이나 agent가 동기화된 모든 Agent가 표시됩니다. [변경 기록](https://skillshare.runkids.cc/changelog)을 확인하세요.
 
 ## skillshare를 쓰는 이유
 

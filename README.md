@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **Latest**: v0.25.10 — The MCP page opens each Agent's MCP config file, or the folder that holds it, straight from the dashboard, so you can edit `opencode.json` or `.cursor/mcp.json` in any program without setting `$EDITOR`. Each project's MCP tab now lists that project's Agent files with the same **Open folder**, **Open in editor** and **Copy path** buttons. [All releases →](https://github.com/runkids/skillshare/releases)
+> **Latest**: v0.25.11 — `mcp check` warns when a local MCP server runs a package or image without an exact version, and `mcp check --live` warns when a server's tool descriptions change after you reviewed them. The `skillshare list` detail panel now shows every Agent a skill or agent is synced to. [All releases →](https://github.com/runkids/skillshare/releases)
 
 ## Why skillshare
 
@@ -382,6 +382,7 @@ Thanks to everyone who helped shape skillshare.
 <a href="https://github.com/483218131"><img src="https://github.com/483218131.png" width="50" style="border-radius:50%" alt="483218131"></a>
 <a href="https://github.com/neilforest7"><img src="https://github.com/neilforest7.png" width="50" style="border-radius:50%" alt="neilforest7"></a>
 <a href="https://github.com/johnkattenhorn"><img src="https://github.com/johnkattenhorn.png" width="50" style="border-radius:50%" alt="johnkattenhorn"></a>
+<a href="https://github.com/aleps001"><img src="https://github.com/aleps001.png" width="50" style="border-radius:50%" alt="aleps001"></a>
 
 ---
 

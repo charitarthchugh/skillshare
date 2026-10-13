@@ -46,7 +46,7 @@
 </p>
 
 > [!NOTE]
-> **Dernière version** : v0.25.10 — La page MCP ouvre le fichier de configuration MCP de chaque Agent, ou le dossier qui le contient, directement depuis le dashboard : vous pouvez modifier `opencode.json` ou `.cursor/mcp.json` avec n'importe quel programme sans définir `$EDITOR`. L'onglet MCP de chaque projet liste désormais les fichiers d'Agent de ce projet avec les mêmes boutons **Open folder**, **Open in editor** et **Copy path**. [Toutes les versions →](https://github.com/runkids/skillshare/releases)
+> **Dernière version** : v0.25.11 — `mcp check` avertit quand un serveur MCP local lance un paquet ou une image sans version exacte, et `mcp check --live` avertit quand les descriptions d'outils d'un serveur changent après votre vérification. Le panneau de détails de `skillshare list` affiche désormais chaque Agent vers lequel un skill ou un agent est synchronisé. [Toutes les versions →](https://github.com/runkids/skillshare/releases)
 
 ## Pourquoi skillshare
 
