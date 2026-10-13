@@ -44,7 +44,7 @@ Launch one subagent per pass in a single message, on Sonnet at medium effort. Gi
 1. **Correctness**: bugs the change introduces. Wrong results, crashes, data loss, broken error paths, races, and security gaps: path or symlink escapes, secrets in output, bypassed audits or trust prompts. Ignore style.
 2. **Rules**: breaches of `AGENTS.md` and the loaded topics. Cite the file and rule.
 3. **Spec**: requirements missing or partial, behavior nobody asked for, and requirements implemented wrongly. Quote the spec line for each.
-4. **Consumers**: for each concept from Step 2, grep every consumer and state dimension that the pull-requests topic's Review Rounds section lists, plus `skills/skillshare/references` and `ui/src/i18n/locales`. Report each consumer the diff did not update, and each state dimension the change crosses without a test.
+4. **Consumers**: for each concept from Step 2, grep every consumer and state dimension that the pull-requests topic's Review Rounds section lists, plus `skills/skillshare/references` and `ui/src/i18n/locales`. Report each consumer the diff did not update, and each state dimension the change crosses without a test. Translations count as consumers: for every changed file under `website/docs/`, check the same path under each `website/i18n/<locale>/docusaurus-plugin-content-docs/current/`, and for `README.md`, each translated README. Report each copy that exists but was not updated to match, with the English lines it is missing.
 5. **Cleanup**: code that re-implements an existing helper (name it), complexity a simpler form would remove, wasted work on hot paths, and fixes applied as a special case where the shared mechanism should change. Labelled as judgement calls.
 
 ## Step 4: Verify

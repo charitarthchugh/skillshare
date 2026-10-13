@@ -17,11 +17,8 @@ Thumbs.db
 
 # Test
 coverage.out
-.claude/
 docs/plans/
 docs/superpowers/
-.agents/
-.codex/
 .skillshare/*
 !.skillshare/skills/
 !.skillshare/config.yaml
