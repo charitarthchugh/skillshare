@@ -34,6 +34,7 @@ type updateOptions struct {
 // updateJSONOutput is the JSON representation for update --json output.
 type updateJSONOutput struct {
 	Updated             int                         `json:"updated"`
+	UpToDate            int                         `json:"up_to_date,omitempty"`
 	Skipped             int                         `json:"skipped"`
 	SecurityFailed      int                         `json:"security_failed"`
 	Pruned              int                         `json:"pruned"`
@@ -437,6 +438,7 @@ func updateOutputJSON(result *updateResult, dryRun bool, start time.Time, update
 	}
 	if result != nil {
 		output.Updated = result.updated
+		output.UpToDate = result.upToDate
 		output.Skipped = result.skipped
 		output.SecurityFailed = result.securityFailed
 		output.Pruned = result.pruned
@@ -497,6 +499,9 @@ func logUpdateOp(cfgPath string, names []string, opts *updateOptions, mode strin
 		if result.securityFailed > 0 {
 			a["security_failed"] = result.securityFailed
 		}
+		if result.upToDate > 0 {
+			a["up_to_date"] = result.upToDate
+		}
 		if result.skipped > 0 {
 			a["skipped"] = result.skipped
 		}
@@ -512,14 +517,14 @@ func logUpdateOp(cfgPath string, names []string, opts *updateOptions, mode strin
 }
 
 func printUpdateHelp() {
-	printHelp("skillshare update <name>... [options]\n       skillshare update [agents] <name|--all> [options]\n       skillshare update --group <group> [options]\n       skillshare update --all [options]", "Update one or more skills or tracked repositories.\n\nFor tracked repos (_repo-name): runs git pull\nFor regular skills: reinstalls from stored source metadata\n\nIf a positional name matches a group directory (not a repo or skill), it is\nautomatically expanded to all updatable skills in that group.\n\nSafety: Tracked repos with uncommitted changes are skipped by default, and\nupdates with audit findings at/above the block threshold are rolled back.\nUse --force to override both; --skip-audit skips scanning entirely.",
+	printHelp("skillshare update <name>... [options]\n       skillshare update [agents] <name|--all> [options]\n       skillshare update --group <group> [options]\n       skillshare update --all [options]", "Update one or more skills or tracked repositories.\n\nFor tracked repos (_repo-name): runs git pull\nFor regular skills: reinstalls from stored source metadata\n(--all, --group, and several names with -p skip skills already at the\nupstream commit)\n\nIf a positional name matches a group directory (not a repo or skill), it is\nautomatically expanded to all updatable skills in that group.\n\nSafety: Tracked repos with uncommitted changes are skipped by default, and\nupdates with audit findings at/above the block threshold are rolled back.\nUse --force to override both; --skip-audit skips scanning entirely.",
 		helpGroup{title: "Arguments", rows: []helpRow{
 			{"name...", "Skill name(s) or tracked repo name(s)\nSupports glob patterns (e.g. \"core-*\", \"_team-?\")"},
 		}},
 		helpGroup{title: "Options", rows: []helpRow{
 			{"-a, --all", "Update all tracked repos + skills with metadata"},
 			{"-G, --group <name>", "Update all updatable skills in a group (repeatable)"},
-			{"-f, --force", "Discard local changes and proceed despite audit findings"},
+			{"-f, --force", "Discard local changes, proceed despite audit findings,\nand reinstall skills already at the upstream commit"},
 			{"-n, --dry-run", "Preview without making changes"},
 			{"--skip-audit", "Skip post-update security audit"},
 			{"-T, --audit-threshold, --threshold <t>", ""},
