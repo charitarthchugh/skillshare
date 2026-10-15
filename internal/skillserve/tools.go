@@ -27,14 +27,20 @@ type readToolInput struct {
 	URI string `json:"uri" jsonschema:"A skill:// URI from list_skills, or one of the files read_skill lists for a skill"`
 }
 
+// readOnly marks both tools so clients that gate mutating tools behind approval
+// call them without asking.
+var readOnly = &mcp.ToolAnnotations{ReadOnlyHint: true}
+
 func (s *service) addTools(srv *mcp.Server) {
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "list_skills",
 		Description: "List the available skills: name, when to use it, and its URI. Read a skill with read_skill before following it.",
+		Annotations: readOnly,
 	}, s.listTool)
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "read_skill",
 		Description: "Read a skill's SKILL.md, or one of its other files, by skill:// URI. Reading SKILL.md also lists the skill's other files.",
+		Annotations: readOnly,
 	}, s.readTool)
 	srv.AddReceivingMiddleware(hideToolsFromNativeClients)
 }

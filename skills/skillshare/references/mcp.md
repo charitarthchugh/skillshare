@@ -71,7 +71,7 @@ skillshare mcp serve --check [--target NAME]         # List skills serve would s
   remote `url` with `bearerToken: {fromEnv: SKILLSHARE_MCP_TOKEN}`. Agents with the Skills
   extension load skills natively; as of October 2026 Codex, Cursor, VS Code, Goose and Pi
   lack it and Claude Code's is off by default, so the server also offers `list_skills`
-  (`query` filters) and `read_skill` tools, hidden from clients that declare the extension. Verify the server with
+  (`query` filters) and `read_skill` tools, marked `readOnlyHint` and hidden from clients that declare the extension. Verify the server with
   `npx @modelcontextprotocol/inspector --cli skillshare mcp serve --method skills/list --verify`.
 - Noninteractive `import` without a name only lists candidates. Use `--replace` only
   when replacing is intended.

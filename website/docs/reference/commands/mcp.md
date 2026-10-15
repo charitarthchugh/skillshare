@@ -863,8 +863,9 @@ answer lists at most 200), and `read_skill` reads a `SKILL.md` or another file o
 and for a `SKILL.md` lists the skill's other files. Any Agent that uses MCP tools can read
 skills this way, including through a gateway that passes tools on. A client that declares
 the Skills extension loads skills natively and is not offered the tools, so it does not
-see each skill twice. Content read through a tool is ordinary text to the Agent: its own
-skill approval does not apply.
+see each skill twice. Both tools are marked `readOnlyHint`, so a client or gateway that
+asks before tools that change data calls them without asking. Content read through a tool
+is ordinary text to the Agent: its own skill approval does not apply.
 
 - **Selection.** Without `--target`, every enabled skill is served. `--target NAME`
   applies that target's `include`/`exclude` filters and frontmatter `targets`, whatever

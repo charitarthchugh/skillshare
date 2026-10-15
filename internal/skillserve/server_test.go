@@ -187,8 +187,14 @@ func TestServer_ToolsListAndReadSkillsForClientsWithoutTheExtension(t *testing.T
 	writeFile(t, filepath.Join(src, "review", "SKILL.md"), skillMD("review"))
 	cs := connect(t, src)
 
-	if tools, err := cs.ListTools(context.Background(), nil); err != nil || len(tools.Tools) != 2 {
+	tools, err := cs.ListTools(context.Background(), nil)
+	if err != nil || len(tools.Tools) != 2 {
 		t.Fatalf("tools/list = %v, %v; want list_skills and read_skill", tools, err)
+	}
+	for _, tool := range tools.Tools {
+		if tool.Annotations == nil || !tool.Annotations.ReadOnlyHint {
+			t.Errorf("%s annotations = %+v, want readOnlyHint so clients do not ask to approve a read", tool.Name, tool.Annotations)
+		}
 	}
 	list, _ := callTool(t, cs, "list_skills", map[string]any{"query": "PDF"})
 	if !strings.Contains(list, "skill://pdf/SKILL.md") || strings.Contains(list, "review") {

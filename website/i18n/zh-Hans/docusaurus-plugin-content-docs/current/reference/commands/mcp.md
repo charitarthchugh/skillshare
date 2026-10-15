@@ -801,7 +801,8 @@ SKILLSHARE_MCP_TOKEN=change-me skillshare mcp serve --http 0.0.0.0:8765 \
 `read_skill` 读取某个 skill 的 `SKILL.md` 或其他文件，读取 `SKILL.md` 时还会列出该 skill 的
 其他文件。任何使用 MCP 工具的 Agent 都能以这种方式读取 skill，包括通过会转发工具的 gateway。
 声明了 Skills extension 的 client 会以原生方式加载 skill，不会得到这些工具，因此不会看到
-两份 skill。通过工具读取的内容对 Agent 而言只是普通文本：Agent 自身的 skill 批准机制不适用。
+两份 skill。两个工具都标记了 `readOnlyHint`，因此会在修改数据的工具前请求确认的 client 或
+gateway 调用它们时不会请求确认。通过工具读取的内容对 Agent 而言只是普通文本：Agent 自身的 skill 批准机制不适用。
 
 - **选择。** 不带 `--target` 时，会提供每一个已启用的 skill。`--target NAME`
   会应用该 target 的 `include`/`exclude` 过滤器和 frontmatter `targets`，与其 sync 模式无关；

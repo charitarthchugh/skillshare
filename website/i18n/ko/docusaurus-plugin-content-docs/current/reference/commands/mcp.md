@@ -818,6 +818,7 @@ SKILLSHARE_MCP_TOKEN=change-me skillshare mcp serve --http 0.0.0.0:8765 \
 `read_skill`은 skill의 `SKILL.md`나 다른 파일을 읽고, `SKILL.md`를 읽을 때는 그 skill의 다른 파일 목록도 보여 줍니다.
 MCP 도구를 사용하는 Agent라면 도구를 그대로 전달하는 게이트웨이를 거쳐도 이 방식으로 skill을 읽을 수 있습니다.
 Skills extension을 선언한 client는 skill을 네이티브로 로드하며 도구를 제공받지 않으므로 각 skill이 두 번 보이지 않습니다.
+두 도구 모두 `readOnlyHint`가 표시되어 있어, 데이터를 바꾸는 도구 앞에서 확인을 요청하는 client나 게이트웨이도 확인 없이 호출합니다.
 도구로 읽은 내용은 Agent에게 일반 텍스트이며, Agent 자체의 skill 승인은 적용되지 않습니다.
 
 - **선택.** `--target` 없이 실행하면 활성화된 모든 skill을 제공합니다. `--target NAME`은
