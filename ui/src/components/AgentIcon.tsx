@@ -58,6 +58,8 @@ import piColor from '../assets/agents/pi-color.svg?url';
 import pochiMono from '../assets/agents/pochi.svg?url';
 import coderMono from '../assets/agents/coder.svg?url';
 import factoryMono from '../assets/agents/factory.svg?url';
+// git: Simple Icons (CC0), https://github.com/simple-icons/simple-icons/blob/develop/icons/git.svg; Git Logo by Jason Long, CC BY 3.0
+import gitColor from '../assets/agents/git-color.svg?url';
 import warpMono from '../assets/agents/warp.svg?url';
 import zedMono from '../assets/agents/zed.svg?url';
 
@@ -78,6 +80,7 @@ const colored: Record<string, string> = {
   'deepseek-harness': deepseekColor,
   devin: devinColor,
   gemini: geminiColor,
+  git: gitColor,
   iflow: alibabaColor,
   jazz: jazzColor,
   junie: junieColor,
