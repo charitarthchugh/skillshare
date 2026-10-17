@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Check, KeyRound, Link2, Plus, SquareTerminal, X } from 'lucide-react';
-import { mcpApi, mcpOffTargets, type MCPMutation, type MCPServer } from '../../api/mcp';
+import { mcpApi, mcpOffTargets, mcpTargets, type MCPMutation, type MCPServer } from '../../api/mcp';
 import { useAvailableTargetsQuery, useSyncedTargetsQuery } from '../../hooks/useSharedQueries';
 import { shortenHome } from '../../lib/paths';
 import AgentIcon from '../AgentIcon';
@@ -10,11 +10,12 @@ import SegmentedControl from '../SegmentedControl';
 import { Select } from '../Input';
 import { useT, plural } from '../../i18n';
 import { useAppContext } from '../../context/AppContext';
+import AgentOptionsFields from './AgentOptionsFields';
 import PiSettingsFields from './PiSettingsFields';
 import ToolPolicyFields from './ToolPolicyFields';
 import MCPConfigView from './MCPConfigView';
 import { cleanToolPolicy, describeError, hasToolPolicy, targetLabel } from './mcpView';
-import { MCPTargetOrder } from './targetOrder';
+import { MCPAccountAgents, MCPTargetOrder } from './targetOrder';
 import { initialServerDraft, serveSkillsCommand, serveSkillsTarget, validateServerDraft, type AddMode, type DraftPatch, type EnvRow, type ServerDraft, type ServerValidation } from './mcpServerDraft';
 
 /**
@@ -120,6 +121,11 @@ function ServerForm({ draft, validation, patch, off, saving, editing, order, vis
   const skillTargets = useSkillTargets(serve, project);
   const served = serveSkillsTarget(validation.words) ?? '';
   const twice = serve ? order.filter((x) => selectedTargets.has(x) && skillTargets.synced.has(x)) : [];
+  // Options are keyed by Agent, not account, so every Agent is offered: ticked ones first, then those with settings.
+  const accountAgents = useContext(MCPAccountAgents);
+  const tickedAgents = new Set(targets.map((x) => accountAgents[x] ?? x));
+  const rank = (x: string) => (tickedAgents.has(x) ? 0 : draft.agentOptions[x]?.trim() ? 1 : 2);
+  const agents = mcpTargets.filter((x) => x !== 'pi').sort((a, b) => rank(a) - rank(b));
   return (
     <form id="mcp-server" className="db" onSubmit={(e) => { e.preventDefault(); void onSave(); }}>
       {/* Pasting a snippet only makes sense for a server, not for an off switch. */}
@@ -203,6 +209,7 @@ function ServerForm({ draft, validation, patch, off, saving, editing, order, vis
       {/* A switch-only entry only turns a server off, so it has no tools to choose; skillshare mcp serve offers none. */}
       {!off && !serve && <ToolPolicyFields tools={draft.tools} onChange={(tools) => patch({ tools })} error={validation.toolsError} disabled={saving} probe={probe} mutation={mutation} />}
       {targets.includes('pi') && !off && !serve && <PiSettingsFields optionsText={draft.piOptions} options={validation.options} optionsError={validation.optionsError} onOptions={(piOptions) => patch({ piOptions })} disabled={saving} project={isProject} toolsSet={hasToolPolicy(draft.tools)} />}
+      {!off && <AgentOptionsFields agents={agents} texts={draft.agentOptions} error={validation.agentOptionsError} onChange={(agent, text) => patch({ agentOptions: { ...draft.agentOptions, [agent]: text } })} disabled={saving} />}
       {error && <div className="ss-note bad"><span className="flex-1">{error}</span></div>}
     </form>
   );
@@ -286,7 +293,7 @@ export default function MCPServerDialog({ initial, defaultTargets, existingNames
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const validation = validateServerDraft(draft, off, Boolean(initial), existingNames, t);
-  const { trimmed, words, options, title } = validation;
+  const { trimmed, words, options, agentOptions, title } = validation;
   const canSave = validation.canSave && !saving;
   const visibleTargets = new Set([...availableTargets, ...targets].filter((x) => !off || offTargets.includes(x)));
 
@@ -313,8 +320,7 @@ export default function MCPServerDialog({ initial, defaultTargets, existingNames
     if (off) return { disabled: true };
     const next = connection();
     if (options.value && Object.keys(options.value).length > 0) next.piOptions = options.value;
-    // The dialog has no editor for these yet; keep what the source has.
-    if (server?.options) next.options = server.options;
+    if (Object.keys(agentOptions).length > 0) next.options = agentOptions;
     const tools = cleanToolPolicy(draft.tools);
     if (tools) next.tools = tools;
     return next;
