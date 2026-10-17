@@ -89,7 +89,9 @@ type ownership struct {
 	Name   string `json:"name"`
 	Hash   string `json:"hash"`
 	// A nil Root is legacy ownership; an empty root records global scope.
-	Root     *string           `json:"root,omitempty"`
+	Root *string `json:"root,omitempty"`
+	// PiFields hash the fields outside Hash that this config wrote, such as options, so
+	// sync can remove them once the config stops setting them. Named before it covered every Agent.
 	PiFields map[string]string `json:"piFields,omitempty"`
 }
 
@@ -516,7 +518,7 @@ func (s *Service) checkScope(name, target string, server Server) error {
 				return fmt.Errorf("Claude MCP %s: Claude Code never sends %s to a remote server and reads it as empty; copy the value into a variable with a name of your own and reference that", name, v.FromEnv)
 			}
 		}
-	case target == "kilocode" && s.ProjectRoot != "" && server.usesEnv():
+	case target == "kilocode" && s.ProjectRoot != "" && (server.usesEnv() || hasReference(server.Options["kilocode"])):
 		return fmt.Errorf("Kilo Code MCP %s: Kilo does not allow environment references in project config and ignores the whole file when it finds one; remove fromEnv here or define this server in global mode", name)
 	}
 	return nil
@@ -646,16 +648,16 @@ func (s *Service) previewResolved(source *Source, resolutions []Resolution) (*Pl
 			}
 			wantHash := entryHash(managedEntry(target, want))
 			prune := map[string]bool{}
-			pruneConflict := false
-			// Fields this config wrote earlier and no longer sets go, unless Pi changed them since.
-			if target == "pi" && want != nil && managed && owned.Owner == source.ConfigPath {
+			var changed []string
+			// Fields this config wrote earlier and no longer sets go, unless the Agent changed them since.
+			if want != nil && managed && owned.Owner == source.ConfigPath {
 				for field, hash := range owned.PiFields {
 					if _, set := want[field]; set {
 						continue
 					}
 					if value, exists := current[field]; exists {
 						if piFieldHash(value) != hash {
-							pruneConflict = true
+							changed = append(changed, field)
 						} else {
 							prune[field] = true
 						}
@@ -680,6 +682,13 @@ func (s *Service) previewResolved(source *Source, resolutions []Resolution) (*Pl
 				owned = ownership{Owner: source.ConfigPath, Target: target, Path: path, Name: name, Hash: currentHash}
 				managed = true
 				p.state.Entries[key] = owned
+				// Replace lets the source win, so the changed fields it no longer sets go too.
+				if resolution.Action == "replace" {
+					for _, field := range changed {
+						prune[field] = true
+					}
+					changed = nil
+				}
 			}
 			change := Change{Target: shown, Path: path, Name: name, Root: changeRoot(target, path, s.ProjectRoot, projectRoots)}
 			if change.Switch = switchOnly(target, want); want == nil {
@@ -696,8 +705,8 @@ func (s *Service) previewResolved(source *Source, resolutions []Resolution) (*Pl
 				// records the entry as owned at its current hash, which lets the cases below write
 				// over it.
 				change.Action, change.Message = "conflict", "existing entry is a Pi project override of a global server; replace it, or remove the override with /mcp in Pi"
-			case pruneConflict:
-				change.Action, change.Message = "conflict", "Pi setting changed since sync; import it before removing the cleared setting"
+			case len(changed) > 0:
+				change.Action, change.Message = "conflict", "Agent setting changed since sync; import it before removing the cleared setting"
 			case managed && owned.Owner != source.ConfigPath:
 				change.Action, change.Message = "conflict", "managed by another Skillshare config: "+owned.Owner
 				// A config that is gone can never release the entry, so an explicit resolution
@@ -721,6 +730,11 @@ func (s *Service) previewResolved(source *Source, resolutions []Resolution) (*Pl
 				// the takeover and unticking the Agent later removes the entry. Refs: #303.
 				// A switch the person turned off in the Agent stays theirs.
 				change.Action = "adopt"
+				// Options the entry lacks are written on takeover, not left for the next sync.
+				if agentFieldsChanged(target, current, want) {
+					change.Action = "update"
+					f.changes[name] = withAgentFields(target, current, want)
+				}
 				p.state.Entries[key] = ownership{Owner: source.ConfigPath, Target: target, Path: path, Name: name, Hash: currentHash}
 			case currentHash == wantHash:
 				// Already as desired, e.g. after pulling a teammate's change or
@@ -758,9 +772,7 @@ func (s *Service) previewResolved(source *Source, resolutions []Resolution) (*Pl
 			if want != nil && change.Action != "conflict" {
 				if own, ok := p.state.Entries[key]; ok && own.Owner == source.ConfigPath {
 					own.Root = &root
-					if target == "pi" {
-						own.PiFields = piOwnedFields(want)
-					}
+					own.PiFields = ownedFields(target, want)
 					p.state.Entries[key] = own
 				}
 			}
