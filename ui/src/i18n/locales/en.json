@@ -354,6 +354,8 @@
   "gitSync.conflict.choose.local": "Keep local version of {path}",
   "gitSync.conflict.choose.remote": "Keep remote version of {path}",
   "gitSync.conflict.choose": "Keep this version",
+  "gitSync.conflict.chooseAll.local": "Keep all local",
+  "gitSync.conflict.chooseAll.remote": "Keep all remote",
   "gitSync.conflict.selected": "Selected",
   "gitSync.conflict.diffLine": "{count} line differs",
   "gitSync.conflict.diffLines": "{count} lines differ",

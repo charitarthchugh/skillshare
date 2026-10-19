@@ -509,6 +509,8 @@
   "gitSync.conflict.choose.local": "Pertahankan versi lokal {path}",
   "gitSync.conflict.choose.remote": "Pertahankan versi remote {path}",
   "gitSync.conflict.choose": "Pertahankan versi ini",
+  "gitSync.conflict.chooseAll.local": "Pertahankan semua lokal",
+  "gitSync.conflict.chooseAll.remote": "Pertahankan semua remote",
   "gitSync.conflict.selected": "Dipilih",
   "gitSync.conflict.diffLine": "{count} baris berbeda",
   "gitSync.conflict.diffLines": "{count} baris berbeda",

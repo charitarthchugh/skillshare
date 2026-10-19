@@ -509,6 +509,8 @@
   "gitSync.conflict.choose.local": "نگه داشتن نسخه محلی {path}",
   "gitSync.conflict.choose.remote": "نگه داشتن نسخه راه دور {path}",
   "gitSync.conflict.choose": "این نسخه را نگه دار",
+  "gitSync.conflict.chooseAll.local": "همه نسخه‌های محلی را نگه دار",
+  "gitSync.conflict.chooseAll.remote": "همه نسخه‌های راه دور را نگه دار",
   "gitSync.conflict.selected": "انتخاب‌شده",
   "gitSync.conflict.diffLine": "{count} خط متفاوت",
   "gitSync.conflict.diffLines": "{count} خط متفاوت",

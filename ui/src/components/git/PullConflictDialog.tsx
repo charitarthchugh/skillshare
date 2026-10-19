@@ -33,6 +33,13 @@ export default function PullConflictDialog({ conflict, onCancel, onConfirm }: Pr
       <div className="dh sep"><h2 className="ss-h2">{title}</h2></div>
       <div className="db flex flex-col gap-5">
         <div className="ss-note warn">{t('gitSync.conflict.hint')}</div>
+        <div className="flex flex-wrap justify-end gap-2">
+          {(['local', 'remote'] as const).map((side) => (
+            <Button key={side} size="sm" variant="secondary" onClick={() => setChoices(Object.fromEntries(conflict.files.map((file) => [file.path, side])))}>
+              {t(`gitSync.conflict.chooseAll.${side}`)}
+            </Button>
+          ))}
+        </div>
         {conflict.files.map((file, index) => (
           <section key={file.path} className="flex min-w-0 flex-col gap-3">
             <h3 className="break-all font-mono text-[13px] font-semibold">{file.path}</h3>

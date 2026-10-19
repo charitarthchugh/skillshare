@@ -509,6 +509,8 @@
   "gitSync.conflict.choose.local": "Conserver la version locale de {path}",
   "gitSync.conflict.choose.remote": "Conserver la version distante de {path}",
   "gitSync.conflict.choose": "Garder cette version",
+  "gitSync.conflict.chooseAll.local": "Tout garder en local",
+  "gitSync.conflict.chooseAll.remote": "Tout garder du distant",
   "gitSync.conflict.selected": "Sélectionnée",
   "gitSync.conflict.diffLine": "{count} ligne différente",
   "gitSync.conflict.diffLines": "{count} lignes différentes",

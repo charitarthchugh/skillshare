@@ -509,6 +509,8 @@
   "gitSync.conflict.choose.local": "保留 {path} 的本機版本",
   "gitSync.conflict.choose.remote": "保留 {path} 的遠端版本",
   "gitSync.conflict.choose": "保留此版本",
+  "gitSync.conflict.chooseAll.local": "全部保留本機",
+  "gitSync.conflict.chooseAll.remote": "全部保留遠端",
   "gitSync.conflict.selected": "已選擇",
   "gitSync.conflict.diffLine": "{count} 行不同",
   "gitSync.conflict.diffLines": "{count} 行不同",
