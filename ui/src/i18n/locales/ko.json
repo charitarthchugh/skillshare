@@ -3401,6 +3401,7 @@
   "memory.moveHint": "이 노트로 가는 링크는 업데이트되지 않습니다. INDEX.md와 다른 노트에서 수정하세요. 깨진 INDEX.md 링크는 노트 위에 표시됩니다.",
   "memory.destinationExists": "해당 경로에 이미 노트가 있습니다.",
   "memory.connect": "에이전트에 연결",
+  "memory.updateOutdated": "최신 버전으로 업데이트",
   "memory.reviewConnections": "변경 사항 검토",
   "memory.applyConnections": "적용",
   "memory.connectHint": "도구를 선택해 기존 지침 파일에 읽기 안내를 추가하고, 각 도구가 노트를 다루는 방식을 고르세요. 적용하기 전에 모든 변경 사항을 검토하세요.",

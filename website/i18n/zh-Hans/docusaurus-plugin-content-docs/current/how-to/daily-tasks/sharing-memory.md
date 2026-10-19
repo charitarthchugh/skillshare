@@ -117,7 +117,7 @@ Dashboard 的 Memory 区域也能打开同一个 **记忆工具** 对话框。�
 
 两种更新模式都要求决策与经验附日期、原因及可获取的来源或证据，成功写入后以一行报告存入内容、项目／共享范围及文件路径。例如：“已记住：此项目用 devcontainer 运行测试。项目记忆：testing.md。”沿用普通 Markdown，不强制 metadata schema。编辑器也显示来源提示。
 
-现有工具通过 **Connect to agents → Review changes → Apply changes** 更新指引。完整但过期的区块可检查更新；手动修改过的区块仍保留。Skillshare 不会静默更新工具或现有笔记。
+现有工具通过 **Connect to agents → Review changes → Apply changes** 更新指引；有过期区块时，**Update to latest** 会打开同一个检查画面，并预先勾选所有过期的工具。完整但过期的区块可检查更新；手动修改过的区块仍保留。Skillshare 不会静默更新工具或现有笔记。
 
 
 需要记录经验时，请要求 Agent 更新 `LEARNED.md` 的背景、结论与证据。两种模式都会在每个 task 开始时读 `INDEX.md`。笔记由用户管理：`passive` 指引让 Agent 提出值得记的事实、只在用户要求时更新；`active` 指引则让 Agent 按上述规则把这类事实保存在这里，而不是工具自己的记忆：一两句话说得完的事实，直接作为 `INDEX.md` 中 `## Notes` 下的一个条目，较长的笔记才另建文件。本功能不启用 native automatic memory、自动学习或 Obsidian 集成。

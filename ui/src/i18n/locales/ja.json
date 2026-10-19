@@ -3401,6 +3401,7 @@
   "memory.moveHint": "このノートへのリンクは更新されません。INDEX.md や他のノートで修正してください。壊れた INDEX.md のリンクはノート一覧の上に表示されます。",
   "memory.destinationExists": "そのパスにはすでにノートがあります。",
   "memory.connect": "エージェントに接続",
+  "memory.updateOutdated": "最新版に更新",
   "memory.reviewConnections": "変更を確認",
   "memory.applyConnections": "適用",
   "memory.connectHint": "ツールを選び、既存の指示ファイルに読み取りガイダンスを追加し、それぞれのメモの扱い方を選びます。適用前にすべての変更を確認してください。",

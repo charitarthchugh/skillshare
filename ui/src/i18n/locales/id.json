@@ -3401,6 +3401,7 @@
   "memory.moveHint": "Tautan ke catatan ini tidak diperbarui. Perbaiki di INDEX.md dan catatan lain; tautan INDEX.md yang rusak ditampilkan di atas catatan.",
   "memory.destinationExists": "Sudah ada catatan di path tersebut.",
   "memory.connect": "Hubungkan ke agen",
+  "memory.updateOutdated": "Perbarui ke versi terbaru",
   "memory.reviewConnections": "Tinjau perubahan",
   "memory.applyConnections": "Terapkan",
   "memory.connectHint": "Pilih alat untuk menambahkan panduan membaca ke berkas instruksi yang sudah ada, lalu pilih cara masing-masing memperlakukan catatan. Tinjau setiap perubahan sebelum menerapkannya.",

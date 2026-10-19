@@ -3401,6 +3401,7 @@
   "memory.moveHint": "Links auf diese Notiz werden nicht angepasst. Korrigiere sie in INDEX.md und anderen Notizen; defekte INDEX.md-Links stehen über den Notizen.",
   "memory.destinationExists": "Unter diesem Pfad gibt es bereits eine Notiz.",
   "memory.connect": "Mit Agenten verbinden",
+  "memory.updateOutdated": "Auf neueste Version aktualisieren",
   "memory.reviewConnections": "Änderungen prüfen",
   "memory.applyConnections": "Anwenden",
   "memory.connectHint": "Wähle Tools aus, um ihren bestehenden Anweisungsdateien Lesehinweise hinzuzufügen, und lege fest, wie jedes mit den Notizen umgeht. Prüfe jede Änderung vor dem Anwenden.",

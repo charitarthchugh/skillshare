@@ -45,3 +45,13 @@ it('returns to selection after a stale preview instead of reapplying silently', 
   expect(within(screen.getByRole('dialog')).getByRole('button', { name: 'Review changes' })).toBeInTheDocument();
   expect(api.applyMemoryGuidance).toHaveBeenCalledTimes(1);
 });
+
+it('updates every outdated target without reconnecting', async () => {
+  vi.mocked(api.getMemoryGuidance).mockResolvedValue({ scope: 'global', instructions: { passive: 'Read the notes', active: 'Save lasting facts' }, targets: [
+    { name: 'claude', state: 'outdated', mode: 'active' }, { name: 'codex', state: 'outdated', mode: 'passive' }, { name: 'gemini', state: 'unconfigured' },
+  ] });
+  const user = userEvent.setup(); renderGuidance();
+  await user.click(await screen.findByRole('button', { name: 'Update to latest' }));
+  await user.click(screen.getByRole('button', { name: 'Review changes' }));
+  expect(api.planMemoryGuidance).toHaveBeenCalledWith(['claude', 'codex'], { claude: 'active', codex: 'passive' });
+});

@@ -3401,6 +3401,7 @@
   "memory.moveHint": "Links to this note are not updated. Fix them in INDEX.md and other notes; broken INDEX.md links are listed above the notes.",
   "memory.destinationExists": "A note already exists at that path.",
   "memory.connect": "Connect to agents",
+  "memory.updateOutdated": "Update to latest",
   "memory.reviewConnections": "Review changes",
   "memory.applyConnections": "Apply changes",
   "memory.connectHint": "Select tools to add reading guidance to their existing instruction files, and choose how each one treats the notes. Review every change before applying.",

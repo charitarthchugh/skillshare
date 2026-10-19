@@ -3401,6 +3401,7 @@
   "memory.moveHint": "指向這篇筆記的連結不會自動更新。請在 INDEX.md 和其他筆記中修正；INDEX.md 中失效的連結會顯示在筆記上方。",
   "memory.destinationExists": "該路徑已有筆記。",
   "memory.connect": "連接至 Agent",
+  "memory.updateOutdated": "更新至最新版",
   "memory.reviewConnections": "檢查變更",
   "memory.applyConnections": "套用",
   "memory.connectHint": "選取目標，將閱讀指引加入既有的 instructions 檔案，並選擇各自處理筆記的方式。套用前請檢查每項變更。",

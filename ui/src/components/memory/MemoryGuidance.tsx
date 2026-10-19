@@ -94,7 +94,9 @@ export default function MemoryGuidance({ initialized, instructions, root }: { in
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const close = () => { setOpen(false); setPlan(null); setError(''); };
+  const openDialog = (preselect: string[]) => { void guidance.refetch(); setSelected(preselect); setModes({}); setPlan(null); setOpen(true); };
   const targets = guidance.data?.targets ?? [];
+  const outdated = targets.filter((target) => target.state === 'outdated');
   const modeOf = (target: MemoryGuidanceTarget) => modes[target.name] ?? target.mode ?? 'passive';
   const connected = (target: MemoryGuidanceTarget) => target.state === 'configured' || target.state === 'outdated';
   // Connected targets whose mode changed are part of the request without a check.
@@ -132,7 +134,8 @@ export default function MemoryGuidance({ initialized, instructions, root }: { in
         <span className="flex-1" />
         <CopyGuidanceMenu instructions={instructions} />
         <MemoryTools root={root} disabled={!initialized} />
-        <Button variant="secondary" size="sm" disabled={!initialized || !targets.length} onClick={() => { void guidance.refetch(); setSelected([]); setModes({}); setPlan(null); setOpen(true); }}>{t('memory.connect')}</Button>
+        {outdated.length > 0 && <Button variant="primary" size="sm" disabled={!initialized} onClick={() => openDialog(outdated.map((target) => target.name))}>{t('memory.updateOutdated')}</Button>}
+        <Button variant="secondary" size="sm" disabled={!initialized || !targets.length} onClick={() => openDialog([])}>{t('memory.connect')}</Button>
       </div>
       {guidance.error && <div className="ss-note bad">{guidance.error.message}</div>}
       {!!targets.length && <div className="ss-list">

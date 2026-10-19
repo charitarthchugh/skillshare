@@ -3401,6 +3401,7 @@
   "memory.moveHint": "指向这篇笔记的链接不会自动更新。请在 INDEX.md 和其他笔记中修正；INDEX.md 中失效的链接会显示在笔记上方。",
   "memory.destinationExists": "该路径已有笔记。",
   "memory.connect": "连接至 Agent",
+  "memory.updateOutdated": "更新至最新版",
   "memory.reviewConnections": "检查更改",
   "memory.applyConnections": "应用",
   "memory.connectHint": "选择目标，将阅读指引加入现有的 instructions 文件，并选择各自处理笔记的方式。应用前请检查每项更改。",

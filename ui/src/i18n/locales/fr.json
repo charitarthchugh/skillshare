@@ -3401,6 +3401,7 @@
   "memory.moveHint": "Les liens vers cette note ne sont pas mis à jour. Corrigez-les dans INDEX.md et les autres notes ; les liens cassés d’INDEX.md s’affichent au-dessus des notes.",
   "memory.destinationExists": "Une note existe déjà à ce chemin.",
   "memory.connect": "Connecter aux agents",
+  "memory.updateOutdated": "Mettre à jour",
   "memory.reviewConnections": "Vérifier les modifications",
   "memory.applyConnections": "Appliquer",
   "memory.connectHint": "Sélectionnez des outils pour ajouter les consignes de lecture à leurs fichiers d’instructions existants, et choisissez comment chacun traite les notes. Vérifiez chaque modification avant de l’appliquer.",

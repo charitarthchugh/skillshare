@@ -184,7 +184,7 @@ Updated reading guidance suggests a useful retrospective or Dreaming opportunity
 
 Both update modes now request the date, reason, and available source or evidence for decisions and lessons, plus a one-line report of the saved content, project/shared scope, and file path after a successful write. For example: “Saved: run this project's tests in the devcontainer. Project memory: testing.md.” Use ordinary Markdown; no metadata schema is required. The editor shows the same provenance hint.
 
-Existing tools receive the updated guidance through **Connect to agents → Review changes → Apply changes**. Outdated intact blocks can be reviewed; modified blocks remain preserved. Skillshare does not silently update connected tools or existing notes.
+Existing tools receive the updated guidance through **Connect to agents → Review changes → Apply changes**; when blocks are outdated, **Update to latest** opens the same review with every outdated tool already selected. Outdated intact blocks can be reviewed; modified blocks remain preserved. Skillshare does not silently update connected tools or existing notes.
 
 To save a lesson, ask the agent to update `LEARNED.md` with its context,
 conclusion, and evidence. Both modes read `INDEX.md` at the start of each task. Notes are user-owned:
