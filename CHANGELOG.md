@@ -1,5 +1,60 @@
 # Changelog
 
+## [0.26.0] - 2026-10-20
+
+### New Features
+
+#### MCP
+
+- **Keep per-Agent settings in the source** — a server's `options` map holds native fields that have no portable equivalent, such as a Codex approval mode or a Claude Code timeout. Sync writes each block only to its Agent, including its account targets, and keeps it when recreating an entry. Pi continues to use `piOptions`. The dashboard's **Other Agent settings** editor accepts one JSON object per Agent. Refs: #579, #580.
+  ```yaml
+  mcp:
+    servers:
+      docs:
+        url: https://example.com/mcp
+        targets: [codex, claude]
+        options:
+          codex:
+            default_tools_approval_mode: approve
+          claude:
+            timeout: 600000
+  ```
+  - Fields already managed by portable settings are refused. Credentials must be whole-value environment references supported by the receiving Agent; plaintext credentials are refused.
+- **Load served skills into Executor** — `mcp serve --http` now also publishes `/.well-known/agent-skills/index.json` and the skill files that Executor's `wellKnownSkills` loader reads. File changes update the index versions, so Executor picks them up on its next check without a commit or push. Refs: #583.
+  ```bash
+  skillshare mcp serve --http 127.0.0.1:8765
+  skillshare mcp serve --check   # also reports index coverage and skipped skills
+  ```
+  - The index uses the MCP server's bearer token when configured. That token also authorizes MCP editing when enabled; use a separate server without `mcp.serve.edit` for a read-only connection. It leaves out skills Executor cannot load; `--check` explains why. Non-loopback serving still requires a token and TLS. Executor refuses private addresses by default; Cloud needs a public address, and self-hosted deployments must explicitly allow private fetches.
+
+#### Hooks
+
+- **Keep hook code and scripts in separate files** — use `codeFile` instead of inline extension code, or `{from: path}` for a script in `files`. Edit those files and run `hooks sync`; no YAML escaping is needed. Refs: #585, #586.
+  ```yaml
+  hooks:
+    entries:
+      lint:
+        bindings:
+          pi:
+            codeFile: hooks/lint.pi.ts
+  ```
+  - Paths resolve against the config's folder, not the working directory or an entry passed with `--file`. They must stay inside that folder without passing through symlinks. A missing file stops config loading; a file changed after preview makes the apply stale. Saving keeps references; editing code or scripts in the dashboard stores the edit inline.
+
+#### Dashboard
+
+- **Choose one side for every pull conflict** — **Keep all local** and **Keep all remote** select a whole-file resolution for every conflicting file. You can still override individual files before **Apply choices and pull**; selecting a side alone writes nothing.
+- **Update outdated memory guidance together** — **Update to latest** opens the existing connection review with every outdated tool selected and its read/write modes preserved. You still review and apply the changes; modified guidance blocks are left alone.
+
+### Bug Fixes
+
+#### Plugins
+
+- **OMP installs its own marketplace build** — when a repository ships same-named OMP and Claude builds, `plugin add --target omp` now uses `.omp-plugin/marketplace.json`, including a `package.json` with `omp.extensions` or the compatible `pi.extensions`. Claude catalog fallback applies only when there is no OMP catalog; a broken or missing native entry no longer silently installs the Claude build. Catalog versions reach the native install, and discovery and dashboard previews show each build's own path, version and components. Refs: #587, #588.
+
+#### Hooks
+
+- **YAML entry files keep their final newline** — `hooks add|edit --file` no longer drops the final newline from a trailing `code: |` block, so an extension written from it keeps the newline expected by formatters. JSON entry files were unaffected. Refs: #584.
+
 ## [0.25.13] - 2026-10-16
 
 ### New Features
