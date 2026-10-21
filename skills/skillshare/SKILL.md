@@ -148,8 +148,9 @@ editing, import conflicts, credentials, backups, and human-operated TUI commands
 ### Complete plugins
 
 Use `plugin discover` and `plugin add` for a complete native package; `plugin import`
-adopts an existing native installation. Read [plugins.md](references/plugins.md)
-for the scoped upstream workflow, supported targets, and source-ref rules.
+adopts an existing native installation. Run only the requested operation. Read
+[plugins.md](references/plugins.md) before applying changes; it covers the scoped
+upstream workflow, supported targets, and source-ref rules.
 `plugin check/update` handles upstream changes; `sync plugins` reconciles target
 selection. Plugins are excluded from `sync --all`.
 
