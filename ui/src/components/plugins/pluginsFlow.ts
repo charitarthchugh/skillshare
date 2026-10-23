@@ -34,6 +34,9 @@ export function failureText(t: T, response: PluginResult) {
   return response.failure && failed.size ? [...failed].join(' ') : response.failure;
 }
 
+/** Why a plan is blocked, in the user's language. */
+const blockedText = (t: T, plan: PluginPlan) => plan.changes.filter((c) => c.action === 'blocked').map((c) => keyedMessage(t, c)).join(' ') || t('plugins.blocked');
+
 /** What a check found to update, per plugin and Agent (version '' when the source changed without a new one). */
 export function updatesFound(plan: PluginPlan) {
   const found: Updates = {};
@@ -164,7 +167,7 @@ export function usePluginsFlow({ t, inventory, refresh, onPreviewed }: {
     const finish = (e: Extract<PluginUpdateEvent, { event: 'result' }>) => {
       const targets = picks.find((p) => p.name === e.name)?.targets ?? [];
       if (e.stale) { staleSeen = true; setUpdates((prev) => Object.fromEntries(Object.entries(prev).filter(([name]) => name !== e.name))); set(e.name, { status: 'skipped', stale: true, note: t('plugins.updateDialog.stale') }); return; }
-      if (e.plan?.blocked) { set(e.name, { status: 'failed', note: e.plan.changes.filter((c) => c.action === 'blocked').map((c) => keyedMessage(t, c)).join(' ') || t('plugins.blocked'), failed: targets }); return; }
+      if (e.plan?.blocked) { set(e.name, { status: 'failed', note: blockedText(t, e.plan), failed: targets }); return; }
       if (!e.plan || !e.result) { set(e.name, { status: 'failed', note: e.failure, failed: targets }); return; }
       const response = { result: e.result, failure: e.failure };
       const plan = e.plan;
@@ -230,10 +233,32 @@ export function usePluginsFlow({ t, inventory, refresh, onPreviewed }: {
     finally { setBusy(false); setWorking(''); }
   };
 
+  /**
+   * Each import is its own preview and apply, as a tick is: every write moves the revision, so a batch has
+   * no one plan to review. An import adopts what the Agent has without touching it; a blocked one is skipped.
+   */
+  const importMany = async (requests: PluginRequest[]) => {
+    setBusy(true); setWorking('import'); setFailure(''); setResult(null);
+    const results: PluginOutcome[] = [];
+    const failures: string[] = [];
+    for (const request of requests) {
+      try {
+        const plan = await pluginsApi.preview(request);
+        if (plan.blocked) { failures.push(`${request.plugin}: ${blockedText(t, plan)}`); continue; }
+        const response = await pluginsApi.apply(request, plan.revision);
+        results.push(...(response.result?.results ?? []));
+        const failed = failureText(t, response);
+        if (failed) failures.push(failed);
+      } catch (e) { failures.push(`${request.plugin}: ${(e as Error).message}`); }
+    }
+    setResult({ result: { results }, failure: failures.join(' ') }); setFailure(failures.join(' '));
+    setBusy(false); setWorking(''); refresh();
+  };
+
   const outcomes = result?.result?.results ?? [];
   return {
     busy, working, failure, review, updates, outcomes, checked, checking, batch,
-    preview, begin, apply, selectTarget, check, updateMany,
+    preview, begin, apply, selectTarget, check, updateMany, importMany,
     stopBatch: () => { pluginsApi.stopUpdate().catch((e: Error) => setFailure(e.message)); },
     closeBatch: () => setBatch(null),
     closeReview: () => setReview(null),

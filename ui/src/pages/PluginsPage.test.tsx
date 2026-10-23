@@ -67,6 +67,33 @@ describe('PluginsPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'plugins.apply' }));
     await waitFor(() => expect(pluginsApi.apply).toHaveBeenCalledWith({ action: 'import', from: 'pi', plugin: 'npm:demo' }, 'filters-reviewed'));
   });
+  it('imports every ticked plugin, each from its own preview, and keeps the import dialog open', async () => {
+    vi.mocked(pluginsApi.list).mockResolvedValue({ packages: {}, targetDefinitions: [{ target: 'pi', label: 'Pi', project: true, operations: ['import'] }], hosts: [{ target: 'pi', version: '1.0.0', status: 'ready', installed: [{ id: 'npm:a', enabled: true }, { id: 'npm:b', enabled: true }, { id: 'npm:c', enabled: true }, { id: 'npm:f', enabled: true, filtered: true, importable: true }] }] });
+    vi.mocked(pluginsApi.preview).mockImplementation(async (r) => ({ revision: `rev-${r.plugin}`, blocked: false, changes: [] }));
+    vi.mocked(pluginsApi.apply).mockResolvedValue({ result: { results: [] }, failure: '' });
+    mount();
+    fireEvent.click((await screen.findAllByRole('button', { name: 'plugins.import' }))[0]);
+    fireEvent.click(await screen.findByRole('checkbox', { name: 'Pi' }));
+    expect(screen.getByRole('checkbox', { name: 'npm:f (Pi)' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: 'npm:b (Pi)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'plugins.importSelected' }));
+    await waitFor(() => expect(pluginsApi.apply).toHaveBeenCalledTimes(2));
+    expect(pluginsApi.apply).toHaveBeenCalledWith({ action: 'import', from: 'pi', plugin: 'npm:a' }, 'rev-npm:a');
+    expect(pluginsApi.apply).toHaveBeenCalledWith({ action: 'import', from: 'pi', plugin: 'npm:c' }, 'rev-npm:c');
+    expect(screen.getByRole('dialog', { name: 'plugins.import' })).toBeInTheDocument();
+  });
+  it('goes on past a blocked import and keeps it ticked to retry', async () => {
+    vi.mocked(pluginsApi.list).mockResolvedValue({ packages: {}, targetDefinitions: [{ target: 'pi', label: 'Pi', project: true, operations: ['import'] }], hosts: [{ target: 'pi', version: '1.0.0', status: 'ready', installed: [{ id: 'npm:a', enabled: true }, { id: 'npm:b', enabled: true }] }] });
+    vi.mocked(pluginsApi.preview).mockImplementation(async (r) => ({ revision: 'rev', blocked: r.plugin === 'npm:a', changes: [] }));
+    vi.mocked(pluginsApi.apply).mockResolvedValue({ result: { results: [] }, failure: '' });
+    mount();
+    fireEvent.click((await screen.findAllByRole('button', { name: 'plugins.import' }))[0]);
+    fireEvent.click(await screen.findByRole('checkbox', { name: 'Pi' }));
+    fireEvent.click(screen.getByRole('button', { name: 'plugins.importSelected' }));
+    expect(await within(screen.getByRole('dialog', { name: 'plugins.import' })).findByRole('alert')).toHaveTextContent('npm:a: plugins.blocked');
+    expect(pluginsApi.apply).toHaveBeenCalledExactlyOnceWith({ action: 'import', from: 'pi', plugin: 'npm:b' }, 'rev');
+    expect(screen.getByRole('checkbox', { name: 'npm:a (Pi)' })).toBeChecked();
+  });
   const twoBehind = () => {
     vi.mocked(pluginsApi.list).mockResolvedValue({
       targetDefinitions: [{ target: 'pi', label: 'Pi', project: false, operations: ['add', 'check', 'update'], npm: true }, { target: 'codex', label: 'Codex', project: false, operations: ['add', 'check', 'update'] }],

@@ -43,6 +43,8 @@ Antigravity Desktop（`antigravity` 或 `agy`）與 CLI（`antigravity-cli`）�
 不會重新安裝、複製其驗證資訊，也不會改變它在該 Agent 中是否啟用。
 匯入功能適用於 Claude、Codex、Copilot、Antigravity CLI、Grok、Pi 與 OpenCode；
 Cursor 與 Antigravity 本機套件則請使用 **Add plugin**。
+要一次匯入多個，勾選它們（或勾選 Agent 標題）後選擇 **Import selected**；
+會逐一匯入，對話框保持開啟。有資源過濾器的安裝會在預覽後單獨匯入。
 
 ```bash
 skillshare plugin import review@team --from claude --no-tui

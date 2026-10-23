@@ -5,6 +5,7 @@ import { ChevronRight, Download, FolderOpen, Package, Plus, RefreshCw, Share2, T
 import { byPlugin, pluginShareCommand, pluginsApi, targetMap, type PluginTarget, type PluginInventory } from '../api/plugins';
 import AgentIcon from '../components/AgentIcon';
 import Button from '../components/Button';
+import { Checkbox } from '../components/Checkbox';
 import DialogShell from '../components/DialogShell';
 import EmptyState from '../components/EmptyState';
 import IconButton from '../components/IconButton';
@@ -49,11 +50,13 @@ export default function PluginsPage() {
     setParams({}, { replace: true });
   }, [params, setParams]);
   const [importing, setImporting] = useState(false);
+  // Rows ticked for one batch import, as `${target}:${id}`.
+  const [picked, setPicked] = useState<Set<string>>(new Set());
   const [sharing, setSharing] = useState<string[] | null>(null);
   const [browsing, setBrowsing] = useState<{ name: string; source?: string } | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; items: ContextMenuItem[] } | null>(null);
   const refresh = () => void invalidate(cache, 'pluginsChanged');
-  const { busy, working, failure, review, updates, outcomes, checked, checking, batch, pendingUpdates, preview, begin, apply, selectTarget, check, updateMany, stopBatch, closeBatch, closeReview, clearResult, todo, active, idle, changed, isPi } =
+  const { busy, working, failure, review, updates, outcomes, checked, checking, batch, pendingUpdates, preview, begin, apply, selectTarget, check, updateMany, importMany, stopBatch, closeBatch, closeReview, clearResult, todo, active, idle, changed, isPi } =
     usePluginsFlow({ t, inventory: data, refresh, onPreviewed: () => { setAdding(null); setImporting(false); } });
   const [updating, setUpdating] = useState(false);
   // Once per visit, as soon as there is a plugin to ask about: the rows say what has a new version without a click.
@@ -107,6 +110,18 @@ export default function PluginsPage() {
   const list = (shown: string[], pi?: boolean) => data && (
     <PluginList inventory={data} names={shown} pi={pi} updates={updates} busy={busy} working={working} onToggle={(name, target, on) => void selectTarget(name, target, on)} onMenu={openMenu} onAdd={begin} onBlocked={(name, source) => setAdding({ name, source, bound: data.packages[name]?.bindings, recorded: data.packages[name] })} />
   );
+  const importHosts = (data?.hosts ?? []).map((h) => {
+    const locked = !pluginTargets[h.target]?.operations.includes('import');
+    // What Skillshare installed or already imported into this Agent has nothing left to import.
+    const managed = new Set(Object.values(data?.packages ?? {}).map((p) => p.bindings[h.target]?.id));
+    const importable = h.installed.filter((i) => !managed.has(i.id));
+    // A filtered install keeps native fields the user should see in its own review, so it is imported one at a time.
+    const pickable = locked ? [] : importable.filter((i) => !i.filtered).map((i) => `${h.target}:${i.id}`);
+    return { h, locked, importable, pickable };
+  });
+  // A tick on a row that stopped being pickable since (a refetch filtered it) is not sent.
+  const pickedRequests = importHosts.flatMap(({ h, importable, pickable }) => importable.filter((i) => picked.has(`${h.target}:${i.id}`) && pickable.includes(`${h.target}:${i.id}`)).map((i) => ({ action: 'import' as const, from: h.target, plugin: i.id })));
+  const togglePicks = (keys: string[], on: boolean) => setPicked((prev) => { const next = new Set(prev); for (const k of keys) { if (on) next.add(k); else next.delete(k); } return next; });
   const addActions = <>
     <Button variant="secondary" disabled={busy} onClick={() => setImporting(true)}><Download size={15} />{t('plugins.import')}</Button>
     <Button disabled={busy} onClick={() => setAdding({})}><Plus size={15} />{t('plugins.add')}</Button>
@@ -194,18 +209,16 @@ export default function PluginsPage() {
           <div className="ss-list">
             {!hostsReady && <div className="ss-r gap-2 text-[13px] text-ink-2"><Spinner size="sm" />{t('plugins.hostsAsking')}</div>}
             {!hostsReady && hostsSlow && <div className="ss-r !min-h-0 text-xs text-ink-3">{t('plugins.hostsSlow')}</div>}
-            {data?.hosts.map((h) => {
-              const locked = !pluginTargets[h.target]?.operations.includes('import');
-              // What Skillshare installed or already imported into this Agent has nothing left to import.
-              const managed = new Set(Object.values(data?.packages ?? {}).map((p) => p.bindings[h.target]?.id));
-              const importable = h.installed.filter((i) => !managed.has(i.id));
+            {importHosts.map(({ h, locked, importable, pickable }) => {
+              const all = pickable.length > 0 && pickable.every((k) => picked.has(k));
               return (
                 <div key={h.target}>
-                  <div className="ss-gh"><span className="ss-at"><AgentIcon target={h.target} size={17} /></span><span className="font-semibold">{(pluginTargets[h.target]?.label ?? h.target)}</span><span className="ss-cnt">{importable.length}</span></div>
+                  <div className="ss-gh">{pickable.length > 0 && <Checkbox label={pluginTargets[h.target]?.label ?? h.target} hideLabel checked={all} indeterminate={!all && pickable.some((k) => picked.has(k))} disabled={busy} onChange={(on) => togglePicks(pickable, on)} />}<span className="ss-at"><AgentIcon target={h.target} size={17} /></span><span className="font-semibold">{(pluginTargets[h.target]?.label ?? h.target)}</span><span className="ss-cnt">{importable.length}</span></div>
                   {h.installed.length === 0 && <div className="ss-r !min-h-11"><span className="text-[13px] text-ink-3">{keyedText(t, h.errorKey, h.error, h.errorArgs) || t('plugins.absent')}</span></div>}
                   {h.installed.length > 0 && importable.length === 0 && <div className="ss-r !min-h-11"><span className="text-[13px] text-ink-3">{t('plugins.allManaged')}</span></div>}
                   {importable.map((i) => (
                     <div key={i.id} className="ss-r !min-h-11">
+                      {pickable.length > 0 && <Checkbox label={`${i.id} (${pluginTargets[h.target]?.label ?? h.target})`} hideLabel checked={picked.has(`${h.target}:${i.id}`)} disabled={busy || !pickable.includes(`${h.target}:${i.id}`)} onChange={(on) => togglePicks([`${h.target}:${i.id}`], on)} />}
                       <span className="min-w-0 flex-1 truncate font-mono text-[13px] font-semibold" title={i.id}>{i.id}</span>
                       {i.enabledKnown !== false && !i.enabled && <span className="ss-tag">{t('plugins.nativeDisabled')}</span>}
                       <span className="font-mono text-xs text-ink-3">{i.version}</span>
@@ -217,7 +230,12 @@ export default function PluginsPage() {
             })}
           </div>
         </div>
-        <div className="df"><Button variant="ghost" disabled={busy} onClick={() => setImporting(false)}>{t('common.close')}</Button></div>
+        <div className="df">
+          {/* The page's alert sits behind this dialog. */}
+          {failure && <span role="alert" className="mr-auto min-w-0 text-[13px] text-bad">{failure}</span>}
+          <Button variant="ghost" disabled={busy} onClick={() => setImporting(false)}>{t('common.close')}</Button>
+          <Button loading={working === 'import'} disabled={busy || pickedRequests.length === 0} onClick={() => void importMany(pickedRequests)}>{t('plugins.importSelected', { count: pickedRequests.length })}</Button>
+        </div>
       </DialogShell>
 
       <DialogShell open={!!review} onClose={closeReview} preventClose={busy} ariaLabel={t('plugins.preview')} maxWidth="2xl" padding="none">

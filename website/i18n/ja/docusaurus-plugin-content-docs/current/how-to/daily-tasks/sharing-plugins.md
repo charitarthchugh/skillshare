@@ -52,6 +52,8 @@ Pi、OpenCode に対応しています。Antigravity Desktop（`antigravity` ま
 再インストールしたり、その認証をコピーしたり、その Agent 内で有効かどうかを変更したりすることは
 ありません。Import は Claude、Codex、Copilot、Antigravity CLI、Grok、Pi、OpenCode で利用できます。
 Cursor と Antigravity のローカルパッケージには **Add plugin** を使ってください。
+複数まとめてインポートするには、チェックを入れて（Agent の見出しでも可）**Import selected** を選びます。
+1 つずつ順にインポートされ、ダイアログは開いたままです。リソースフィルターのあるインストールは、確認を経て個別にインポートされます。
 
 ```bash
 skillshare plugin import review@team --from claude --no-tui

@@ -2387,6 +2387,7 @@
   "plugins.add": "افزودن افزونه",
   "plugins.import": "وارد کردن نصب‌شده‌ها",
   "plugins.importOne": "وارد کردن",
+  "plugins.importSelected": "وارد کردن موارد انتخاب‌شده ({count})",
   "plugins.preservedKeys": "فیلدهای بومی حفظ‌شده:",
   "plugins.source": "مخزن یا پوشه",
   "plugins.sourceHelp": "owner/repo، نشانی HTTPS Git، یک پوشهٔ محلی یا npm:بسته برای Pi را بچسبانید. پیش‌نمایش چیزی نصب نمی‌کند.",

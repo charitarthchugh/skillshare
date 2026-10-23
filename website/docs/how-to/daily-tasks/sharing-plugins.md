@@ -52,6 +52,9 @@ Choose **Import installed** and select a native installation. Importing records
 it without reinstalling, copying its authentication, or changing whether it is
 enabled in its Agent. Import is available for Claude, Codex, Copilot, Antigravity CLI, Grok, Pi, and OpenCode;
 use **Add plugin** for Cursor and Antigravity local packages.
+To import several at once, tick them (or an Agent's header) and choose
+**Import selected**; each is imported in turn and the dialog stays open.
+An installation with resource filters is imported on its own, after a review.
 
 ```bash
 skillshare plugin import review@team --from claude --no-tui

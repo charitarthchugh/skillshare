@@ -2387,6 +2387,7 @@
   "plugins.add": "Adicionar plugin",
   "plugins.import": "Importar instalados",
   "plugins.importOne": "Importar",
+  "plugins.importSelected": "Importar selecionados ({count})",
   "plugins.preservedKeys": "Campos nativos preservados:",
   "plugins.source": "Repositório ou pasta",
   "plugins.sourceHelp": "Cole owner/repo, uma URL Git HTTPS, uma pasta local ou npm:pacote para o Pi. A prévia não instala nada.",

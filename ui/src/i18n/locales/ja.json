@@ -2387,6 +2387,7 @@
   "plugins.add": "プラグインを追加",
   "plugins.import": "インストール済みを取り込む",
   "plugins.importOne": "取り込む",
+  "plugins.importSelected": "選択項目をインポート（{count}）",
   "plugins.preservedKeys": "保持するネイティブ項目：",
   "plugins.source": "リポジトリまたはフォルダー",
   "plugins.sourceHelp": "owner/repo、HTTPS Git URL、ローカルディレクトリ、または Pi 用の npm:パッケージ名を貼り付けてください。プレビューでは何もインストールされません。",

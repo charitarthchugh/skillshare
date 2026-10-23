@@ -2387,6 +2387,7 @@
   "plugins.add": "Tambah plugin",
   "plugins.import": "Impor yang terpasang",
   "plugins.importOne": "Impor",
+  "plugins.importSelected": "Impor yang dipilih ({count})",
   "plugins.preservedKeys": "Kolom native dipertahankan:",
   "plugins.source": "Repositori atau folder",
   "plugins.sourceHelp": "Tempel owner/repo, URL Git HTTPS, folder lokal, atau npm:paket untuk Pi. Pratinjau tidak memasang apa pun.",

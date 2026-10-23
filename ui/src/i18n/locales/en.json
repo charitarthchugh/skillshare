@@ -2387,6 +2387,7 @@
   "plugins.add": "Add plugin",
   "plugins.import": "Import installed",
   "plugins.importOne": "Import",
+  "plugins.importSelected": "Import selected ({count})",
   "plugins.preservedKeys": "Native fields kept:",
   "plugins.source": "Repository or folder",
   "plugins.sourceHelp": "Paste owner/repo, an HTTPS Git URL, a local directory, or npm:package for Pi. Preview does not install anything.",

@@ -53,6 +53,8 @@ Antigravity Desktop(`antigravity` 또는 `agy`)과 CLI(`antigravity-cli`)는 별
 인증 정보를 복사하거나, 해당 Agent 안에서의 활성화 여부를 변경하지 않고 그저
 기록만 합니다. Import는 Claude, Codex, Copilot, Antigravity CLI, Grok, Pi, OpenCode에서
 사용할 수 있으며, Cursor와 Antigravity 로컬 패키지에는 **Add plugin**을 사용하세요.
+여러 개를 한 번에 가져오려면 체크하고(Agent 헤더도 가능) **Import selected**를 선택하세요.
+하나씩 차례로 가져오며 대화 상자는 열린 채로 유지됩니다. 리소스 필터가 있는 설치는 검토를 거쳐 따로 가져옵니다.
 
 ```bash
 skillshare plugin import review@team --from claude --no-tui

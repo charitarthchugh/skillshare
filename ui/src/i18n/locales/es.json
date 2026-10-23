@@ -2387,6 +2387,7 @@
   "plugins.add": "Añadir plugin",
   "plugins.import": "Importar instalados",
   "plugins.importOne": "Importar",
+  "plugins.importSelected": "Importar selección ({count})",
   "plugins.preservedKeys": "Campos nativos conservados:",
   "plugins.source": "Repositorio o carpeta",
   "plugins.sourceHelp": "Pega owner/repo, una URL Git HTTPS, una carpeta local o npm:paquete para Pi. La vista previa no instala nada.",

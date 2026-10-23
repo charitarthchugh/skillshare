@@ -2387,6 +2387,7 @@
   "plugins.add": "플러그인 추가",
   "plugins.import": "설치된 항목 가져오기",
   "plugins.importOne": "가져오기",
+  "plugins.importSelected": "선택 항목 가져오기 ({count})",
   "plugins.preservedKeys": "유지할 네이티브 필드:",
   "plugins.source": "저장소 또는 폴더",
   "plugins.sourceHelp": "owner/repo, HTTPS Git URL, 로컬 디렉터리 또는 Pi용 npm:패키지를 붙여 넣으세요. 미리보기는 아무것도 설치하지 않습니다.",

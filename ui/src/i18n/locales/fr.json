@@ -2387,6 +2387,7 @@
   "plugins.add": "Ajouter un plugin",
   "plugins.import": "Importer les installations",
   "plugins.importOne": "Importer",
+  "plugins.importSelected": "Importer la sélection ({count})",
   "plugins.preservedKeys": "Champs natifs conservés :",
   "plugins.source": "Dépôt ou dossier",
   "plugins.sourceHelp": "Collez owner/repo, une URL Git HTTPS, un dossier local ou npm:paquet pour Pi. L'aperçu n'installe rien.",
