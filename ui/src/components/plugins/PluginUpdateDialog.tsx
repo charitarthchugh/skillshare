@@ -134,7 +134,8 @@ function Picking({ names, attention, current, found, inventory, label, busy, onU
                   <Checkbox size="sm" hideLabel label={name} checked={on} onChange={(checked) => setPicked((prev) => ({ ...prev, [name]: checked ? targetsOf(name) : [] }))} className="mt-2" />
                   <span className="ss-at mt-0.5">{rows.length === 1 ? <AgentIcon target={rows[0].target} size={17} /> : <Package size={15} />}</span>
                   <span className="flex min-w-0 flex-1 flex-col gap-1.5">
-                    <span className="flex items-center gap-2">
+                    {/* As tall as the icon with its margin, so the first line centers on it. */}
+                    <span className="flex min-h-[34px] items-center gap-2">
                       <span className="font-mono font-semibold">{name}</span>
                       {rows.length === 1 && <span className="text-[13px] text-ink-2">{label(rows[0].target)}</span>}
                       {shared && <VersionChange {...moves[0]} />}
