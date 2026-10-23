@@ -8,6 +8,7 @@ import (
 
 	"skillshare/internal/skillignore"
 	"skillshare/internal/utils"
+	"skillshare/internal/validate"
 )
 
 // TargetDotDirs is the set of hidden directory names (e.g. ".claude", ".cursor")
@@ -36,15 +37,10 @@ func discoverFromGitWithProgressImpl(source *Source, onProgress ProgressCallback
 	}
 
 	// Discover skills (include root to support single-skill-at-root repos)
-	skills := discoverSkills(repoPath, true)
+	skills := discoverSkillsByDirectory(repoPath, true)
 
-	// Fix root skill name: temp dir gives random name, use source.Name instead
-	for i := range skills {
-		if skills[i].Path == "." {
-			skills[i].Name = source.Name
-			break
-		}
-	}
+	// Use the source name rather than the temporary clone directory for the root.
+	applySkillInstallNames(skills, repoPath, source.Name)
 
 	// Discover agents (agents/ dir or pure agent repo fallback)
 	agents := discoverAgents(repoPath, len(skills) > 0)
@@ -87,13 +83,8 @@ func discoverLocalImpl(source *Source) (*DiscoveryResult, error) {
 		return nil, fmt.Errorf("source path is not a directory: %s", source.Path)
 	}
 
-	skills := discoverSkills(source.Path, true)
-	for i := range skills {
-		if skills[i].Path == "." {
-			skills[i].Name = source.Name
-			break
-		}
-	}
+	skills := discoverSkillsByDirectory(source.Path, true)
+	applySkillInstallNames(skills, source.Path, source.Name)
 
 	agents := discoverAgents(source.Path, len(skills) > 0)
 	skills, agents, err = constrainDiscoveryToExplicitSkill(source, skills, agents)
@@ -133,7 +124,7 @@ func resolveSubdir(repoPath, subdir string) (string, error) {
 	skills := discoverSkills(repoPath, false) // exclude root
 	var candidates []string
 	for _, sk := range skills {
-		if sk.Name == baseName {
+		if filepath.Base(sk.Path) == baseName {
 			candidates = append(candidates, sk.Path)
 		}
 	}
@@ -163,9 +154,92 @@ func constrainDiscoveryToExplicitSkill(source *Source, skills []SkillInfo, agent
 	return nil, nil, fmt.Errorf("explicit skill target does not resolve to a root SKILL.md: %s", source.Raw)
 }
 
+// DefaultSkillName gives generic container directories a meaningful name,
+// while preserving established directory names and rejecting unsafe frontmatter.
+func DefaultSkillName(dir, fallback string) string {
+	if !validate.IsLikelySkillsPath(fallback) {
+		return fallback
+	}
+	name, err := utils.ParseSkillName(dir)
+	if err != nil {
+		return fallback
+	}
+	name = strings.ToLower(strings.Join(strings.Fields(name), "-"))
+	if validate.SkillName(name) != nil {
+		return fallback
+	}
+	return name
+}
+
+// ExistingSkillInstallName preserves a recorded destination for source-based updates.
+func ExistingSkillInstallName(sourceDir string, source *Source, skill SkillInfo, opts InstallOptions) (string, error) {
+	if !opts.Update || opts.Name != "" {
+		return skill.Name, nil
+	}
+	fullSource := buildDiscoverySkillSource(source, skill.Path)
+	store := LoadMetadataOrNew(sourceDir)
+	var existing string
+	for _, key := range store.List() {
+		entry := store.Get(key)
+		if entry.Tracked || entry.EffectiveKind() != "skill" || entry.Source != fullSource {
+			continue
+		}
+		rel := KeyToRelPath(key, entry)
+		if filepath.Dir(rel) != filepath.Clean(opts.Into) {
+			continue
+		}
+		if _, err := os.Stat(filepath.Join(sourceDir, rel, "SKILL.md")); err != nil {
+			continue
+		}
+		if existing != "" {
+			return "", fmt.Errorf("multiple installed skills match source %s; use --name to choose the update destination", fullSource)
+		}
+		existing = filepath.Base(rel)
+	}
+	if existing != "" {
+		return existing, nil
+	}
+	destPath := filepath.Join(sourceDir, opts.Into, skill.Name)
+	if !opts.Force {
+		if _, err := os.Stat(destPath); err == nil && !dirIsEmpty(destPath) {
+			return "", fmt.Errorf("already exists at %s; use --force to overwrite", destPath)
+		}
+	}
+	return skill.Name, nil
+}
+
 // discoverSkills finds directories containing SKILL.md
 // If includeRoot is true, root-level SKILL.md is also included (with Path=".")
 func discoverSkills(repoPath string, includeRoot bool) []SkillInfo {
+	skills := discoverSkillsByDirectory(repoPath, includeRoot)
+	applySkillInstallNames(skills, repoPath, filepath.Base(repoPath))
+	return skills
+}
+
+func applySkillInstallNames(skills []SkillInfo, repoPath, rootName string) {
+	directoryNames := make(map[string]int)
+	installNames := make(map[string]int)
+	fallbacks := make([]string, len(skills))
+	for i := range skills {
+		name := filepath.Base(skills[i].Path)
+		if skills[i].Path == "." {
+			name = rootName
+		}
+		fallbacks[i] = name
+		directoryNames[strings.ToLower(name)]++
+		skills[i].Name = DefaultSkillName(filepath.Join(repoPath, skills[i].Path), name)
+		installNames[strings.ToLower(skills[i].Name)]++
+	}
+	for i := range skills {
+		name := skills[i].Name
+		// A new frontmatter name must not overwrite another discovered skill.
+		if name != fallbacks[i] && (directoryNames[strings.ToLower(name)] > 0 || installNames[strings.ToLower(name)] > 1) {
+			skills[i].Name = fallbacks[i]
+		}
+	}
+}
+
+func discoverSkillsByDirectory(repoPath string, includeRoot bool) []SkillInfo {
 	var skills []SkillInfo
 
 	filepath.Walk(repoPath, func(path string, info os.FileInfo, err error) error {

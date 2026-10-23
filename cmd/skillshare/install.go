@@ -343,6 +343,14 @@ func dispatchInstall(source *install.Source, cfg *config.Config, opts install.In
 		return handleGitInstall(source, cfg, opts)
 	}
 
+	if source.Type == install.SourceTypeLocalPath {
+		skill := install.SkillInfo{Name: install.DefaultSkillName(source.Path, source.Name), Path: "."}
+		name, err := install.ExistingSkillInstallName(cfg.EffectiveSkillsSource(), source, skill, opts)
+		if err != nil {
+			return installLogSummary{}, err
+		}
+		source.Name = name
+	}
 	return handleDirectInstall(source, cfg, opts)
 }
 
