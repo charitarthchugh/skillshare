@@ -158,7 +158,7 @@ Doctor 会在两类重复 skill 风险到达运行时选择器之前将其标记
   suggestion: Keep universal syncing skills to ~/.agents/skills and stop the rest with `skillshare target codex --skills=false`.
 ```
 
-`sync` 也会列出相同的 targets 和要执行的命令，dashboard 的同步页面则提供按钮，可直接停止同步该 target 的 skills。设置完全相同的共用路径 targets 仍适用上面的解决方法。
+`sync` 也会列出相同的 targets 和要执行的命令，dashboard 的同步页面则提供按钮，可直接停止同步该 target 的 skills；project target 则改为链接到所属 project 的编辑页面。设置完全相同的共用路径 targets 仍适用上面的解决方法。
 
 **`cross_target_discovery`** —— 当某个已启用 target 的运行时文档说明它也会扫描
 另一个已启用 target 写入的目录时触发。例如，沿用旧设置的配置仍让 `codex` 指向旧版的

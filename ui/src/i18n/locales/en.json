@@ -1989,6 +1989,7 @@
   "sync.forceHint": "Replace files that were edited inside a target",
   "sync.folderConflict.text": "{names} sync skills to the same folder {path} with different settings, so each sync undoes the other.",
   "sync.folderConflict.stop": "Stop syncing skills for {name}",
+  "sync.folderConflict.editProject": "Edit {name}'s project",
   "sync.folderConflict.keeps": "{name} · keeps writing",
   "sync.folderConflict.filters": "Filters",
   "sync.folderConflict.filters.include": "includes {names}",

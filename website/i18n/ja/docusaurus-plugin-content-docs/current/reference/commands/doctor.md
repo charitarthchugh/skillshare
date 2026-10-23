@@ -157,7 +157,7 @@ Doctor は、ランタイムのピッカーに到達する前に、Skill 重複�
   suggestion: Keep universal syncing skills to ~/.agents/skills and stop the rest with `skillshare target codex --skills=false`.
 ```
 
-`sync` も同じ Target と実行すべきコマンドを表示し、ダッシュボードの同期ページには外す Target の Skills 同期を停止するボタンがあります。設定が同一の Target がパスを共有している場合は、上記の解決方法がそのまま当てはまります。
+`sync` も同じ Target と実行すべきコマンドを表示し、ダッシュボードの同期ページには外す Target の Skills 同期を停止するボタン（project target の場合はその project の編集画面へのリンク）があります。設定が同一の Target がパスを共有している場合は、上記の解決方法がそのまま当てはまります。
 
 **`cross_target_discovery`** — ある有効な Target のランタイムが、別の有効な Target が書き込むディレクトリもスキャンすると文書化されている場合に発生します。例えば、以前のセットアップから残った設定では `codex` がレガシーな `~/.codex/skills` を指したままになっている一方、`universal` は `~/.agents/skills` に書き込みます — このディレクトリは Codex も読み込みます。両方を有効にすると、Codex は自身のコンテンツに加えて universal のコンテンツも見ることになります。
 

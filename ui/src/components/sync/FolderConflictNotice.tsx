@@ -1,8 +1,10 @@
 import { TriangleAlert } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { FolderConflict, Target } from '../../api/client';
 import { useI18n, useT } from '../../i18n';
 import { shortenHome } from '../../lib/paths';
 import Button from '../Button';
+import { projectUrl } from '../projects/projectView';
 import { NAMES, TargetLinks } from '../targets/FilterSection';
 import { joinList } from '../targets/targetView';
 
@@ -33,11 +35,17 @@ export default function FolderConflictNotice({ conflict, targets, onStop }: { co
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
         <TriangleAlert size={16} className="shrink-0 text-warn" />
         <span className="min-w-0 flex-1 basis-80">{t('sync.folderConflict.text', { names: joinList(conflict.targets, locale), path: shortenHome(conflict.path) })}</span>
-        {conflict.stop.map((name) => (
-          <Button key={name} variant="secondary" size="sm" onClick={() => onStop(name)}>
-            {t('sync.folderConflict.stop', { name })}
-          </Button>
-        ))}
+        {conflict.stop.map((name) => {
+          // A project target's settings belong to its project; the target API refuses them.
+          const project = targets.find((x) => x.name === name)?.project;
+          return project ? (
+            <Link key={name} to={projectUrl(project)} className="ss-btn sm">{t('sync.folderConflict.editProject', { name })}</Link>
+          ) : (
+            <Button key={name} variant="secondary" size="sm" onClick={() => onStop(name)}>
+              {t('sync.folderConflict.stop', { name })}
+            </Button>
+          );
+        })}
       </div>
       {rows.length > 0 && (
         <div className="flex flex-col gap-2 pl-[26px]">

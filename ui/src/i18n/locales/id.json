@@ -1989,6 +1989,7 @@
   "sync.forceHint": "Ganti file yang diedit di dalam target",
   "sync.folderConflict.text": "{names} menyinkronkan skill ke folder yang sama {path} dengan pengaturan berbeda, sehingga setiap sinkronisasi membatalkan yang lain.",
   "sync.folderConflict.stop": "Berhenti menyinkronkan skill ke {name}",
+  "sync.folderConflict.editProject": "Edit proyek {name}",
   "sync.folderConflict.keeps": "{name} · tetap menulis",
   "sync.folderConflict.filters": "Filter",
   "sync.folderConflict.filters.include": "menyertakan {names}",

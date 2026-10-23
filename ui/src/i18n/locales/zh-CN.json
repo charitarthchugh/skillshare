@@ -1989,6 +1989,7 @@
   "sync.forceHint": "替换在目标中修改过的文件",
   "sync.folderConflict.text": "{names} 同步到同一个文件夹 {path}，但设置不同，每次同步都会互相加回、删掉。",
   "sync.folderConflict.stop": "停止同步 {name} 的 Skills",
+  "sync.folderConflict.editProject": "编辑 {name} 所属的项目",
   "sync.folderConflict.keeps": "{name} · 持续写入",
   "sync.folderConflict.filters": "筛选",
   "sync.folderConflict.filters.include": "包含 {names}",

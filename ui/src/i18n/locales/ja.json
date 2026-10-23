@@ -1989,6 +1989,7 @@
   "sync.forceHint": "ターゲット内で編集されたファイルを置き換えます",
   "sync.folderConflict.text": "{names} は同じフォルダ {path} に異なる設定で Skills を同期しているため、同期のたびに互いの結果を打ち消します。",
   "sync.folderConflict.stop": "{name} の Skills の同期を停止",
+  "sync.folderConflict.editProject": "{name} のプロジェクトを編集",
   "sync.folderConflict.keeps": "{name} · 書き込みを続ける",
   "sync.folderConflict.filters": "フィルター",
   "sync.folderConflict.filters.include": "{names} を含める",

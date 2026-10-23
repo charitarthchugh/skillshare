@@ -1989,6 +1989,7 @@
   "sync.forceHint": "대상 안에서 수정된 파일을 교체합니다",
   "sync.folderConflict.text": "{names}이(가) 같은 폴더 {path}에 서로 다른 설정으로 Skills를 동기화해서, 동기화할 때마다 서로의 결과를 되돌립니다.",
   "sync.folderConflict.stop": "{name}의 Skills 동기화 중지",
+  "sync.folderConflict.editProject": "{name}의 프로젝트 편집",
   "sync.folderConflict.keeps": "{name} · 계속 기록",
   "sync.folderConflict.filters": "필터",
   "sync.folderConflict.filters.include": "{names} 포함",

@@ -1989,6 +1989,7 @@
   "sync.forceHint": "Remplacer les fichiers modifiés dans une cible",
   "sync.folderConflict.text": "{names} synchronisent les skills dans le même dossier {path} avec des paramètres différents : chaque synchronisation annule l’autre.",
   "sync.folderConflict.stop": "Arrêter de synchroniser les skills vers {name}",
+  "sync.folderConflict.editProject": "Modifier le projet de {name}",
   "sync.folderConflict.keeps": "{name} · continue d’écrire",
   "sync.folderConflict.filters": "Filtres",
   "sync.folderConflict.filters.include": "inclut {names}",

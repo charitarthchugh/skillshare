@@ -1989,6 +1989,7 @@
   "sync.forceHint": "Substituir arquivos editados dentro de um destino",
   "sync.folderConflict.text": "{names} sincronizam skills na mesma pasta {path} com configurações diferentes, então cada sincronização desfaz a outra.",
   "sync.folderConflict.stop": "Parar de sincronizar skills com {name}",
+  "sync.folderConflict.editProject": "Editar o projeto de {name}",
   "sync.folderConflict.keeps": "{name} · continua gravando",
   "sync.folderConflict.filters": "Filtros",
   "sync.folderConflict.filters.include": "inclui {names}",
