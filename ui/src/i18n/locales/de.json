@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "schließt {names} aus",
   "sync.folderConflict.filters.all": "alle Skills",
   "sync.folderConflict.na": "entfällt",
-  "sync.folderConflict.hint": "Nur die abweichenden Zeilen sind aufgeführt. Um beide beizubehalten, gib {names} auf der Zielseite dieselben Einstellungen.",
+  "sync.folderConflict.hint": "Nur die abweichenden Zeilen sind aufgeführt. Um beide beizubehalten, gib {names} dieselben Einstellungen.",
   "sync.error.showDetails": "Diagnose anzeigen",
   "sync.error.hideDetails": "Diagnose ausblenden",
   "sync.last.title": "Letzte Skills-/Agents-Sync",

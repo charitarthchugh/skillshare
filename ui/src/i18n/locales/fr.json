@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "exclut {names}",
   "sync.folderConflict.filters.all": "tous les skills",
   "sync.folderConflict.na": "s.o.",
-  "sync.folderConflict.hint": "Seules les lignes qui diffèrent sont listées. Pour garder les deux, donnez à {names} les mêmes paramètres sur la page de la cible.",
+  "sync.folderConflict.hint": "Seules les lignes qui diffèrent sont listées. Pour garder les deux, donnez à {names} les mêmes paramètres.",
   "sync.error.showDetails": "Afficher le diagnostic",
   "sync.error.hideDetails": "Masquer le diagnostic",
   "sync.last.title": "Dernière synchro skills et agents",

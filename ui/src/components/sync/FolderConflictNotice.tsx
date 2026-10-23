@@ -21,6 +21,11 @@ function filterSummary(x: Target, t: ReturnType<typeof useT>, locale: string) {
 export default function FolderConflictNotice({ conflict, targets, onStop }: { conflict: FolderConflict; targets: Target[]; onStop: (name: string) => void }) {
   const t = useT();
   const { locale } = useI18n();
+  // A project target's settings belong to its project; the target API refuses them.
+  const projectPage = (name: string) => {
+    const project = targets.find((x) => x.name === name)?.project;
+    return project ? projectUrl(project) : undefined;
+  };
   // The target kept first, as its column.
   const columns = [conflict.keep, ...conflict.stop].map((name) => targets.find((x) => x.name === name)).filter((x): x is Target => !!x);
   // Symlink links the whole folder, so naming and filters say nothing there (null).
@@ -36,10 +41,9 @@ export default function FolderConflictNotice({ conflict, targets, onStop }: { co
         <TriangleAlert size={16} className="shrink-0 text-warn" />
         <span className="min-w-0 flex-1 basis-80">{t('sync.folderConflict.text', { names: joinList(conflict.targets, locale), path: shortenHome(conflict.path) })}</span>
         {conflict.stop.map((name) => {
-          // A project target's settings belong to its project; the target API refuses them.
-          const project = targets.find((x) => x.name === name)?.project;
-          return project ? (
-            <Link key={name} to={projectUrl(project)} className="ss-btn sm">{t('sync.folderConflict.editProject', { name })}</Link>
+          const page = projectPage(name);
+          return page ? (
+            <Link key={name} to={page} className="ss-btn sm">{t('sync.folderConflict.editProject', { name })}</Link>
           ) : (
             <Button key={name} variant="secondary" size="sm" onClick={() => onStop(name)}>
               {t('sync.folderConflict.stop', { name })}
@@ -77,7 +81,7 @@ export default function FolderConflictNotice({ conflict, targets, onStop }: { co
               ))}
             </tbody>
           </table>
-          <div className="text-ink-2"><TargetLinks sentence={t('sync.folderConflict.hint', { names: NAMES })} names={conflict.stop} /></div>
+          <div className="text-ink-2"><TargetLinks sentence={t('sync.folderConflict.hint', { names: NAMES })} names={conflict.stop} href={projectPage} /></div>
         </div>
       )}
     </div>

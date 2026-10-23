@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "به‌جز {names}",
   "sync.folderConflict.filters.all": "همه Skills",
   "sync.folderConflict.na": "ندارد",
-  "sync.folderConflict.hint": "فقط ردیف‌هایی که تفاوت دارند فهرست شده‌اند. برای نگه داشتن هر دو، همین تنظیمات را در صفحه هدف برای {names} هم بگذارید.",
+  "sync.folderConflict.hint": "فقط ردیف‌هایی که تفاوت دارند فهرست شده‌اند. برای نگه داشتن هر دو، همین تنظیمات را برای {names} هم بگذارید.",
   "sync.error.showDetails": "نمایش جزئیات عیب‌یابی",
   "sync.error.hideDetails": "پنهان کردن جزئیات عیب‌یابی",
   "sync.last.title": "آخرین همگام‌سازی skills و agents",

@@ -179,8 +179,8 @@ export function ModePicker({ kind, mode, onChange, disabled }: { kind: Kind; mod
 // Stands in for the names in a sentence, which are then put back as links.
 export const NAMES = '\u0000';
 
-/** A sentence with its NAMES placeholder replaced by links to those targets. */
-export function TargetLinks({ sentence, names }: { sentence: string; names: string[] }) {
+/** A sentence with its NAMES placeholder replaced by links to those targets, or to `href(name)` when it gives one. */
+export function TargetLinks({ sentence, names, href }: { sentence: string; names: string[]; href?: (name: string) => string | undefined }) {
   const t = useT();
   const [before, after = ''] = sentence.split(NAMES);
   return (
@@ -189,7 +189,7 @@ export function TargetLinks({ sentence, names }: { sentence: string; names: stri
       {names.map((n, i) => (
         <Fragment key={n}>
           {i > 0 && t('instructions.shared.listSep')}
-          <Link to={`/targets/${encodeURIComponent(n)}`} className="font-semibold underline-offset-2 hover:underline">{n}</Link>
+          <Link to={href?.(n) ?? `/targets/${encodeURIComponent(n)}`} className="font-semibold underline-offset-2 hover:underline">{n}</Link>
         </Fragment>
       ))}
       {after}

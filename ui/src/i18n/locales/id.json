@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "mengecualikan {names}",
   "sync.folderConflict.filters.all": "semua skill",
   "sync.folderConflict.na": "n/a",
-  "sync.folderConflict.hint": "Hanya baris yang berbeda yang ditampilkan. Agar keduanya tetap jalan, beri {names} pengaturan yang sama di halaman target.",
+  "sync.folderConflict.hint": "Hanya baris yang berbeda yang ditampilkan. Agar keduanya tetap jalan, beri {names} pengaturan yang sama.",
   "sync.error.showDetails": "Tampilkan diagnostik",
   "sync.error.hideDetails": "Sembunyikan diagnostik",
   "sync.last.title": "Sync skills dan agents terakhir",

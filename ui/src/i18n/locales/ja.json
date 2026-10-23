@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "{names} を除外",
   "sync.folderConflict.filters.all": "すべてのスキル",
   "sync.folderConflict.na": "対象外",
-  "sync.folderConflict.hint": "異なる行だけを表示しています。両方を残すには、ターゲットのページで {names} に同じ設定を指定してください。",
+  "sync.folderConflict.hint": "異なる行だけを表示しています。両方を残すには、{names} に同じ設定を指定してください。",
   "sync.error.showDetails": "診断情報を表示",
   "sync.error.hideDetails": "診断情報を隠す",
   "sync.last.title": "前回の skills・agents 同期",

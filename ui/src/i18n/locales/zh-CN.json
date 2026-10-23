@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "排除 {names}",
   "sync.folderConflict.filters.all": "所有 Skills",
   "sync.folderConflict.na": "不适用",
-  "sync.folderConflict.hint": "只列出有差异的项。要同时保留两者，请到目标页面把 {names} 的设置改成一致。",
+  "sync.folderConflict.hint": "只列出有差异的项。要同时保留两者，请把 {names} 的设置改成一致。",
   "sync.error.showDetails": "显示诊断信息",
   "sync.error.hideDetails": "隐藏诊断信息",
   "sync.last.title": "上次 skills 与 agents 同步",

@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "excluye {names}",
   "sync.folderConflict.filters.all": "todos los skills",
   "sync.folderConflict.na": "n/d",
-  "sync.folderConflict.hint": "Solo se muestran las filas que difieren. Para conservar ambos, da a {names} los mismos ajustes en la página del destino.",
+  "sync.folderConflict.hint": "Solo se muestran las filas que difieren. Para conservar ambos, da a {names} los mismos ajustes.",
   "sync.error.showDetails": "Mostrar diagnóstico",
   "sync.error.hideDetails": "Ocultar diagnóstico",
   "sync.last.title": "Última sync de skills y agents",

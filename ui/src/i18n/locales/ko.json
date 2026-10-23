@@ -1996,7 +1996,7 @@
   "sync.folderConflict.filters.exclude": "{names} 제외",
   "sync.folderConflict.filters.all": "모든 skill",
   "sync.folderConflict.na": "해당 없음",
-  "sync.folderConflict.hint": "다른 항목만 표시합니다. 둘 다 유지하려면 대상 페이지에서 {names}에 같은 설정을 지정하세요.",
+  "sync.folderConflict.hint": "다른 항목만 표시합니다. 둘 다 유지하려면 {names}에 같은 설정을 지정하세요.",
   "sync.error.showDetails": "진단 표시",
   "sync.error.hideDetails": "진단 숨기기",
   "sync.last.title": "마지막 skills 및 agents 동기화",
