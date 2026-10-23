@@ -9,6 +9,23 @@ All notable changes to skillshare are documented here. For the full commit histo
 
 ---
 
+## [0.26.3] - 2026-10-23
+
+### New Features
+
+- **Separate OpenCode accounts** — add an OpenCode config directory as a named target, with its own skills, agents, MCP settings and plugins. Start OpenCode with `OPENCODE_CONFIG_DIR` pointing at that directory. Refs: #593, #594.
+  ```bash
+  skillshare target add opencode-work --agent opencode --config-dir ~/.config/opencode-work -g
+  skillshare sync -g
+  OPENCODE_CONFIG_DIR="$HOME/.config/opencode-work" opencode
+  ```
+
+### Bug Fixes
+
+- **Meaningful names for generic skill directories** — when a skill lives in a directory named `skill` or `skills`, installs use its valid frontmatter `name`, lowercased with spaces changed to hyphens (for example, `MinerU Document Extractor` → `mineru-document-extractor`). Missing, invalid or conflicting names fall back to the directory name. `--name` still overrides the default, updates preserve existing install names, and tracked repository paths are unchanged. Refs: #616, #617.
+- **Project folder conflicts open the right editor** — dashboard folder-conflict buttons and target-name links now open the project editor for project targets instead of a target settings page that cannot edit them. The action buttons sit on their own row. Refs: #612, #613.
+- **Dependency security updates** — updated the Go dependencies used by the CLI to versions with security fixes. Refs: #608.
+
 ## [0.26.2] - 2026-10-22
 
 
