@@ -688,6 +688,8 @@
   "resources.folder.collapseAll": "Collapse all",
   "resources.folder.root": "Root",
   "resources.folder.expandAll": "Expand all",
+  "resources.nested.one": "{count} nested skill",
+  "resources.nested.other": "{count} nested skills",
   "resources.folder.expand": "Expand {name}",
   "resources.folder.collapse": "Collapse {name}",
   "resources.folder.noEditableSkills": "No skills in {folder}/ were changed — disabled skills are skipped",

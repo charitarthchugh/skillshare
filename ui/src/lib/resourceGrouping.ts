@@ -158,6 +158,30 @@ export function limitGroups<G extends { items: Skill[] }>(groups: G[], limit: nu
   return out;
 }
 
+/* -- Nested skills -------------------------------- */
+
+export interface Nest { roots: Skill[]; children: Map<string, Skill[]> }
+
+/** Puts each skill under the nearest skill in `items` whose folder holds it; both lists keep the order of `items`. */
+export function nestSkills(items: Skill[]): Nest {
+  const byPath = new Map(items.map((s) => [s.relPath, s]));
+  const roots: Skill[] = [];
+  const children = new Map<string, Skill[]>();
+  for (const s of items) {
+    let parent: Skill | undefined;
+    for (let i = s.relPath.lastIndexOf('/'); i > 0 && !parent; i = s.relPath.lastIndexOf('/', i - 1)) parent = byPath.get(s.relPath.slice(0, i));
+    if (!parent) { roots.push(s); continue; }
+    if (!children.has(parent.flatName)) children.set(parent.flatName, []);
+    children.get(parent.flatName)!.push(s);
+  }
+  return { roots, children };
+}
+
+/** How many skills sit anywhere under `s`. */
+export function nestedCount(s: Skill, children: Map<string, Skill[]>): number {
+  return (children.get(s.flatName) ?? []).reduce((n, c) => n + 1 + nestedCount(c, children), 0);
+}
+
 /** Splits target names into global tools and projects; `myapp@claude` is claude in the myapp project. */
 export function splitTargets(names: string[]): { global: string[]; projects: [string, string[]][] } {
   const global: string[] = [];

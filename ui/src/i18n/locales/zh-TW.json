@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "全部收合",
   "resources.folder.root": "根目錄",
   "resources.folder.expandAll": "全部展開",
+  "resources.nested.one": "{count} 個巢狀 skill",
+  "resources.nested.other": "{count} 個巢狀 skill",
   "resources.folder.expand": "展開 {name}",
   "resources.folder.collapse": "收合 {name}",
   "resources.folder.noEditableSkills": "{folder}/ 中沒有 skill 被變更 — 已停用的 skill 會被略過",

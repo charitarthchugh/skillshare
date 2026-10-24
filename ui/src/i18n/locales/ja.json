@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "すべて折りたたむ",
   "resources.folder.root": "ルート",
   "resources.folder.expandAll": "すべて展開",
+  "resources.nested.one": "ネストされたスキル {count} 個",
+  "resources.nested.other": "ネストされたスキル {count} 個",
   "resources.folder.expand": "{name} を展開",
   "resources.folder.collapse": "{name} を折りたたむ",
   "resources.folder.noEditableSkills": "{folder}/ のスキルは変更されませんでした — 無効なスキルはスキップされます",

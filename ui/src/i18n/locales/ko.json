@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "모두 접기",
   "resources.folder.root": "루트",
   "resources.folder.expandAll": "모두 펼치기",
+  "resources.nested.one": "중첩 Skill {count}개",
+  "resources.nested.other": "중첩 Skill {count}개",
   "resources.folder.expand": "{name} 펼치기",
   "resources.folder.collapse": "{name} 접기",
   "resources.folder.noEditableSkills": "{folder}/의 Skill이 변경되지 않았습니다 — 비활성화된 Skill은 건너뜁니다",

@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "Recolher Tudo",
   "resources.folder.root": "Raiz",
   "resources.folder.expandAll": "Expandir Tudo",
+  "resources.nested.one": "{count} skill aninhado",
+  "resources.nested.other": "{count} skills aninhados",
   "resources.folder.expand": "Expandir {name}",
   "resources.folder.collapse": "Recolher {name}",
   "resources.folder.noEditableSkills": "Nenhum skill em {folder}/ foi alterado — skills desativados são ignorados",

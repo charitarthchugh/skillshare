@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "جمع کردن همه",
   "resources.folder.root": "ریشه",
   "resources.folder.expandAll": "باز کردن همه",
+  "resources.nested.one": "{count} اسکیل تودرتو",
+  "resources.nested.other": "{count} اسکیل تودرتو",
   "resources.folder.expand": "باز کردن {name}",
   "resources.folder.collapse": "بستن {name}",
   "resources.folder.noEditableSkills": "هیچ اسکیلی در {folder}/ تغییر نکرد — اسکیل‌های غیرفعال نادیده گرفته می‌شوند",

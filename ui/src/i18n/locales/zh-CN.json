@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "全部折叠",
   "resources.folder.root": "根目录",
   "resources.folder.expandAll": "全部展开",
+  "resources.nested.one": "{count} 个嵌套 skill",
+  "resources.nested.other": "{count} 个嵌套 skill",
   "resources.folder.expand": "展开 {name}",
   "resources.folder.collapse": "收起 {name}",
   "resources.folder.noEditableSkills": "{folder}/ 中没有 skill 被更改 — 已禁用的 skill 会被跳过",

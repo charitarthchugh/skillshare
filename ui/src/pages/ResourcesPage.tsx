@@ -40,9 +40,9 @@ import { globToRegex } from '../lib/glob';
 import { parseRemoteURL } from '../lib/parseRemoteURL';
 import { folderOf, formatTrackedRepoName, resourceHref } from '../lib/resourceNames';
 import {
-  byTargetOrProject, countLabel, groupByFolder, groupBySource, limitGroups, parentPath, projectOf, repoOf, sortSkills, sourceLinkOf, sourceName, splitTargets, syncedByTarget,
+  byTargetOrProject, countLabel, groupByFolder, groupBySource, limitGroups, nestedCount, nestSkills, parentPath, projectOf, repoOf, sortSkills, sourceLinkOf, sourceName, splitTargets, syncedByTarget,
   SOURCE_LABEL, SOURCE_ORDER,
-  type FolderGroup, type Group, type SortType, type SourceFilter,
+  type FolderGroup, type Group, type Nest, type SortType, type SourceFilter,
 } from '../lib/resourceGrouping';
 import { useSyncMatrix } from '../hooks/useSyncMatrix';
 import { useRepoUpdate } from '../hooks/useRepoUpdate';
@@ -108,6 +108,8 @@ const COLLAPSED_KEY = 'skillshare:folder-collapsed';
 const groupKey = (key: string) => `group:${key}`;
 /** A folder group's key, kept apart from source groups of the same name. */
 const folderKey = (key: string) => `f:${key}`;
+/** Packages start collapsed, so the collapsed set records the ones opened instead. */
+const openKey = (flatName: string) => `open:${flatName}`;
 /** Enable/disable toasts replace each other, so quick on/off clicks never leave an outdated one on screen. */
 const TOGGLE_TOAST = 'resource-toggle';
 
@@ -345,6 +347,10 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
     }
     return rows;
   }, [treeRows, limit]);
+  // List view nests a skill under the nearest skill whose folder holds it, within the skill's group.
+  const nests = useMemo(() => new Map<string, Nest>(view !== 'list' ? [] :
+    (group === 'source' ? groups : group === 'folder' ? folderGroups : [{ key: '', items: filtered }]).map((g) => [g.key, nestSkills(g.items)])),
+  [view, group, groups, folderGroups, filtered]);
   const byName = useMemo(() => new Map(items.map((s) => [s.flatName, s])), [items]);
   const treeSkills = useMemo(() => selectedSkills(tree, treeSel, byName), [tree, treeSel, byName]);
   const paneSubject = useMemo((): PaneSubject => {
@@ -638,7 +644,7 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
     </div>
   );
 
-  const itemRow = (s: Skill) => {
+  const itemRow = (s: Skill, depth = 0, pkg?: { count: number; open: boolean }) => {
     const { synced, reachable, tone, label } = rowInfo(s);
     // Grouped by folder, the header already names the parent path.
     const sub = group === 'folder' && !s.linkName ? '' : parentPath(s, group === 'source' || group === 'folder');
@@ -650,10 +656,16 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
         onContextMenu={(e) => openItemMenu(e, s)}
       >
         {selectBox(s)}
-        <span className="flex flex-col min-w-0 flex-1 gap-px">
+        <span className="flex flex-col min-w-0 flex-1 gap-px" style={depth ? { paddingLeft: depth * 24 } : undefined}>
           <span className="flex min-w-0 items-center gap-2">
+            {pkg && (
+              <button type="button" className="ss-ib !w-6 !h-6 -mx-1 shrink-0" aria-expanded={pkg.open} aria-label={t(pkg.open ? 'resources.folder.collapse' : 'resources.folder.expand', { name: s.name })} onClick={() => toggleCollapsed(openKey(s.flatName))}>
+                {pkg.open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+              </button>
+            )}
             <Link to={resourceHref(s)} className={`nm m truncate hover:underline ${s.disabled ? 'text-ink-3' : ''}`}>{s.name}</Link>
             {s.manualOnly && <span className="ss-tag shrink-0" title={t('frontmatterEditor.field.disableModelInvocation.hint')}>manual only</span>}
+            {pkg && <span className="shrink-0 text-xs text-ink-3">{t(plural('resources.nested', pkg.count), { count: pkg.count })}</span>}
           </span>
           {sub && <span className="font-mono text-xs text-ink-3 truncate">{sub}</span>}
         </span>
@@ -664,6 +676,15 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
       </div>
     );
   };
+
+  /** A package row, then its nested skills while it is open. */
+  const nestRows = (list: Skill[], nest: Nest | undefined, depth = 0): React.ReactNode[] => list.flatMap((s) => {
+    const kids = nest?.children.get(s.flatName);
+    if (!kids) return [itemRow(s, depth)];
+    // Filtering opens every package so nested matches stay visible, as the tree view does.
+    const open = filtering || collapsed.has(openKey(s.flatName));
+    return [itemRow(s, depth, { count: nestedCount(s, nest!.children), open }), ...(open ? nestRows(kids, nest, depth + 1) : [])];
+  });
 
   const card = (s: Skill) => {
     const { synced, reachable, tone, label } = rowInfo(s);
@@ -694,10 +715,14 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
   /* -- Content -- */
 
   const treeItemTotal = treeRows.filter((r) => r.type === 'item').length;
-  // List view hides a collapsed group's rows, so they neither page nor count as shown.
+  // List view pages top-level rows; a collapsed group's rows neither page nor count as shown.
   const listGroups = view !== 'list' ? [] : group === 'source' ? groups : group === 'folder' ? folderGroups : [];
   const groupHidden = (g: { key: string }) => collapsed.has(groupKey(group === 'folder' ? folderKey(g.key) : g.key));
-  const total = view === 'tree' ? treeItemTotal : filtered.length - listGroups.filter(groupHidden).reduce((n, g) => n + g.items.length, 0);
+  const roots = (key: string) => nests.get(key)?.roots ?? [];
+  const total = view === 'tree' ? treeItemTotal
+    : view !== 'list' ? filtered.length
+    : group === 'none' ? roots('').length
+    : listGroups.filter((g) => !groupHidden(g)).reduce((n, g) => n + roots(g.key).length, 0);
   const shown = Math.min(limit, total);
   let content: React.ReactNode;
 
@@ -827,13 +852,20 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
       </div>
     );
     let body: React.ReactNode;
-    const rows = (key: string, list: Skill[]) => (collapsed.has(groupKey(key)) ? [] : list.map((s) => itemRow(s)));
+    // Pages each group's top-level rows; the head still counts every skill in the group.
+    const paged = <G extends { key: string; items: Skill[] }>(list: G[], head: (g: G) => React.ReactNode) => {
+      const byKey = new Map(list.map((g) => [g.key, g]));
+      return limitGroups(list.map((g) => ({ ...g, items: roots(g.key) })), limit, groupHidden).map((p) => [
+        head(byKey.get(p.key)!),
+        ...(groupHidden(p) ? [] : nestRows(p.items, nests.get(p.key))),
+      ]);
+    };
     if (group === 'source') {
-      body = limitGroups(groups, limit, groupHidden).map((g) => [groupHead(g, false), ...rows(g.key, g.items)]);
+      body = paged(groups, (g) => groupHead(g, false));
     } else if (group === 'folder') {
-      body = limitGroups(folderGroups, limit, groupHidden).map((g) => [folderHead(g, false), ...rows(folderKey(g.key), g.items)]);
+      body = paged(folderGroups, (g) => folderHead(g, false));
     } else {
-      body = <>{groups.filter((g) => g.link && g.items.length === 0).map((g) => groupHead(g, false))}{filtered.slice(0, limit).map((s) => itemRow(s))}</>;
+      body = <>{groups.filter((g) => g.link && g.items.length === 0).map((g) => groupHead(g, false))}{nestRows(roots('').slice(0, limit), nests.get(''))}</>;
     }
     content = <div className="ss-list stick">{header}{body}</div>;
   }

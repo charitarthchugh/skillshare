@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "Tout réduire",
   "resources.folder.root": "Racine",
   "resources.folder.expandAll": "Tout développer",
+  "resources.nested.one": "{count} skill imbriqué",
+  "resources.nested.other": "{count} skills imbriqués",
   "resources.folder.expand": "Développer {name}",
   "resources.folder.collapse": "Réduire {name}",
   "resources.folder.noEditableSkills": "Aucun skill modifié dans {folder}/ — les skills désactivés sont ignorés",

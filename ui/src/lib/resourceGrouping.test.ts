@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Skill } from '../api/client';
-import { groupByFolder, groupBySource, limitGroups, sortSkills } from './resourceGrouping';
+import { groupByFolder, groupBySource, limitGroups, nestSkills, nestedCount, sortSkills } from './resourceGrouping';
 
 const skill = (relPath: string, extra: Partial<Skill> = {}): Skill => ({
   name: relPath.split('/').pop()!, kind: 'skill', flatName: relPath.replace(/\//g, '__'), relPath, sourcePath: '',
@@ -58,5 +58,34 @@ describe('limitGroups', () => {
     const groups = [{ key: 'x', items: [skill('a'), skill('b')] }, { key: 'y', items: [skill('c'), skill('d')] }];
 
     expect(limitGroups(groups, 1, (g) => g.key === 'x').map((g) => g.items.map((s) => s.name))).toEqual([['a', 'b'], ['c']]);
+  });
+});
+
+describe('nestSkills', () => {
+  const pack = [
+    skill('visual-pack'),
+    skill('visual-pack/skills/cover'),
+    skill('visual-pack/skills/portrait'),
+    skill('visual-pack/skills/portrait/skills/wardrobe'),
+    skill('visual-pack-extra'),
+  ];
+
+  it('nests each skill under the nearest skill folder above it', () => {
+    const { roots, children } = nestSkills(pack);
+
+    expect([roots.map((s) => s.relPath), [...children].map(([k, v]) => [k, v.map((s) => s.name)])]).toEqual([
+      ['visual-pack', 'visual-pack-extra'],
+      [['visual-pack', ['cover', 'portrait']], ['visual-pack__skills__portrait', ['wardrobe']]],
+    ]);
+  });
+
+  it('counts every descendant, not only direct children', () => {
+    const { roots, children } = nestSkills(pack);
+
+    expect(nestedCount(roots[0], children)).toBe(3);
+  });
+
+  it('keeps a child top-level when its parent is not in the list', () => {
+    expect(nestSkills(pack.slice(1)).roots.map((s) => s.name)).toEqual(['cover', 'portrait', 'visual-pack-extra']);
   });
 });

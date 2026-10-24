@@ -694,6 +694,8 @@
   "resources.folder.collapseAll": "Alle einklappen",
   "resources.folder.root": "Stammverzeichnis",
   "resources.folder.expandAll": "Alle ausklappen",
+  "resources.nested.one": "{count} verschachtelter Skill",
+  "resources.nested.other": "{count} verschachtelte Skills",
   "resources.folder.expand": "{name} ausklappen",
   "resources.folder.collapse": "{name} einklappen",
   "resources.folder.noEditableSkills": "Keine Skills in {folder}/ geändert — deaktivierte Skills werden übersprungen",
