@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -75,6 +76,50 @@ func TestHandleBatchSetTargets_SetSingleTarget(t *testing.T) {
 		targets := utils.ParseFrontmatterList(skillMD, "targets")
 		if len(targets) != 1 || targets[0] != "claude" {
 			t.Errorf("skill %s: expected targets=[claude], got %v", name, targets)
+		}
+	}
+}
+
+// A target edit rewrites SKILL.md. The skill's recorded hashes must follow
+// that edit, so skillshare's own change is not reported as modified, but must
+// not absorb an edit the user made before, or update would overwrite it.
+func TestSetTargets_KeepsLocalChangeStateOfRemoteSkill(t *testing.T) {
+	for _, endpoint := range []string{"folder", "skill"} {
+		for _, edited := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/edited=%t", endpoint, edited), func(t *testing.T) {
+				s, src := newTestServer(t)
+				addSkillNested(t, src, "frontend/skill-a")
+				dir := filepath.Join(src, "frontend", "skill-a")
+				hashes, err := install.ComputeFileHashes(dir)
+				if err != nil {
+					t.Fatal(err)
+				}
+				s.skillsStore = install.NewMetadataStore()
+				s.skillsStore.Set("frontend/skill-a", &install.MetadataEntry{Source: "org/repo/skill-a", RepoURL: "https://github.com/org/repo.git", FileHashes: hashes})
+				if err := s.skillsStore.Save(src); err != nil {
+					t.Fatal(err)
+				}
+				if edited {
+					if err := os.WriteFile(filepath.Join(dir, "notes.md"), []byte("mine\n"), 0644); err != nil {
+						t.Fatal(err)
+					}
+				}
+
+				rr := httptest.NewRecorder()
+				if endpoint == "folder" {
+					s.handler.ServeHTTP(rr, httptest.NewRequest(http.MethodPost, "/api/resources/batch/targets", bytes.NewBufferString(`{"folder":"frontend","target":"claude"}`)))
+				} else {
+					req := httptest.NewRequest(http.MethodPatch, "/api/resources/skill-a/targets", bytes.NewBufferString(`{"target":"claude"}`))
+					req.SetPathValue("name", "skill-a")
+					s.handleSetSkillTargets(rr, req)
+				}
+				if rr.Code != http.StatusOK {
+					t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+				}
+				if got := s.skillsStore.GetByPath("frontend/skill-a").LocallyModified(dir); got != edited {
+					t.Errorf("LocallyModified = %t, want %t", got, edited)
+				}
+			})
 		}
 	}
 }
