@@ -9,6 +9,25 @@ All notable changes to skillshare are documented here. For the full commit histo
 
 ---
 
+## [0.26.4] - 2026-10-24
+
+### New Features
+
+- **Protect skills you edited since install** — `skillshare check` reports a remote skill whose files no longer match the ones recorded at install as `local changes since install`, and `skillshare check <name> --diff` shows the changes file by file. `update` skips such a skill instead of reinstalling over your edits: a named skill fails with a hint, `--all` and `--group` count it as skipped, and `--dry-run` lists it as one it would skip. Add `--force` to discard the edits. On the dashboard, the **Updates** tab marks it **Modified locally** with a **View changes** button, and the skill page asks before overwriting it. Tracked repos and local-path installs are not checked. Thanks to @chung1912 for the report. Refs: #621, #622, #623.
+  ```bash
+  skillshare check alpha --diff
+  skillshare update alpha --force
+  ```
+- **Skill descriptions and packages in the dashboard list** — each row in the Skills list view shows the `description` from the skill's frontmatter on one line (**Group and sort** → **Show** → **Descriptions** hides them). A skill inside another skill's folder is listed under it: the count after the package's name opens its skills below it, and a search opens the packages that hold a match with counts such as `1 / 3`. Only a skill's name opens its detail page. Nested skills hang from their package on a faint curved line, the **tree** view draws folders the same way, and packages and folders grow open and shrink shut. Thanks to @trojanwk for both proposals. Refs: #624, #625, #627, #631, #635.
+- **Import several installed plugins at once** — the dashboard's **Import installed** dialog has checkboxes and an **Import selected (N)** button, and stays open while the plugins are imported. A blocked or failed plugin keeps its tick and shows the reason, so you can retry it.
+
+### Bug Fixes
+
+- **Uninstalling a package names its nested skills** — uninstalling a skill from the dashboard moves the skills inside its folder to the trash too; the confirmation now says how many, and selecting a package together with its nested skills no longer ends in a partial failure. Refs: #636.
+- **Tracked repo Update button** — the dashboard shows **Update** on a tracked repo only after a check finds it behind, instead of on every tracked repo. Refs: #619.
+- **Built-in skill version after a release** — `status`, `doctor` and the dashboard no longer report an outdated built-in skill as up to date while a newer CLI release is already known. Refs: #620.
+- **Plugin update dialog** — single-line rows are vertically centered.
+
 ## [0.26.3] - 2026-10-23
 
 ### New Features
