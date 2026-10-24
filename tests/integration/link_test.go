@@ -184,13 +184,8 @@ func TestLink_OptionTerminatorPath(t *testing.T) {
 		sb.CreateSymlink(sb.Root, cwd)
 	}
 	sb.RunCLIInDir(cwd, "link", "--global", "--", "-checkout").AssertSuccess(t)
-	// macOS temp dirs live under /var -> /private/var, so compare canonical paths.
-	want, err := filepath.EvalSymlinks(checkout)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got, err := filepath.EvalSymlinks(filepath.Join(sb.SourcePath, "_-checkout")); err != nil || got != want {
-		t.Fatalf("link target = %q, %v; want %s", got, err, want)
+	if got, err := filepath.EvalSymlinks(filepath.Join(sb.SourcePath, "_-checkout")); err != nil || got != checkout {
+		t.Fatalf("link target = %q, %v; want %s", got, err, checkout)
 	}
 }
 

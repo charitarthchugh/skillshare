@@ -61,11 +61,7 @@ func TestPluginAddNpmPackageThroughPi(t *testing.T) {
 	sb := testutil.NewSandbox(t)
 	defer sb.Cleanup()
 	sb.WriteConfig("targets: {}\n")
-	// Native writes refuse symlinked paths, and macOS temp dirs sit under the /var symlink.
-	home, err := filepath.EvalSymlinks(sb.Home)
-	if err != nil {
-		t.Fatal(err)
-	}
+	home := sb.Home
 	bin := filepath.Join(home, "bin")
 	agentDir := filepath.Join(home, ".pi/agent")
 	fake := "#!/bin/sh\ncase \"$1\" in\n--version) echo 0.99.2 ;;\ninstall) [ \"$2\" = --help ] || printf '{\"packages\":[\"%s\"]}' \"$2\" > \"$PI_CODING_AGENT_DIR/settings.json\" ;;\nesac\n"

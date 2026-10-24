@@ -204,10 +204,7 @@ func TestTarget_List_Project_JSON_IncludesSyncMetadata(t *testing.T) {
 		t.Fatalf("expected target object, got %T", targets[0])
 	}
 
-	wantPath, _ := filepath.EvalSymlinks(filepath.Join(projectDir, ".claude", "skills"))
-	if wantPath == "" {
-		wantPath = filepath.Join(projectDir, ".claude", "skills")
-	}
+	wantPath := filepath.Join(projectDir, ".claude", "skills")
 	if target["path"] != wantPath {
 		t.Fatalf("expected absolute target path %q, got %v", wantPath, target["path"])
 	}
