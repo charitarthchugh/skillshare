@@ -233,18 +233,25 @@ svg.lucide { flex: none; stroke-width: var(--isw); }
 .ss-r .nm { font-weight: 600; }
 .ss-r .nm.m { font-size: 13px; font-weight: 600; letter-spacing: -0.015em; }
 .ss-nr .nm.m { font-size: 13px; font-weight: 600; letter-spacing: -0.015em; }
-/* A package's skills: one recessed panel under its row, lined up with the names, no lines inside. */
-.ss-nest { margin: -4px 16px 12px 44px; padding: 4px 0; background: color-mix(in srgb, var(--sunken) 55%, transparent); border-radius: 8px; }
-.ss-nest+.ss-r { border-top: var(--sep); }
+/* A package's skills hang off a faint spine under its checkbox; each curves in and stops short of its own checkbox.
+   The line colour is opaque so the spine and an elbow overlap without a darker seam. The spine starts --lift above
+   the first skill, inside the padding, so the reveal's clipping does not cut it off. */
+/* The right margin plus a nested row's 12px padding lines its actions up with the top-level rows' 16px. */
+.ss-pk-top { --lift: 9px; margin: -13px 4px 8px 16px; }
+.ss-pk-top+.ss-r { border-top: var(--sep); }
+.ss-pk { --guide: -8px; --elbow: 6px; --tl: color-mix(in srgb, var(--ink) 10%, var(--surface)); padding: var(--lift) 0 0 16px; }
+.ss-pk .ss-collapse { --lift: 4px; margin-top: -4px; }
+.ss-pk .ss-pk { padding-left: 0; }
+.ss-pi { --l: 0px; position: relative; }
+.ss-pi:first-child { --l: var(--lift); }
+.ss-pi::before, .ss-pi:not(:last-child)::after { content: ""; position: absolute; left: var(--guide); border-left: 1px solid var(--tl); pointer-events: none; }
+.ss-pi::before { top: calc(-1 * var(--l)); height: calc(18px + var(--l)); width: calc(var(--elbow) - var(--guide)); border-bottom: 1px solid var(--tl); border-bottom-left-radius: 8px; }
+.ss-pi:not(:last-child)::after { top: 10px; bottom: 0; }
 .ss-nr { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 4px 12px; border-radius: 8px; }
 .ss-nr.sel { background: var(--accent-bg); }
 .ss-pill { display: inline-flex; flex: none; align-items: center; gap: 2px; height: 24px; padding: 0 6px 0 9px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 8%, transparent); font-size: 12px; font-weight: 500; color: var(--ink-2); white-space: nowrap; cursor: pointer; }
 .ss-pill:hover { color: var(--ink); }
-.ss-nest .ss-pill { background: color-mix(in srgb, var(--ink) 12%, transparent); }
 .ss-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-/* One faint line under the open package's checkbox runs down to its last nested row. */
-.ss-guide { position: relative; }
-.ss-guide::before { content: ""; position: absolute; left: var(--guide); top: 2px; bottom: 20px; border-left: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
 .ss-hit { background: var(--accent-bg); color: var(--accent); border-radius: 3px; }
 .ss-desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Keyboard focus in a row shows its whole description; the mouse gets the title tooltip. */
@@ -282,6 +289,10 @@ svg.lucide { flex: none; stroke-width: var(--isw); }
 .ss-collapse { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .45s cubic-bezier(.3,.7,.3,1), opacity .3s; }
 .ss-collapse>* { overflow: hidden; min-height: 0; }
 .ss-collapse.shut { grid-template-rows: 0fr; opacity: 0; }
+/* A disclosure grows open from nothing and shrinks shut, quicker than a removal; its margins close with it. */
+.ss-collapse.grow { transition: grid-template-rows .25s cubic-bezier(.3,.7,.3,1), opacity .2s, margin .25s cubic-bezier(.3,.7,.3,1); }
+.ss-collapse.grow.shut { margin-block: 0; }
+@starting-style { .ss-collapse.grow:not(.shut) { grid-template-rows: 0fr; opacity: 0; margin-block: 0; } }
 /* A removed row slides out, then its .ss-collapse wrapper closes the gap */
 .ss-collapse.out { grid-template-rows: 0fr; transition-delay: .2s; }
 .ss-collapse.out .ss-r { transform: translateX(-32px); opacity: 0; }
@@ -578,10 +589,27 @@ span.bad, b.bad, svg.bad { color: var(--bad); }
 .ss-tn:hover { background: var(--sunken); }
 .ss-tn.sel { background: var(--sel); color: var(--sel-ink); }
 .ss-tn.in { background: color-mix(in srgb, var(--sel) 45%, transparent); }
+/* A selected folder and the rows inside it read as one block, so only its outer corners are round. */
+.ss-tn.sel:has(+ .ss-tn.in), .ss-tn.in { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.ss-tn.in { border-top-left-radius: 0; border-top-right-radius: 0; }
+.ss-tn.in:not(:has(+ .ss-tn.in)) { border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
 :root[data-theme="playful"] .ss-tn.sel { outline: 1.5px solid var(--line); outline-offset: -1.5px; }
 :root[data-theme="playful"] .ss-tn.in { background: var(--pe); }
 .ss-tn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.ss-tn .gd { position: absolute; top: 0; bottom: 0; left: calc(16px + var(--g) * 18px); border-left: 1px solid var(--line-soft); }
+.ss-tree { --tl: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
+/* A folder's line runs down from its chevron; each child curves in from it, and the last child's curve ends it. */
+.ss-tn .gd { position: absolute; top: 0; bottom: 0; left: calc(16px + var(--g) * 18px); border-left: 1px solid var(--tl); }
+.ss-tn .gd.el { bottom: auto; height: 16px; width: var(--w); border-bottom: 1px solid var(--tl); border-bottom-left-radius: 6px; }
+.ss-tn .gd.el.on::after { content: ""; position: absolute; left: -1px; top: 10px; height: 22px; border-left: 1px solid var(--tl); }
+/* Rows a folder opens grow in; the rows of a folder being closed shrink away first. */
+@keyframes ss-tn-grow { from { height: 0; opacity: 0; } }
+.ss-tree .ss-tn { transition: height .18s ease-in, opacity .15s; }
+.ss-tree .ss-tn.grow { overflow: hidden; animation: ss-tn-grow .2s ease-out; }
+.ss-tree .ss-tn.shut { height: 0; opacity: 0; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .ss-tree .ss-tn { transition: none; }
+  .ss-tree .ss-tn.grow { animation: none; }
+}
 .ss-tn .cv { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 5px; color: var(--ink-3); }
 .ss-tn button.cv:hover { color: var(--ink); }
 .ss-tn .ic { color: var(--ink-2); }

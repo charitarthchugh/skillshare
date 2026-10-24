@@ -48,6 +48,7 @@ import {
 import { useSyncMatrix } from '../hooks/useSyncMatrix';
 import { useRepoUpdate } from '../hooks/useRepoUpdate';
 import { useT, plural } from '../i18n';
+import Reveal from '../components/Reveal';
 import AgentIcon from '../components/AgentIcon';
 import Button from '../components/Button';
 import { Checkbox } from '../components/Checkbox';
@@ -746,7 +747,7 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
     );
   };
 
-  /** A skill inside a package's panel: no target or status columns, only a tag when it is not plainly on. */
+  /** A skill inside a package: no target or status columns, only a tag when it is not plainly on. */
   const nestedRow = (s: Skill, depth: number, pkg?: Pkg) => {
     const { tone, label } = rowInfo(s);
     const desc = showDesc ? s.description : '';
@@ -771,22 +772,33 @@ export default function ResourcesPage({ kind }: { kind: Kind }) {
   };
 
   /** The skills under a package, one level deeper each time a nested package is open. */
-  const nestedRows = (list: Skill[], nest: Nest, depth: number): React.ReactNode[] => list.flatMap((s) => {
+  const nestedRows = (list: Skill[], nest: Nest, depth: number): React.ReactNode[] => list.map((s) => {
     const kids = nest.children.get(s.flatName);
     const pkg = pkgOf(s, kids);
-    return [
-      nestedRow(s, depth, pkg),
-      ...(pkg?.open ? [<div key={`nest-${s.flatName}`} id={`nest-${s.flatName}`} role="group" aria-label={s.name} className="ss-guide" style={{ '--guide': `${20 + depth * 24}px` } as React.CSSProperties}>{nestedRows(kids!, nest, depth + 1)}</div>] : []),
-    ];
+    // A row and its open package share one item, so the parent's spine runs past the package to the next row.
+    return (
+      <div key={s.flatName} className="ss-pi">
+        {nestedRow(s, depth, pkg)}
+        {pkg && (
+          <Reveal open={pkg.open}>
+            {pkg.open ? <div id={`nest-${s.flatName}`} role="group" aria-label={s.name} className="ss-pk" style={{ '--guide': `${20 + depth * 24}px`, '--elbow': `${30 + depth * 24}px` } as React.CSSProperties}>{nestedRows(kids!, nest, depth + 1)}</div> : null}
+          </Reveal>
+        )}
+      </div>
+    );
   });
 
-  /** A top-level row, then its package panel while it is open. */
+  /** A top-level row, then its package's skills while it is open. */
   const nestRows = (list: Skill[], nest: Nest | undefined): React.ReactNode[] => list.flatMap((s) => {
     const kids = nest?.children.get(s.flatName);
     const pkg = pkgOf(s, kids);
     return [
       itemRow(s, pkg),
-      ...(pkg?.open ? [<div key={`nest-${s.flatName}`} id={`nest-${s.flatName}`} role="group" aria-label={s.name} className="ss-nest">{nestedRows(kids!, nest!, 0)}</div>] : []),
+      ...(pkg ? [
+        <Reveal key={`nest-${s.flatName}`} open={pkg.open} className="ss-pk-top">
+          {pkg.open ? <div id={`nest-${s.flatName}`} role="group" aria-label={s.name} className="ss-pk">{nestedRows(kids!, nest!, 0)}</div> : null}
+        </Reveal>,
+      ] : []),
     ];
   });
 

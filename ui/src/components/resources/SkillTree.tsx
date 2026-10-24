@@ -1,11 +1,11 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import { Bot, ChevronDown, ChevronRight, Folder, FolderOpen, GitBranch, Link2, Power, PowerOff, Puzzle } from 'lucide-react';
 import type { Skill, SourceLink } from '../../api/client';
 import { countLabel } from '../../lib/resourceGrouping';
 import { useT } from '../../i18n';
 import { formatTrackedRepoName } from '../../lib/resourceNames';
-import { insideSelection, skillsUnder } from './tree';
+import { insideSelection, skillsUnder, treeLines } from './tree';
 import type { TreeRow } from './tree';
 
 export type SelectMode = 'only' | 'toggle' | 'range';
@@ -30,7 +30,39 @@ export default function SkillTree({ rows, selected, kind, label, onSelect, onTog
   const t = useT();
   const refs = useRef(new Map<string, HTMLDivElement>());
   const [focusId, setFocusId] = useState<string | null>(null);
+  // A collapsing folder's rows shrink away first; the folder closes once they are gone.
+  const [closing, setClosing] = useState<string | null>(null);
+  // Rows on screen before the first paint do not grow in; any row added later does.
+  const shown = useRef<Set<string> | null>(null);
+  shown.current ??= new Set(rows.map((r) => r.id));
+  useEffect(() => {
+    const ids = new Set(rows.map((r) => r.id));
+    for (const id of shown.current!) if (!ids.has(id)) shown.current!.delete(id);
+  });
+  // The close runs after the rows have shrunk, so it checks the folder is still open then.
+  const latest = useRef(rows);
+  useEffect(() => { latest.current = rows; });
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+  const lines = treeLines(rows);
   const ItemIcon = kind === 'agent' ? Bot : Puzzle;
+
+  const toggleFolder = (row: Extract<TreeRow, { type: 'folder' }>) => {
+    if (row.collapsed) onToggleFolder(row.node.path);
+    else if (!closing) {
+      setClosing(row.id);
+      // Matches the .ss-tn height transition in components.css.
+      closeTimer.current = setTimeout(() => {
+        setClosing(null);
+        const now = latest.current.find((r) => r.id === row.id);
+        if (now?.type === 'folder' && !now.collapsed) onToggleFolder(row.node.path);
+      }, 180);
+    }
+  };
+  // The closing folder's rows are the ones after it, up to the next row no deeper than it.
+  const at = closing ? rows.findIndex((r) => r.id === closing) : -1;
+  const end = at < 0 ? -1 : at + 1 + rows.slice(at + 1).findIndex((r) => r.depth <= rows[at].depth);
+  const shrinking = (i: number) => at >= 0 && i > at && (end <= at || i < end);
 
   // Roving tabindex: the focused row, else the first selected one, else the first row.
   const tabId = rows.some((r) => r.id === focusId) ? focusId : (rows.find((r) => selected.has(r.id)) ?? rows[0])?.id;
@@ -50,16 +82,16 @@ export default function SkillTree({ rows, selected, kind, label, onSelect, onTog
       case 'Home': focus(rows[0]?.id); break;
       case 'End': focus(rows[rows.length - 1]?.id); break;
       case 'ArrowRight':
-        if (folder?.collapsed) onToggleFolder(folder.node.path);
+        if (folder?.collapsed) toggleFolder(folder);
         else if (folder && rows[i + 1]?.depth === row.depth + 1) focus(rows[i + 1].id);
         break;
       case 'ArrowLeft':
-        if (folder && !folder.collapsed) onToggleFolder(folder.node.path);
+        if (folder && !folder.collapsed) toggleFolder(folder);
         else for (let j = i - 1; j >= 0; j--) if (rows[j].depth === row.depth - 1) { focus(rows[j].id); break; }
         break;
       case ' ': onSelect(row.id, 'toggle'); break;
       case 'Enter':
-        if (folder) onToggleFolder(folder.node.path);
+        if (folder) toggleFolder(folder);
         else if (row.type === 'item') onOpen(row.skill);
         break;
       default: return;
@@ -91,7 +123,7 @@ export default function SkillTree({ rows, selected, kind, label, onSelect, onTog
             aria-expanded={folder ? !folder.collapsed : undefined}
             aria-selected={isSel}
             tabIndex={row.id === tabId ? 0 : -1}
-            className={`ss-tn ${isSel ? 'sel' : inside ? 'in' : ''} ${dim ? 'off' : ''}`}
+            className={`ss-tn ${isSel ? 'sel' : inside ? 'in' : ''} ${dim ? 'off' : ''} ${shown.current!.has(row.id) ? '' : 'grow'} ${shrinking(i) ? 'shut' : ''}`}
             style={{ '--d': row.depth } as CSSProperties}
             onMouseDown={(e) => { if (e.shiftKey) e.preventDefault(); }}
             onClick={(e) => onClick(e, row.id)}
@@ -100,14 +132,15 @@ export default function SkillTree({ rows, selected, kind, label, onSelect, onTog
             onFocus={() => setFocusId(row.id)}
             onKeyDown={(e) => onKeyDown(e, i)}
           >
-            {Array.from({ length: row.depth }, (_, g) => <i key={g} className="gd" style={{ '--g': g } as CSSProperties} />)}
+            {lines[i].through.map((g) => <i key={g} className="gd" style={{ '--g': g } as CSSProperties} />)}
+            {row.depth > 0 && <i className={`gd el ${lines[i].last ? '' : 'on'}`} style={{ '--g': row.depth - 1, '--w': folder ? '9px' : '30px' } as CSSProperties} />}
             {folder ? (
               <button
                 type="button"
                 tabIndex={-1}
                 className="cv"
                 aria-label={t(folder.collapsed ? 'resources.folder.expand' : 'resources.folder.collapse', { name: folder.names.join('/') })}
-                onClick={(e) => { e.stopPropagation(); onToggleFolder(folder.node.path); }}
+                onClick={(e) => { e.stopPropagation(); toggleFolder(folder); }}
               >
                 {folder.collapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
               </button>

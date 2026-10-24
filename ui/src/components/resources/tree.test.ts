@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Skill } from '../../api/client';
-import { buildTree, flattenTree, rangeIds, selectedSkills } from './tree';
+import { buildTree, flattenTree, rangeIds, selectedSkills, treeLines } from './tree';
 
 const skill = (relPath: string, extra: Partial<Skill> = {}): Skill => {
   const name = relPath.split('/').pop()!;
@@ -78,5 +78,19 @@ describe('selectedSkills', () => {
     const byName = new Map(SKILLS.map((s) => [s.flatName, s]));
     const picked = selectedSkills(tree, new Set(['f:_repo', 's:_repo__skills__gamma']), byName);
     expect(picked.map((s) => s.name)).toEqual(['alpha', 'beta', 'gamma']);
+  });
+});
+
+describe('treeLines', () => {
+  it('runs a folder line past an open subfolder to its next child and ends it at the last one', () => {
+    const rows = flattenTree(buildTree([skill('a/b/one'), skill('a/b/two'), skill('a/three')]), new Set(), false);
+    expect(labels(rows)).toEqual(['a', '  b', '    one', '    two', '  three']);
+    expect(treeLines(rows)).toEqual([
+      { through: [], last: true },
+      { through: [], last: false },
+      { through: [0], last: false },
+      { through: [0], last: true },
+      { through: [], last: true },
+    ]);
   });
 });

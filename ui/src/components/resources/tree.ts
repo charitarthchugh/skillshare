@@ -131,6 +131,22 @@ export function findFolder(root: FolderNode, path: string): FolderNode | undefin
   return node;
 }
 
+/**
+ * Tree lines for each row: `through` lists the ancestor levels whose line runs on past the row,
+ * and `last` says the row is the final child of its folder, so its elbow ends the line.
+ */
+export function treeLines(rows: TreeRow[]): { through: number[]; last: boolean }[] {
+  const below: boolean[] = []; // below[d]: a later row at depth d comes before anything shallower
+  const out: { through: number[]; last: boolean }[] = [];
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const d = rows[i].depth;
+    out[i] = { through: Array.from({ length: Math.max(d - 1, 0) }, (_, g) => g).filter((g) => below[g + 1]), last: !below[d] };
+    below[d] = true;
+    below.length = d + 1;
+  }
+  return out;
+}
+
 /** Ids of the visible rows from `anchor` to `id`, both included. Without a visible anchor, just `id`. */
 export function rangeIds(rows: TreeRow[], anchor: string | null, id: string): string[] {
   const a = anchor ? rows.findIndex((r) => r.id === anchor) : -1;
