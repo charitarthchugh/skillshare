@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -86,9 +88,22 @@ func TestHandleClearLog(t *testing.T) {
 	}
 }
 
-func TestHandleLog_ListStatsAndClear(t *testing.T) {
+// A selected global config in a folder named skillshare still reads the state-dir log.
+func TestHandleLog_SelectedGlobalConfigUsesStateDir(t *testing.T) {
 	s, _ := newTestServer(t)
-	cfgPath := config.ConfigPath()
+	raw, err := os.ReadFile(config.ConfigPath())
+	if err != nil {
+		t.Fatal(err)
+	}
+	selected := filepath.Join(t.TempDir(), "shared", "skillshare", "config.yaml")
+	if err := os.MkdirAll(filepath.Dir(selected), 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(selected, raw, 0644); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("SKILLSHARE_CONFIG", selected)
+	cfgPath := filepath.Join(config.BaseDir(), "config.yaml")
 	if err := oplog.Write(cfgPath, oplog.OpsFile, oplog.Entry{Command: "sync", Status: "ok"}); err != nil {
 		t.Fatal(err)
 	}
