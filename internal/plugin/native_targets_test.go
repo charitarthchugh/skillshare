@@ -24,7 +24,7 @@ func TestNativePackageLifecycle(t *testing.T) {
 				if strings.Contains(command, "--help") {
 					return []byte("Usage: plugin install uninstall list update --json"), nil
 				}
-				if strings.HasPrefix(command, "plugin list") {
+				if command == "plugin list --json" {
 					rows := []map[string]any{}
 					if installed {
 						rows = append(rows, map[string]any{"name": "demo", "enabled": false, "source": "installed"})
