@@ -279,7 +279,7 @@ The dashboard reads and writes `.skillshare/config.yaml`, syncs to project-local
 
 ## Homebrew Note
 
-All install methods (Homebrew, installer script, manual binary) use runtime UI download. When you run `skillshare ui`, it automatically downloads the UI assets from GitHub on first launch. After that, the cached assets are used offline.
+All install methods (Homebrew, Nix, installer script, manual binary) use runtime UI download. When you run `skillshare ui`, it automatically downloads the UI assets from GitHub on first launch. After that, the cached assets are used offline.
 
 To clear the downloaded UI cache:
 

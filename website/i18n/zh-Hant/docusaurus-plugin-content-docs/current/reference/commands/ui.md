@@ -279,7 +279,7 @@ Dashboard 會讀寫 `.skillshare/config.yaml`、同步至 project 本機的 targ
 
 ## Homebrew 說明
 
-所有安裝方式（Homebrew、安裝腳本、手動下載執行檔）都使用執行時 UI 下載。當你執行 `skillshare ui` 時，它會在首次啟動時自動從 GitHub 下載 UI 資源。之後，會使用快取的資源離線運作。
+所有安裝方式（Homebrew、Nix、安裝腳本、手動下載執行檔）都使用執行時 UI 下載。當你執行 `skillshare ui` 時，它會在首次啟動時自動從 GitHub 下載 UI 資源。之後，會使用快取的資源離線運作。
 
 若要清除已下載的 UI 快取：
 

@@ -60,6 +60,16 @@ skillshare upgrade
 brew upgrade skillshare
 ```
 
+## Nix 使用者
+
+如果透過 Nix 安裝，`skillshare upgrade` 不會更動 CLI，因為替換 Nix store 中的檔案會損壞 store。它會改為提示應執行的指令：
+
+```bash
+nix profile upgrade skillshare
+```
+
+內建 skill 仍可透過 `skillshare upgrade --skill` 更新。
+
 ## 範例
 
 ```bash

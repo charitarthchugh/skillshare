@@ -13,12 +13,16 @@ type InstallMethod int
 const (
 	InstallDirect InstallMethod = iota // GitHub release / go install / manual
 	InstallBrew                        // Homebrew (brew install)
+	InstallNix                         // Nix store (nix profile add)
 )
 
 // UpgradeCommand returns the CLI command the user should run to upgrade.
 func (m InstallMethod) UpgradeCommand() string {
-	if m == InstallBrew {
+	switch m {
+	case InstallBrew:
 		return "brew upgrade skillshare"
+	case InstallNix:
+		return "nix profile upgrade skillshare"
 	}
 	return "skillshare upgrade"
 }
@@ -35,6 +39,10 @@ func DetectInstallMethod(execPath string) InstallMethod {
 		if strings.HasPrefix(execPath, prefix) {
 			return InstallBrew
 		}
+	}
+	// The Nix store is read-only to its users; Nix itself must replace the binary.
+	if strings.HasPrefix(execPath, "/nix/store/") {
+		return InstallNix
 	}
 	return InstallDirect
 }

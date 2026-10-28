@@ -60,6 +60,16 @@ You can also use Homebrew directly:
 brew upgrade skillshare
 ```
 
+## Nix Users
+
+If you installed with Nix, `skillshare upgrade` leaves the CLI alone, because replacing a file in the Nix store would corrupt it. It prints the command to run instead:
+
+```bash
+nix profile upgrade skillshare
+```
+
+`skillshare upgrade --skill` still updates the built-in skill.
+
 ## Examples
 
 ```bash

@@ -158,13 +158,21 @@ func upgradeCLIBinary(dryRun, force bool) (string, error) {
 		return "", err
 	}
 
-	// Check if installed via Homebrew
-	if versionpkg.DetectInstallMethod(execPath) == versionpkg.InstallBrew {
+	switch method := versionpkg.DetectInstallMethod(execPath); method {
+	case versionpkg.InstallBrew:
 		if dryRun {
 			printUpgradeRow(ui.MarkNone, "CLI", current+" · would run brew upgrade skillshare", time.Time{})
 			return "", nil
 		}
 		return runBrewUpgrade(start)
+	case versionpkg.InstallNix:
+		// Replacing a file in the Nix store would corrupt it, so Nix updates it instead.
+		if dryRun {
+			printUpgradeRow(ui.MarkNone, "CLI", current+" · installed with Nix, would need "+method.UpgradeCommand(), time.Time{})
+			return "", nil
+		}
+		printUpgradeRow(ui.MarkFail, "CLI", current+" · installed with Nix", time.Time{})
+		return "", fmt.Errorf("skillshare is installed with Nix; run: %s", method.UpgradeCommand())
 	}
 
 	// Get latest version from GitHub

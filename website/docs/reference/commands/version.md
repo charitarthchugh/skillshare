@@ -30,7 +30,7 @@ skillshare version 0.16.6
 
 When a newer version is available, `skillshare` displays an update notification after commands that support it. The notification is **Homebrew-aware**: if skillshare was installed via Homebrew, it queries `brew info` for the latest formula version and suggests `brew upgrade skillshare`; otherwise it checks GitHub releases and suggests `skillshare upgrade`.
 
-Detection is automatic — skillshare resolves its own executable path and checks whether it resides under a Homebrew Cellar prefix (e.g. `/opt/homebrew/Cellar/skillshare/`).
+Detection is automatic — skillshare resolves its own executable path and checks whether it resides under a Homebrew Cellar prefix (e.g. `/opt/homebrew/Cellar/skillshare/`). A binary under `/nix/store/` checks GitHub releases and suggests `nix profile upgrade skillshare`.
 
 Version checks are cached for 24 hours at `~/.cache/skillshare/version-check.json`.
 

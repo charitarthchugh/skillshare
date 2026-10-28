@@ -60,6 +60,16 @@ Homebrew を直接使うこともできます。
 brew upgrade skillshare
 ```
 
+## Nix ユーザー
+
+Nix でインストールした場合、Nix store 内のファイルを置き換えると store が壊れるため、`skillshare upgrade` は CLI を更新しません。代わりに実行すべきコマンドを表示します。
+
+```bash
+nix profile upgrade skillshare
+```
+
+組み込みスキルは引き続き `skillshare upgrade --skill` で更新できます。
+
 ## 例
 
 ```bash
