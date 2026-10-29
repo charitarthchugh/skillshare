@@ -9,6 +9,28 @@ All notable changes to skillshare are documented here. For the full commit histo
 
 ---
 
+## [0.28.0] - 2026-10-29
+
+### New Features
+
+- **Agent-specific skill variants** — a tracked repo can ship a different copy of the same skill for each agent, such as `skills/claude/review/SKILL.md` and `skills/codex/review/SKILL.md`. A path counts as a variant only when the same skill path exists under at least two agents below one `skills/` folder. In merge and copy mode each copy syncs only to its matching agent, including aliases and account targets; targets sharing one skills folder get the copies of all their agents. Target overrides, frontmatter routing, ignores and filters still take precedence. `list`, `status` and their `--json` output count the skill once and show copies separately (`3 skills, 5 variants`, `variant_count`). Symlink mode exposes every copy, and `status` and `doctor` warn about it. Thanks to @salmonumbrella for the proposal and the implementation. Refs: #648, #649.
+- **Update every plugin at once** — `skillshare plugin update --all` (`-a`) updates all tracked plugins in one command. Healthy plugins update even when another fails; the command then exits non-zero and leaves the failed entries unchanged in `config.yaml`. A marketplace holding several plugins is cloned once. `plugin update` now also supports `antigravity-cli` and skips plugins `agy` reports as disabled. Thanks to @jskswamy for the request and the implementation. Refs: #653, #656.
+  ```bash
+  skillshare plugin update --all
+  ```
+- **Return to the same page in Skillshare App** — when embedded in Skillshare App, the dashboard reports its current page so the app can return to it after an auto-sync reload. Refs: #659.
+
+### Bug Fixes
+
+- **One update per checkout** — two dashboards, or a dashboard and the CLI, running **Update all** on the same source no longer pull into the same checkouts at once. `update`, `install --track --update` and git-installed skill updates take turns; a second process waits up to a minute, then stops with `another skillshare process is still updating <path>`. Refs: #666.
+- **`--force` on a git-installed skill** — it now resets to upstream as documented instead of running a pull that refused to merge over your edits, and keeps the edits if the fetch fails. Pull errors include the file list git prints, and the dashboard no longer says everything is up to date when some updates failed. Refs: #666.
+- **Shallow partial clones** — updating a tracked repo cloned with `--depth=1 --filter=blob:none` failed with `fetch-pack: invalid index-pack output` on git 2.45.1 or later once more than one upstream commit arrived. It works again. Thanks to @ndeybach for the report and diagnosis. Refs: #667, #668.
+- **OMP skills path** — an OMP target with no configured skills path follows `PI_CODING_AGENT_DIR`, and keeps following it after a config save. Refs: #652.
+- **DeepSeek Harness and GitLab Duo paths** — a target with no configured path keeps following `DSH_HOME`, `GLAB_CONFIG_DIR` or `XDG_CONFIG_HOME` after a config save, instead of pinning the resolved path. Refs: #661, #662.
+- **Missing project roots** — `sync` prints one line for registered projects that do not exist on this machine, with a hint to run `skillshare project list`, instead of one warning per folder. Refs: #665.
+- **Dashboard account icons** — load from the targets the dashboard already has instead of waiting for the slower all-targets request. Refs: #657.
+- **Docker first run** — the production image checks the same config path as the CLI, so an existing custom or XDG config no longer triggers first-run setup. Refs: #655.
+
 ## [0.27.0] - 2026-10-26
 
 
