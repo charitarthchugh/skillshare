@@ -22,7 +22,7 @@
       ]
     },
     "testing": {
-      "description": "Build, test, reproduce bugs, use the devcontainer or ssenv, and run E2E runbooks.",
+      "description": "Build, test, reproduce bugs, and use the devcontainer or ssenv.",
       "sources": [
         {
           "path": "wiki/testing.md"
@@ -30,6 +30,14 @@
         {
           "path": "CONTRIBUTING.md",
           "heading": "Development Setup"
+        }
+      ]
+    },
+    "e2e-runbooks": {
+      "description": "Write or run ai_docs/tests E2E runbooks, or verify on a Windows guest.",
+      "sources": [
+        {
+          "path": "wiki/e2e-runbooks.md"
         }
       ]
     },

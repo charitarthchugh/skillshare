@@ -13,7 +13,8 @@ python3 scripts/ai-context.py <topic>
 |---|---|---|
 | `architecture` | Tracing repository structure, data flow, or CLI/Web API boundaries | `architecture.md` |
 | `cli-development` | Adding or changing Go CLI commands, flags, handlers, TUIs, or mutating behavior | `cli-development.md` |
-| `testing` | Building, testing, reproducing bugs, using the devcontainer/ssenv, or running E2E runbooks | `testing.md`, `CONTRIBUTING.md` |
+| `testing` | Building, testing, reproducing bugs, or using the devcontainer/ssenv | `testing.md`, `CONTRIBUTING.md` |
+| `e2e-runbooks` | Writing or running `ai_docs/tests` E2E runbooks, or verifying on a Windows guest | `e2e-runbooks.md` |
 | `frontend` | Changing React, CSS, layout, or visual behavior in the dashboard or website | `frontend.md`, `website/AGENTS.md` |
 | `documentation` | Updating README files, website docs, flags, translations, or the built-in skill | `documentation.md`, `CONTRIBUTING.md` |
 | `release` | Writing changelogs or release notes, bumping versions, tagging, or releasing | `release.md` |

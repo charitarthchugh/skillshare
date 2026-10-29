@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Drive a local UTM Windows guest for skillshare verification. Host-side only: it never runs the
 # product on macOS. Builds happen in the devcontainer; the guest runs them. See the
-# skillshare-windows-utm skill and wiki/testing.md "Windows Verification".
+# skillshare-windows-utm skill and wiki/e2e-runbooks.md "Windows Verification".
 #
 #   utm.sh probe                       VM state, guest agent, logged-in user, arch, Developer Mode
 #   utm.sh build <ref> [arm64|amd64]   pinned git archive -> $OUT/ss.exe, ss-ui-dist.zip, ss-version.txt
