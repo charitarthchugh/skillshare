@@ -1891,8 +1891,6 @@
   "targetDetail.shared.use": "استفاده از {value} مثل {other}",
   "targetDetail.shared.filters": "{other} هم Skills را در {path} همگام‌سازی می‌کند، با فیلترهای متفاوت. هر همگام‌سازی چیزی را که دیگری فیلتر می‌کند دوباره اضافه یا حذف می‌کند.",
   "targetDetail.shared.useFilters": "استفاده از همان فیلترهای {other}",
-  "targetDetail.skipped.one": "{count} اسکیل نمی‌تواند از نام‌گذاری standard استفاده کند و نادیده گرفته می‌شود. flat را امتحان کنید.",
-  "targetDetail.skipped.other": "{count} اسکیل نمی‌توانند از نام‌گذاری standard استفاده کنند و نادیده گرفته می‌شوند. flat را امتحان کنید.",
   "targetDetail.collect": "جمع‌آوری",
   "targetDetail.collectHint.skills.one": "{count} اسکیل فقط در این هدف وجود دارد. جمع‌آوری آن را به منبع شما کپی می‌کند تا به همه هدف‌ها برسد.",
   "targetDetail.collectHint.skills.other": "{count} اسکیل فقط در این هدف وجود دارند. جمع‌آوری آن‌ها را به منبع شما کپی می‌کند تا به همه هدف‌ها برسند.",

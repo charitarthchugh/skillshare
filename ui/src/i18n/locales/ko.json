@@ -1891,8 +1891,6 @@
   "targetDetail.shared.use": "{other}처럼 {value} 사용",
   "targetDetail.shared.filters": "{other}도 {path}에 Skills를 동기화하며 필터가 다릅니다. 동기화할 때마다 다른 target이 걸러낸 항목을 다시 추가하거나 제거합니다.",
   "targetDetail.shared.useFilters": "{other}와 같은 필터 사용",
-  "targetDetail.skipped.one": "skill {count}개는 standard 이름을 쓸 수 없어 건너뜁니다. flat을 사용해 보세요.",
-  "targetDetail.skipped.other": "skill {count}개는 standard 이름을 쓸 수 없어 건너뜁니다. flat을 사용해 보세요.",
   "targetDetail.collect": "수집",
   "targetDetail.collectHint.skills.one": "skill {count}개가 이 대상에만 있습니다. 수집하면 소스로 복사되어 모든 대상에 전달됩니다.",
   "targetDetail.collectHint.skills.other": "skill {count}개가 이 대상에만 있습니다. 수집하면 소스로 복사되어 모든 대상에 전달됩니다.",

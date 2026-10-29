@@ -1891,8 +1891,6 @@
   "targetDetail.shared.use": "Utiliser {value} comme {other}",
   "targetDetail.shared.filters": "{other} synchronise aussi des skills vers {path}, avec d’autres filtres. Chaque synchronisation rajouterait ou retirerait ce que l’autre filtre.",
   "targetDetail.shared.useFilters": "Utiliser les mêmes filtres que {other}",
-  "targetDetail.skipped.one": "{count} skill ne peut pas utiliser le nommage standard et est ignoré. Essayez flat.",
-  "targetDetail.skipped.other": "{count} skills ne peuvent pas utiliser le nommage standard et sont ignorés. Essayez flat.",
   "targetDetail.collect": "Collecter",
   "targetDetail.collectHint.skills.one": "{count} skill n’existe que dans cette cible. Collecter le copie dans votre source pour que toutes les cibles le reçoivent.",
   "targetDetail.collectHint.skills.other": "{count} skills n’existent que dans cette cible. Collecter les copie dans votre source pour que toutes les cibles les reçoivent.",

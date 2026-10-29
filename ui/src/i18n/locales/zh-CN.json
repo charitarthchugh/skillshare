@@ -1891,8 +1891,6 @@
   "targetDetail.shared.use": "和 {other} 一样使用 {value}",
   "targetDetail.shared.filters": "{other} 也把 Skills 同步到 {path}，但筛选不同。每次同步都会把对方筛掉的内容加回来或删掉。",
   "targetDetail.shared.useFilters": "使用和 {other} 相同的筛选",
-  "targetDetail.skipped.one": "{count} 个 Skill 无法使用 standard 命名而被跳过。试试 flat。",
-  "targetDetail.skipped.other": "{count} 个 Skill 无法使用 standard 命名而被跳过。试试 flat。",
   "targetDetail.collect": "收集",
   "targetDetail.collectHint.skills.one": "有 {count} 个 Skill 只存在于这个目标。收集会把它复制到来源，让每个目标都能拿到。",
   "targetDetail.collectHint.skills.other": "有 {count} 个 Skill 只存在于这个目标。收集会把它们复制到来源，让每个目标都能拿到。",

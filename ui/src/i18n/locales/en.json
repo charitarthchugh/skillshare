@@ -1891,8 +1891,6 @@
   "targetDetail.shared.use": "Use {value} like {other}",
   "targetDetail.shared.filters": "{other} also syncs skills to {path}, with different filters. Each sync would add back or remove what the other filters out.",
   "targetDetail.shared.useFilters": "Use the same filters as {other}",
-  "targetDetail.skipped.one": "{count} skill can't use standard naming and is skipped. Try flat.",
-  "targetDetail.skipped.other": "{count} skills can't use standard naming and are skipped. Try flat.",
   "targetDetail.collect": "Collect",
   "targetDetail.collectHint.skills.one": "{count} skill exists only in this target. Collect copies it into your source so every target gets it.",
   "targetDetail.collectHint.skills.other": "{count} skills exist only in this target. Collect copies them into your source so every target gets them.",
