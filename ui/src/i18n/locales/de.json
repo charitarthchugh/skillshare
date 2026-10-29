@@ -1999,6 +1999,7 @@
   "sync.skipped.hint": "weil zwei Ordner gleich enden. Stelle {name} auf flat-Benennung um, um beide zu behalten.",
   "sync.skipped.hintNaming": "weil ihr SKILL.md-Name ungültig ist oder nicht zum Ordner passt. Stelle {name} auf flat-Benennung um, um sie zu behalten.",
   "sync.skipped.hintMixed": "wegen ungültiger SKILL.md-Namen und Ordnern, die gleich enden. Stelle {name} auf flat-Benennung um, um sie zu behalten.",
+  "sync.skipped.hintSelection": "Agentenvarianten müssen explizit ausgewählt werden. Verwende include/exclude oder eine Zielüberschreibung, um eine auszuwählen.",
   "sync.skipped.open": "Ziel öffnen",
   "sync.local.one": "{count} Eintrag existiert nur in einem Ziel",
   "sync.local.other": "{count} Einträge existieren nur in einem Ziel",
@@ -3504,5 +3505,7 @@
   "memory.starterHint": "Die Startnotizen sind bereit. Ergänze eine Vorliebe, Entscheidung oder bestätigte Erkenntnis.",
   "memory.recentlyUpdated": "Zuletzt aktualisiert",
   "memory.updated": "Aktualisiert: {time}",
-  "memory.configuredHint": "Konfiguriert bedeutet, dass die Anweisungsdatei hierher verweist, nicht dass ein Agent sie gelesen hat."
+  "memory.configuredHint": "Konfiguriert bedeutet, dass die Anweisungsdatei hierher verweist, nicht dass ein Agent sie gelesen hat.",
+  "sync.skipped.ambiguousVariant": "Mehrdeutige Agent-Variante; mit include/exclude oder einer Zielüberschreibung eine auswählen.",
+  "dashboard.trackedRepos.variantCount": "{count} Varianten"
 }

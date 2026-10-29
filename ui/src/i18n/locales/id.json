@@ -1999,6 +1999,7 @@
   "sync.skipped.hint": "karena dua folder berakhiran nama yang sama. Ubah {name} ke penamaan flat agar keduanya tetap ada.",
   "sync.skipped.hintNaming": "karena nama SKILL.md-nya tidak valid atau tidak sama dengan nama foldernya. Ubah {name} ke penamaan flat agar tetap ada.",
   "sync.skipped.hintMixed": "karena ada nama SKILL.md yang tidak valid dan folder yang berakhiran nama yang sama. Ubah {name} ke penamaan flat agar tetap ada.",
+  "sync.skipped.hintSelection": "varian agen memerlukan pilihan eksplisit. Gunakan include/exclude atau pengaturan tujuan untuk memilih satu.",
   "sync.skipped.open": "Buka target",
   "sync.local.one": "{count} item hanya ada di target",
   "sync.local.other": "{count} item hanya ada di target",
@@ -3504,5 +3505,7 @@
   "memory.starterHint": "Catatan awal sudah siap. Tambahkan preferensi, keputusan, atau pelajaran terverifikasi.",
   "memory.recentlyUpdated": "Baru diperbarui",
   "memory.updated": "Diperbarui {time}",
-  "memory.configuredHint": "Dikonfigurasi berarti berkas instruksi mengarah ke sini, bukan berarti agen sudah membacanya."
+  "memory.configuredHint": "Dikonfigurasi berarti berkas instruksi mengarah ke sini, bukan berarti agen sudah membacanya.",
+  "sync.skipped.ambiguousVariant": "Varian agen ambigu; gunakan include/exclude atau penggantian target untuk memilih satu.",
+  "dashboard.trackedRepos.variantCount": "{count} varian"
 }

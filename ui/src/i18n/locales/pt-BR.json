@@ -1999,6 +1999,7 @@
   "sync.skipped.hint": "porque duas pastas terminam com o mesmo nome. Mude {name} para nomes flat para manter as duas.",
   "sync.skipped.hintNaming": "porque o nome no SKILL.md é inválido ou não corresponde à pasta. Mude {name} para nomes flat para mantê-los.",
   "sync.skipped.hintMixed": "por nomes de SKILL.md inválidos e pastas que terminam com o mesmo nome. Mude {name} para nomes flat para mantê-los.",
+  "sync.skipped.hintSelection": "as variantes de agente precisam de uma seleção explícita. Use include/exclude ou uma configuração de destino para selecionar uma.",
   "sync.skipped.open": "Abrir destino",
   "sync.local.one": "{count} item existe só em um destino",
   "sync.local.other": "{count} itens existem só em um destino",
@@ -3504,5 +3505,7 @@
   "memory.starterHint": "As notas iniciais estão prontas. Adicione uma preferência, decisão ou lição verificada.",
   "memory.recentlyUpdated": "Atualizadas recentemente",
   "memory.updated": "Atualizada {time}",
-  "memory.configuredHint": "Configurado significa que o arquivo de instruções aponta para cá, não que um agente o tenha lido."
+  "memory.configuredHint": "Configurado significa que o arquivo de instruções aponta para cá, não que um agente o tenha lido.",
+  "sync.skipped.ambiguousVariant": "Variante de agente ambígua; use include/exclude ou uma substituição de destino para selecionar uma.",
+  "dashboard.trackedRepos.variantCount": "{count} variantes"
 }
