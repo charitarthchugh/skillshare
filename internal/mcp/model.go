@@ -301,6 +301,18 @@ func hasInterpolation(value string) bool {
 // OpenCode fork and keeps the same "mcp" section, entry fields and {env:} references.
 func openCodeFormat(target string) bool { return target == "opencode" || target == "kilocode" }
 
+// targetAliases are other names for a client: the agy CLI reads the file the antigravity
+// client writes, and plugins and hooks call it antigravity-cli.
+var targetAliases = map[string]string{"antigravity-cli": "antigravity", "agy": "antigravity"}
+
+// CanonicalTarget returns the client an alias names, and any other name unchanged.
+func CanonicalTarget(target string) string {
+	if client, ok := targetAliases[target]; ok {
+		return client
+	}
+	return target
+}
+
 func validTarget(target string) bool {
 	for _, name := range Targets {
 		if name == target {

@@ -42,6 +42,24 @@ func TestMCPTargetNone(t *testing.T) {
 	}
 }
 
+// The agy CLI reads the file the antigravity client writes, so the names other commands
+// use for it select that client in --target and --from.
+func TestMCPAntigravityAliases(t *testing.T) {
+	for _, alias := range []string{"antigravity-cli", "agy"} {
+		o, err := parseMCPOptions([]string{"docs", "--target", alias, "--from", alias, "--no-tui"})
+		if err != nil {
+			t.Fatalf("%s: %v", alias, err)
+		}
+		if !slices.Equal(o.targets, []string{"antigravity"}) || o.from != "antigravity" {
+			t.Fatalf("%s: targets %#v, from %q", alias, o.targets, o.from)
+		}
+	}
+	o, err := parseMCPOptions([]string{"docs", "--target", "agy", "--target", "claude", "--no-tui"})
+	if err != nil || !slices.Equal(o.targets, []string{"antigravity", "claude"}) {
+		t.Fatalf("%#v %v", o.targets, err)
+	}
+}
+
 type confirmEmptyPrompts struct{ terminalMCPPrompts }
 
 func (confirmEmptyPrompts) choose(checklistConfig) ([]int, error) { return []int{}, nil }

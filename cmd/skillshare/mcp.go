@@ -68,9 +68,9 @@ func parseMCPOptions(args []string) (mcpOptions, error) {
 			case "--url":
 				o.url = value
 			case "--target":
-				o.targets = append(o.targets, value)
+				o.targets = append(o.targets, mcp.CanonicalTarget(value))
 			case "--from":
-				o.from = value
+				o.from = mcp.CanonicalTarget(value)
 			case "--file":
 				o.file = value
 			case "--revision":
