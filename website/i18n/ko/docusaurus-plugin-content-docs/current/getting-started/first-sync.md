@@ -58,7 +58,7 @@ environment.systemPackages = [ pkgs.skillshare ]; # or home.packages
 ```
 
 :::tip 나중에 업데이트하기
-`skillshare upgrade`는 설치 방식(Homebrew, 스크립트, 수동)을 감지해 CLI를 제자리에서 업데이트합니다. Nix로 설치한 경우에는 대신 `nix profile upgrade` 명령을 안내합니다.
+`skillshare upgrade`는 설치 방식(Homebrew, 스크립트, 수동)을 감지해 CLI를 제자리에서 업데이트합니다. Nix로 설치한 경우에는 CLI를 Nix에 맡기고 업데이트 방법을 안내합니다. `nix profile`로 설치했다면 `nix profile upgrade skillshare`, NixOS나 Home Manager라면 설정을 다시 빌드하라고 안내합니다.
 :::
 
 ## 2. 초기화

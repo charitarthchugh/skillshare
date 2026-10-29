@@ -158,21 +158,13 @@ func upgradeCLIBinary(dryRun, force bool) (string, error) {
 		return "", err
 	}
 
-	switch method := versionpkg.DetectInstallMethod(execPath); method {
-	case versionpkg.InstallBrew:
+	method := versionpkg.DetectInstallMethod(execPath)
+	if method == versionpkg.InstallBrew {
 		if dryRun {
 			printUpgradeRow(ui.MarkNone, "CLI", current+" · would run brew upgrade skillshare", time.Time{})
 			return "", nil
 		}
 		return runBrewUpgrade(start)
-	case versionpkg.InstallNix:
-		// Replacing a file in the Nix store would corrupt it, so Nix updates it instead.
-		if dryRun {
-			printUpgradeRow(ui.MarkNone, "CLI", current+" · installed with Nix, would need "+method.UpgradeCommand(), time.Time{})
-			return "", nil
-		}
-		printUpgradeRow(ui.MarkFail, "CLI", current+" · installed with Nix", time.Time{})
-		return "", fmt.Errorf("skillshare is installed with Nix; run: %s", method.UpgradeCommand())
 	}
 
 	// Get latest version from GitHub
@@ -193,8 +185,15 @@ func upgradeCLIBinary(dryRun, force bool) (string, error) {
 		latestVersion = release.Version
 	}
 
-	if version == latestVersion && !force {
+	// --force reinstalls the same version, which only skillshare's own installs can do.
+	if version == latestVersion && (!force || method.IsNix()) {
 		printUpgradeRow(ui.MarkOK, "CLI", current+", already up to date", time.Time{})
+		return "", nil
+	}
+
+	// Replacing a file in the Nix store would corrupt it, so Nix updates it instead.
+	if method.IsNix() {
+		printUpgradeRow(ui.MarkWarn, "CLI", fmt.Sprintf("%s → v%s available · %s, %s", current, latestVersion, versionpkg.NixUpgradeNote, method.UpgradeInstruction()), time.Time{})
 		return "", nil
 	}
 

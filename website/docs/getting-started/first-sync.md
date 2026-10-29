@@ -58,7 +58,7 @@ environment.systemPackages = [ pkgs.skillshare ]; # or home.packages
 ```
 
 :::tip Updating later
-`skillshare upgrade` detects how you installed (Homebrew, script, manual) and updates the CLI in place. For a Nix install, it prints the `nix profile upgrade` command instead.
+`skillshare upgrade` detects how you installed (Homebrew, script, manual) and updates the CLI in place. For a Nix install, it leaves the CLI to Nix and says how to update it: `nix profile upgrade skillshare` for a `nix profile` install, or a rebuild of your NixOS or Home Manager configuration.
 :::
 
 ## 2. Initialize

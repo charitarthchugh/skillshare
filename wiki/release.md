@@ -61,10 +61,10 @@ Release notes are local maintainer artifacts by default. Never force-add an igno
 
 `flake.nix` builds `nix/package.nix`, which reads its version from the Release Please manifest, so releases need no Nix edit. A `github:runkids/skillshare` install builds `main` and reports the latest release version.
 
-The **Nix** workflow runs `nix flake check` (build plus unit tests in the sandbox) on every non-docs change. Two failures need a hand edit:
+Installs skip the unit tests; only the flake's `checks` run them. The **Nix** workflow runs `nix flake check` (build plus unit tests in the sandbox) on Linux and builds the package on macOS for every non-docs change. Two failures need a hand edit:
 
 - A hash mismatch after a `go.sum` change: put the log's `got: sha256-...` value into `vendorHash`.
-- `go.mod` requiring a Go minor version newer than the locked nixpkgs ships: run `nix flake update`. Newer patch versions need nothing, because `postPatch` lowers the `go` directive to the toolchain's version.
+- `go.mod` requiring a Go minor version newer than the locked nixpkgs ships fails evaluation with a message saying so: run `nix flake update`. Newer patch versions need nothing, because `postPatch` lowers the `go` directive to the toolchain's version.
 
 The devcontainer has no Nix, so reproduce Nix failures in a throwaway `nixos/nix` container, never on the host: `docker run --rm --privileged -v "$PWD":/src -w /src nixos/nix nix --extra-experimental-features 'nix-command flakes' build --option sandbox true -L path:/src`.
 

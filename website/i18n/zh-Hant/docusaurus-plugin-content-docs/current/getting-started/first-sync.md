@@ -58,7 +58,7 @@ environment.systemPackages = [ pkgs.skillshare ]; # or home.packages
 ```
 
 :::tip 之後如何更新
-`skillshare upgrade` 會偵測你當初的安裝方式（Homebrew、腳本、手動），並就地更新 CLI。透過 Nix 安裝時，它會改為提示 `nix profile upgrade` 指令。
+`skillshare upgrade` 會偵測你當初的安裝方式（Homebrew、腳本、手動），並就地更新 CLI。透過 Nix 安裝時，它不會替換 CLI，而是提示更新方式：`nix profile` 安裝提示 `nix profile upgrade skillshare`，NixOS 或 Home Manager 則提示更新設定並重新建置。
 :::
 
 ## 2. 初始化

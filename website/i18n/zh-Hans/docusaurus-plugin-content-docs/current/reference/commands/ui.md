@@ -187,7 +187,7 @@ web dashboard 在 `/api/` 下暴露一个 REST API。所有端点都返回 JSON�
 | GET | `/api/doctor` | 运行所有健康检查（JSON） |
 | GET | `/api/health` | 存活探针；server 就绪后返回 `200` |
 | GET | `/api/version` | 当前/最新版本，以及是否有可用升级 |
-| POST | `/api/upgrade` | 就地运行 `skillshare upgrade`（当二进制文件为开发构建时返回 `devMode: true`） |
+| POST | `/api/upgrade` | 就地运行 `skillshare upgrade`（当二进制文件为开发构建时返回 `devMode: true`；通过 Nix 安装时返回 `409`，错误码为 `upgrade.nix`） |
 | POST | `/api/restart` | 重启本地 UI server；可选的 `{ "clearCache": true }` body 会先清除缓存的 UI 资源 |
 
 ## 就地升级
@@ -197,6 +197,8 @@ web dashboard 在 `/api/` 下暴露一个 REST API。所有端点都返回 JSON�
 1. UI 调用 `POST /api/upgrade`，在宿主机上运行 `skillshare upgrade`。
 2. 新二进制文件就位后，UI 调用 `POST /api/restart` 重启本地 server。
 3. 浏览器轮询 `GET /api/health`，并在新 server 就绪后自动重新加载。
+
+如果 skillshare 通过 Nix 安装，该端点会以 `409`（`upgrade.nix`）拒绝，对话框会改为说明如何通过 Nix 更新。参见 [upgrade](./upgrade.md#nix-users)。
 
 如果运行中的二进制文件是开发构建（`version == "dev"`），upgrade 端点会返回
 `devMode: true`，UI 会模拟一次重启而不修改磁盘上的任何内容。

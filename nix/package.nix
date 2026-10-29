@@ -11,6 +11,11 @@
 
 let
   inherit (lib) fileset;
+  goModVersion = lib.removePrefix "go " (
+    lib.findFirst (lib.hasPrefix "go ") (throw "go.mod has no go directive") (
+      lib.splitString "\n" (builtins.readFile ../go.mod)
+    )
+  );
 in
 buildGoModule (finalAttrs: {
   pname = "skillshare";
@@ -42,9 +47,18 @@ buildGoModule (finalAttrs: {
   vendorHash = "sha256-vZxkLUP6E+tyat87VBpW3kr+JtXJizTHmEkiJDoZzbg=";
 
   # go.mod pins the newest Go patch release, which nixpkgs may not ship yet.
-  postPatch = ''
-    go mod edit -go=${finalAttrs.passthru.go.version}
-  '';
+  # Lower only the patch; a newer minor needs a newer toolchain.
+  postPatch =
+    let
+      goVersion = finalAttrs.passthru.go.version;
+    in
+    lib.optionalString (lib.versionOlder goVersion goModVersion) (
+      assert lib.assertMsg (lib.versions.majorMinor goVersion == lib.versions.majorMinor goModVersion)
+        "go.mod requires Go ${goModVersion}, but nixpkgs provides Go ${goVersion}; run `nix flake update`";
+      ''
+        go mod edit -go=${goVersion}
+      ''
+    );
 
   subPackages = [ "cmd/skillshare" ];
 
@@ -70,6 +84,9 @@ buildGoModule (finalAttrs: {
     find cmd internal -name '*_test.go' -exec \
       sed -i -E 's@#!(/bin/bash|/usr/bin/env bash)@#!${runtimeShell}@' {} +
   '';
+
+  # Installs skip the tests; the flake's checks enable them.
+  doCheck = false;
 
   # Unit tests only, matching `scripts/test.sh --unit`. Tests run like upstream
   # CI: with cgo (some rely on its deadlock behavior) and without -trimpath

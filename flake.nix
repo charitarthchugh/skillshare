@@ -24,7 +24,9 @@
       };
 
       checks = forAllSystems (pkgs: {
-        skillshare = self.packages.${pkgs.stdenv.hostPlatform.system}.skillshare;
+        skillshare = self.packages.${pkgs.stdenv.hostPlatform.system}.skillshare.overrideAttrs {
+          doCheck = true;
+        };
       });
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
