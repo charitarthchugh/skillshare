@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **최신 버전**: v0.26.4 — 설치 후 수정한 skill은 이제 `update`에서 건너뛰며, `skillshare check <name> --diff`로 변경 내용을 볼 수 있습니다. dashboard의 skill 목록에 설명이 표시되고 skill 패키지가 상위 skill 아래에 묶여 표시되며, 설치된 plugin 여러 개를 한 번에 가져올 수 있습니다. [변경 기록](https://skillshare.runkids.cc/changelog)을 확인하세요.
+> **최신 버전**: v0.28.0 — agent별로 skill 사본을 따로 제공하는 tracked 저장소(`skills/claude/<skill>`, `skills/codex/<skill>`)는 이제 merge·copy 모드에서 각 사본을 해당 agent에만 동기화하고, 요약에서는 하나의 skill로 집계합니다. `skillshare plugin update --all`로 tracked plugin을 한 번에 업데이트할 수 있고, shallow partial clone에서도 `update`가 다시 동작합니다. [변경 기록](https://skillshare.runkids.cc/changelog)을 확인하세요.
 
 ## skillshare를 쓰는 이유
 

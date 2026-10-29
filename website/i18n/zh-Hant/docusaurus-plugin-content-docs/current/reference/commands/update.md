@@ -226,6 +226,8 @@ skillshare update --all
 
 `update --all` 與 `update --group` 會依儲存庫將遠端 skill 分組，每個儲存庫只 clone 一次。資料夾在 upstream 沒有變更的 skill 維持不動，並計為 up to date。資料夾中含有 symlink 的 skill 例外：資料夾不變時檔案也可能改變，因此只要 upstream commit 有變動就會重新安裝。在專案模式（`-p`）下依名稱指定多個 skill 時也相同。使用 `--force` 可重新安裝所有 skill。只更新一個 skill，或在全域模式下依名稱指定時，一律重新安裝。安裝後你修改過檔案的 skill，在任何情況下都會被略過，直到你加上 `--force`（參見[處理衝突](#處理衝突)）。無法取得某個儲存庫時，其 skill 計為 skipped，`update` 會顯示一則警告，寫明該儲存庫與錯誤，並移除 URL 中的憑證。
 
+同一個 git checkout 一次只由一個 skillshare 程序更新。若另一個 `update` 或 dashboard 正在更新同一個 tracked repo 或透過 git 安裝的 skill，這次更新會等它完成。等待一分鐘後仍未完成，就以 `another skillshare process is still updating <path>` 放棄。
+
 ### 輸出範例
 
 ```

@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **最新バージョン**：v0.26.4 — インストール後に編集した skill は `update` でスキップされ、`skillshare check <name> --diff` で変更内容を確認できます。dashboard の skill 一覧に説明が表示され、skill パッケージは親の下にまとめて表示されます。インストール済み plugin の一括インポートにも対応しました。 [Releases](https://github.com/runkids/skillshare/releases) と[変更履歴](https://skillshare.runkids.cc/changelog)をご覧ください。
+> **最新バージョン**：v0.28.0 — agent ごとに別の skill を持つ tracked repo（`skills/claude/<skill>`、`skills/codex/<skill>`）は、merge・copy モードでそれぞれ対応する agent にだけ同期され、サマリーでは 1 つの skill として数えられます。`skillshare plugin update --all` で tracked plugin をまとめて更新でき、shallow な partial clone でも `update` が再び動作します。 [Releases](https://github.com/runkids/skillshare/releases) と[変更履歴](https://skillshare.runkids.cc/changelog)をご覧ください。
 
 ## skillshare を使う理由
 

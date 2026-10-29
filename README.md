@@ -48,7 +48,7 @@
 </p>
 
 > [!NOTE]
-> **Latest**: v0.26.4 — `update` now skips skills you edited since install, and `skillshare check <name> --diff` shows what you changed. The dashboard skill list shows descriptions and nests skill packages under their parent, and you can import several installed plugins at once. [All releases →](https://github.com/runkids/skillshare/releases)
+> **Latest**: v0.28.0 — Tracked repos that ship a separate copy of a skill per agent (`skills/claude/<skill>`, `skills/codex/<skill>`) now sync each copy only to its matching agent in merge and copy mode, and summaries count it as one skill. `skillshare plugin update --all` updates every tracked plugin at once, and `update` works again on shallow partial clones. [All releases →](https://github.com/runkids/skillshare/releases)
 
 ## Why skillshare
 

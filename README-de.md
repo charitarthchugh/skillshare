@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **Neueste Version**: v0.26.4 — `update` überspringt jetzt Skills, die du seit der Installation bearbeitet hast, und `skillshare check <name> --diff` zeigt deine Änderungen. Die Skill-Liste im Dashboard zeigt Beschreibungen und ordnet Skill-Pakete unter ihrem übergeordneten Skill ein; mehrere installierte Plugins lassen sich auf einmal importieren. [Alle Releases →](https://github.com/runkids/skillshare/releases)
+> **Neueste Version**: v0.28.0 — Tracked Repos, die pro Agent eine eigene Kopie eines Skills mitliefern (`skills/claude/<skill>`, `skills/codex/<skill>`), synchronisieren im Merge- und Copy-Modus jede Kopie nur noch zum passenden Agent, und Übersichten zählen sie als einen Skill. `skillshare plugin update --all` aktualisiert alle getrackten Plugins auf einmal, und `update` funktioniert wieder mit flachen Partial Clones. [Alle Releases →](https://github.com/runkids/skillshare/releases)
 
 ## Warum skillshare
 

@@ -47,7 +47,7 @@
 </p>
 
 > [!NOTE]
-> **最新版本**：v0.26.4 — 安裝後改過的 skill 現在會被 `update` 跳過，`skillshare check <name> --diff` 可以查看改了什麼。dashboard 的 skill 清單會顯示描述，skill package 會收在父 skill 底下，也可以一次匯入多個已安裝的 plugin。 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
+> **最新版本**：v0.28.0 — 為每個 agent 各放一份 skill 的 tracked repo（`skills/claude/<skill>`、`skills/codex/<skill>`），現在在 merge 和 copy 模式下只會把各份同步到對應的 agent，摘要也只算一個 skill。`skillshare plugin update --all` 可以一次更新所有 tracked plugin，`update` 在 shallow partial clone 上也恢復正常。 [Releases](https://github.com/runkids/skillshare/releases) 和[更新紀錄](https://skillshare.runkids.cc/changelog)。
 
 ## 為什麼用 skillshare
 
